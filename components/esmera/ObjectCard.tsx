@@ -26,9 +26,9 @@ export default function ObjectCard({ item, motionOrder = 0 }: Props) {
   const vm = legacyItem
     ? esmeraObjectToCardViewModel(item)
     : toProductCardViewModel(item);
-  const mediaStyle = vm.mediaFit === "contain"
-    ? "box-sizing:border-box;object-fit:contain;object-position:center;padding:clamp(10px,1.25vw,18px);transform:none;"
-    : undefined;
+  const containClass = vm.mediaFit === "contain"
+    ? " box-border !object-contain !object-center !p-3 sm:!p-4 !transform-none"
+    : "";
 
   // Compatibilidade temporária apenas com o modal legado; a apresentação do
   // card usa o contrato Storefront quando disponível e preserva o objeto já
@@ -79,10 +79,11 @@ export default function ObjectCard({ item, motionOrder = 0 }: Props) {
       <div class="esv-product-media-wrap">
         <figure class="esv-product-media">
           <EsmeraImage
-            class={vm.hoverImage
-              ? "esv-product-image-primary"
-              : "esv-product-image-static"}
-            style={mediaStyle}
+            class={`${
+              vm.hoverImage
+                ? "esv-product-image-primary"
+                : "esv-product-image-static"
+            }${containClass}`}
             src={vm.image ?? ""}
             alt={vm.imageAlt}
             loading="lazy"
@@ -93,8 +94,7 @@ export default function ObjectCard({ item, motionOrder = 0 }: Props) {
           />
           {vm.hoverImage && (
             <EsmeraImage
-              class="esv-product-image-detail"
-              style={mediaStyle}
+              class={`esv-product-image-detail${containClass}`}
               src={vm.hoverImage}
               alt={vm.hoverImageAlt}
               loading="lazy"
