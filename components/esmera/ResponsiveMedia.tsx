@@ -48,6 +48,7 @@ export interface EsmeraImageProps {
   height: number;
   sizes?: string;
   class?: string;
+  style?: string;
   loading?: "lazy" | "eager";
   decoding?: "async" | "auto" | "sync";
 }
@@ -60,6 +61,7 @@ export function EsmeraImage(
     height,
     sizes,
     class: className,
+    style,
     loading = "lazy",
     decoding = "async",
   }: EsmeraImageProps,
@@ -68,6 +70,7 @@ export function EsmeraImage(
     return (
       <img
         class={className}
+        style={style}
         src={src}
         alt={alt}
         loading={loading}
@@ -82,6 +85,7 @@ export function EsmeraImage(
   return (
     <Image
       class={className}
+      style={style}
       src={src}
       alt={alt}
       loading={loading}
