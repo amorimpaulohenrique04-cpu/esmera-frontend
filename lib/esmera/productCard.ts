@@ -175,16 +175,16 @@ function fold(value: string | null | undefined): string {
 }
 
 /**
- * Bandejas tendem a ter composição horizontal e perdem informação quando o
- * card 4:5 aplica cover. Mantemos o frame editorial, mas mostramos a foto
- * inteira dentro dele. O título entra como fallback para catálogos legados em
- * que pieceType ainda não esteja preenchido.
+ * Bandejas e bandejinhas tendem a ter composição horizontal e perdem
+ * informação quando o card 4:5 aplica cover. Mantemos o frame editorial, mas
+ * mostramos a foto inteira dentro dele. O radical "bandej" cobre ambas as
+ * nomenclaturas; o título entra como fallback quando pieceType não existe.
  */
 export function resolveCardMediaFit(
   name: string | null | undefined,
   pieceType: string | null | undefined,
 ): ProductCardMediaFit {
-  return [pieceType, name].some((value) => fold(value).includes("bandeja"))
+  return [pieceType, name].some((value) => fold(value).includes("bandej"))
     ? "contain"
     : "cover";
 }
