@@ -16,6 +16,8 @@ export interface ProductCardInstallment {
   suffix: string;
 }
 
+export type ProductCardMediaFit = "cover" | "contain";
+
 export interface ProductCardViewModel {
   id: string;
   slug: string;
@@ -29,6 +31,7 @@ export interface ProductCardViewModel {
   imageAlt: string;
   hoverImage: string | null;
   hoverImageAlt: string;
+  mediaFit: ProductCardMediaFit;
   isPurchasable: boolean;
 }
 
@@ -171,6 +174,21 @@ function fold(value: string | null | undefined): string {
     .toLocaleLowerCase("pt-BR");
 }
 
+/**
+ * Bandejas e bandejinhas tendem a ter composição horizontal e perdem
+ * informação quando o card 4:5 aplica cover. Mantemos o frame editorial, mas
+ * mostramos a foto inteira dentro dele. O radical "bandej" cobre ambas as
+ * nomenclaturas; o título entra como fallback quando pieceType não existe.
+ */
+export function resolveCardMediaFit(
+  name: string | null | undefined,
+  pieceType: string | null | undefined,
+): ProductCardMediaFit {
+  return [pieceType, name].some((value) => fold(value).includes("bandej"))
+    ? "contain"
+    : "cover";
+}
+
 function stateFromAvailability(
   availability: string | null | undefined,
 ): StorefrontAvailabilityStateV2 {
@@ -228,6 +246,7 @@ export function esmeraObjectToCardViewModel(
     hoverImageAlt: item.detailImage
       ? `${item.title} — imagem complementar`
       : "",
+    mediaFit: resolveCardMediaFit(item.title, item.category ?? null),
     isPurchasable: !item.isInquiry &&
       (state === "available" || state === "limited"),
   };
@@ -257,6 +276,7 @@ export function toProductCardViewModel(
     hoverImage: product.hoverImage?.url ?? null,
     hoverImageAlt: product.hoverImage?.alt ??
       (product.hoverImage ? `${name} — imagem complementar` : ""),
+    mediaFit: resolveCardMediaFit(name, pieceType),
     isPurchasable: Boolean(product.purchasable),
   };
 }

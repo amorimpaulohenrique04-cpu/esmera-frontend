@@ -26,6 +26,9 @@ export default function ObjectCard({ item, motionOrder = 0 }: Props) {
   const vm = legacyItem
     ? esmeraObjectToCardViewModel(item)
     : toProductCardViewModel(item);
+  const containClass = vm.mediaFit === "contain"
+    ? " box-border !object-contain !object-center !p-3 sm:!p-4 !transform-none"
+    : "";
 
   // Compatibilidade temporária apenas com o modal legado; a apresentação do
   // card usa o contrato Storefront quando disponível e preserva o objeto já
@@ -58,7 +61,9 @@ export default function ObjectCard({ item, motionOrder = 0 }: Props) {
 
   return (
     <div
-      class={`esv-product-card${vm.hoverImage ? " has-detail" : ""}`}
+      class={`esv-product-card${vm.hoverImage ? " has-detail" : ""}${
+        vm.mediaFit === "contain" ? " is-media-contain" : ""
+      }`}
       role="listitem"
       data-product-id={vm.id}
       data-motion="reveal"
@@ -74,9 +79,11 @@ export default function ObjectCard({ item, motionOrder = 0 }: Props) {
       <div class="esv-product-media-wrap">
         <figure class="esv-product-media">
           <EsmeraImage
-            class={vm.hoverImage
-              ? "esv-product-image-primary"
-              : "esv-product-image-static"}
+            class={`${
+              vm.hoverImage
+                ? "esv-product-image-primary"
+                : "esv-product-image-static"
+            }${containClass}`}
             src={vm.image ?? ""}
             alt={vm.imageAlt}
             loading="lazy"
@@ -87,7 +94,7 @@ export default function ObjectCard({ item, motionOrder = 0 }: Props) {
           />
           {vm.hoverImage && (
             <EsmeraImage
-              class="esv-product-image-detail"
+              class={`esv-product-image-detail${containClass}`}
               src={vm.hoverImage}
               alt={vm.hoverImageAlt}
               loading="lazy"

@@ -34,6 +34,7 @@ import * as $HeroCarousel from "./islands/HeroCarousel.tsx";
 import * as $MenuNavigationCoordinator from "./islands/MenuNavigationCoordinator.tsx";
 import * as $ProductActions from "./islands/ProductActions.tsx";
 import * as $ProductModal from "./islands/ProductModal.tsx";
+import * as $ProductModalLinkSync from "./islands/ProductModalLinkSync.tsx";
 import * as $ShareProductLink from "./islands/ShareProductLink.tsx";
 import * as $WishlistButton from "./islands/WishlistButton.tsx";
 import type { Manifest } from "$fresh/server.ts";
@@ -74,6 +75,7 @@ const manifest = {
     "./islands/MenuNavigationCoordinator.tsx": $MenuNavigationCoordinator,
     "./islands/ProductActions.tsx": $ProductActions,
     "./islands/ProductModal.tsx": $ProductModal,
+    "./islands/ProductModalLinkSync.tsx": $ProductModalLinkSync,
     "./islands/ShareProductLink.tsx": $ShareProductLink,
     "./islands/WishlistButton.tsx": $WishlistButton,
   },
