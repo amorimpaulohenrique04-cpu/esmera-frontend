@@ -133,7 +133,7 @@ export function buildSpecs(product: StorefrontProductV2): string | null {
   return parts.length ? parts.join(" · ") : null;
 }
 
-/** { prefix:"ou ", emphasis:"12x de R$ 40,83", suffix:" sem juros" }. */
+/** Mantido para consumidores que recebam parcelamento explícito do contrato. */
 export function buildInstallment(
   product: StorefrontProductV2,
 ): ProductCardInstallment | null {
@@ -148,6 +148,7 @@ export function buildInstallment(
   };
 }
 
+/** Regra compartilhada pelo PDP/modal e pelo card: 5x sem juros. */
 export function buildInstallmentFromPriceCents(
   priceCents: number | null | undefined,
   installmentCount = 5,
@@ -175,18 +176,14 @@ function fold(value: string | null | undefined): string {
 }
 
 /**
- * Bandejas e bandejinhas tendem a ter composição horizontal e perdem
- * informação quando o card 4:5 aplica cover. Mantemos o frame editorial, mas
- * mostramos a foto inteira dentro dele. O radical "bandej" cobre ambas as
- * nomenclaturas; o título entra como fallback quando pieceType não existe.
+ * A coleção usa uma única gramática fotográfica: todo card é horizontal e
+ * preserva a fotografia inteira com contain, sem exceções por categoria.
  */
 export function resolveCardMediaFit(
-  name: string | null | undefined,
-  pieceType: string | null | undefined,
+  _name: string | null | undefined,
+  _pieceType: string | null | undefined,
 ): ProductCardMediaFit {
-  return [pieceType, name].some((value) => fold(value).includes("bandej"))
-    ? "contain"
-    : "cover";
+  return "contain";
 }
 
 function stateFromAvailability(
@@ -239,7 +236,7 @@ export function esmeraObjectToCardViewModel(
     price,
     installment: item.isInquiry
       ? null
-      : buildInstallmentFromPriceCents(item.priceCents, 12),
+      : buildInstallmentFromPriceCents(item.priceCents),
     image: item.image || null,
     imageAlt: item.alt || item.title,
     hoverImage: item.detailImage || null,
@@ -259,6 +256,7 @@ export function toProductCardViewModel(
   const material = product.identity?.material ?? product.material ?? null;
   const pieceType = product.identity?.pieceType ?? product.pieceType ?? null;
   const priceCents = product.pricing?.priceCents ?? product.price ?? null;
+  const isInquiry = product.pricing?.mode === "inquiry";
 
   return {
     id: product.id,
@@ -267,10 +265,8 @@ export function toProductCardViewModel(
     title: name,
     status: buildStatus(product.state, product.isUnique),
     specs: buildSpecs(product),
-    price: product.pricing?.mode === "inquiry"
-      ? null
-      : formatPriceCents(priceCents),
-    installment: buildInstallment(product),
+    price: isInquiry ? null : formatPriceCents(priceCents),
+    installment: isInquiry ? null : buildInstallmentFromPriceCents(priceCents),
     image: product.image?.url ?? null,
     imageAlt: product.image?.alt ?? name,
     hoverImage: product.hoverImage?.url ?? null,
