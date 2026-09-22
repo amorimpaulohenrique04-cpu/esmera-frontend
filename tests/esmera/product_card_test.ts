@@ -1,6 +1,7 @@
 import { assertEquals } from "@std/assert";
 import {
   esmeraObjectToCardViewModel,
+  resolveCardMediaFit,
   toProductCardViewModel,
 } from "../../lib/esmera/productCard.ts";
 import type { StorefrontProductV2 } from "../../lib/esmera/storefront.ts";
@@ -55,7 +56,36 @@ Deno.test("reproduz o card do mockup", () => {
     suffix: " sem juros",
   });
   assertEquals(vm.image, "/pc.jpg");
+  assertEquals(vm.mediaFit, "cover");
   assertEquals(vm.isPurchasable, true);
+});
+
+Deno.test("bandejas e bandejinhas preservam a composição inteira", () => {
+  assertEquals(
+    resolveCardMediaFit("Bandeja Grande em Bege Bahia", "Bandejas para Lavabo"),
+    "contain",
+  );
+  assertEquals(
+    resolveCardMediaFit("Bandejinha para Lavabo em Jadeíta", null),
+    "contain",
+  );
+  assertEquals(
+    resolveCardMediaFit("Porta-sabonete Líquido em Bege Bahia", "Porta-sabonete"),
+    "cover",
+  );
+
+  const vm = toProductCardViewModel(
+    product({
+      title: "Bandejinha para Lavabo em Jadeíta",
+      identity: {
+        name: "Bandejinha para Lavabo em Jadeíta",
+        pieceType: "Bandejas para Lavabo",
+        material: "Jadeíta",
+      },
+      pieceType: "Bandejas para Lavabo",
+    }),
+  );
+  assertEquals(vm.mediaFit, "contain");
 });
 
 Deno.test("título é sempre o nome, mesmo quando há pieceType", () => {
@@ -81,6 +111,7 @@ Deno.test("sem tipo de peça, eyebrow mostra o material", () => {
   );
   assertEquals(vm.title, "Bandeja Grande Bege Bahia");
   assertEquals(vm.eyebrow, "BEGE BAHIA NATURAL");
+  assertEquals(vm.mediaFit, "contain");
 });
 
 Deno.test("sem peso mostra apenas a dimensão", () => {
@@ -187,7 +218,18 @@ Deno.test("bridge EsmeraObject → ViewModel usa categoria, nome e parcelamento"
     emphasis: "12x de R$ 40,83",
     suffix: " sem juros",
   });
+  assertEquals(vm.mediaFit, "cover");
   assertEquals(vm.isPurchasable, true);
+});
+
+Deno.test("bridge legado também detecta bandejinhas", () => {
+  const vm = esmeraObjectToCardViewModel(
+    esmera({
+      title: "Bandejinha para Lavabo em Jadeíta",
+      category: "Bandejas para Lavabo",
+    }),
+  );
+  assertEquals(vm.mediaFit, "contain");
 });
 
 Deno.test("Storefront e EsmeraObject geram a mesma identidade visual", () => {
@@ -201,6 +243,7 @@ Deno.test("Storefront e EsmeraObject geram a mesma identidade visual", () => {
       specs: legacy.specs,
       price: legacy.price,
       installment: legacy.installment,
+      mediaFit: legacy.mediaFit,
     },
     {
       eyebrow: storefront.eyebrow,
@@ -209,6 +252,7 @@ Deno.test("Storefront e EsmeraObject geram a mesma identidade visual", () => {
       specs: storefront.specs,
       price: storefront.price,
       installment: storefront.installment,
+      mediaFit: storefront.mediaFit,
     },
   );
 });
