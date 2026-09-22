@@ -52,9 +52,9 @@
 
 .esv-about-hero-copy h1 {
   margin: var(--space-3) 0 0;
-  font-size: clamp(48px, 6vw, 88px);
+  font-size: clamp(42px, 4.8vw, 72px);
   font-weight: 300;
-  line-height: .96;
+  line-height: .98;
   letter-spacing: -.03em;
 }
 
@@ -102,10 +102,10 @@
 
 .esv-about-process-head h2 {
   margin: var(--space-3) 0 0;
-  font-size: clamp(30px, 2.8vw, 44px);
+  font-size: clamp(28px, 2.4vw, 38px);
   font-weight: 300;
-  line-height: 1.05;
-  letter-spacing: -.03em;
+  line-height: 1.08;
+  letter-spacing: -.025em;
 }
 
 .esv-about-process-head p {
@@ -192,14 +192,14 @@
 }
 
 .esv-about-manifesto-copy {
-  max-width: 22ch;
+  max-width: 25ch;
 }
 
 .esv-about-manifesto-copy h2 {
   margin: var(--space-3) 0 0;
-  font-size: clamp(32px, 3.4vw, 52px);
+  font-size: clamp(28px, 2.6vw, 42px);
   font-weight: 300;
-  line-height: 1.1;
+  line-height: 1.12;
   letter-spacing: -.02em;
 }
 
@@ -245,10 +245,10 @@
 
 .esv-about-materials-copy h2 {
   margin: var(--space-3) 0 0;
-  font-size: clamp(30px, 2.8vw, 44px);
+  font-size: clamp(28px, 2.4vw, 38px);
   font-weight: 300;
-  line-height: 1.05;
-  letter-spacing: -.03em;
+  line-height: 1.08;
+  letter-spacing: -.025em;
 }
 
 .esv-about-materials-list {
@@ -296,7 +296,7 @@
 
 @media (max-width: 1023px) {
   .esv-about-hero-copy h1 {
-    font-size: clamp(40px, 7vw, 64px);
+    font-size: clamp(38px, 6vw, 56px);
   }
 
   .esv-about-process-steps {
@@ -334,7 +334,7 @@
   }
 
   .esv-about-hero-copy h1 {
-    font-size: clamp(36px, 12vw, 52px);
+    font-size: clamp(34px, 10vw, 46px);
   }
 
   .esv-about-hero-media {
@@ -377,6 +377,10 @@
 
   .esv-about-manifesto-copy {
     max-width: none;
+  }
+
+  .esv-about-manifesto-copy h2 {
+    font-size: clamp(28px, 8.2vw, 36px);
   }
 
   .esv-about-manifesto-media {
