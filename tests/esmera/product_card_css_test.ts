@@ -28,7 +28,11 @@ Deno.test("product card stylesheet is the only owner of card presentation", asyn
   assertStringIncludes(card, ".esv-collection-v2-grid .esv-card-cta");
   assertStringIncludes(card, ".esv-product-shelf .esv-card-cta");
   assertStringIncludes(card, 'font-family: "Inter", sans-serif');
-  assertStringIncludes(card, "aspect-ratio: 4 / 5 !important");
+  assertStringIncludes(card, "aspect-ratio: 3 / 2 !important");
+  assertStringIncludes(card, "object-fit: contain");
+  assertStringIncludes(card, "object-position: center");
+  assertFalse(card.includes("object-fit: cover"));
+  assertFalse(card.includes("scale(1.025)"));
   assertStringIncludes(
     card,
     "grid-template-columns: repeat(3, minmax(0, 1fr))",
@@ -48,6 +52,8 @@ Deno.test("product card stylesheet is the only owner of card presentation", asyn
   assertFalse(component.includes("style={{ aspectRatio"));
   assertFalse(component.includes("compactCardStatus"));
   assertStringIncludes(component, 'vm.status.includes("SOB ENCOMENDA")');
+  assertStringIncludes(component, "width={1200}");
+  assertStringIncludes(component, "height={800}");
   assertStringIncludes(
     component,
     "text-[10px] font-light uppercase tracking-[0.15em] text-neutral-400",
@@ -67,6 +73,6 @@ Deno.test("product card stylesheet is the only owner of card presentation", asyn
   assert(cardIndex > headerIndex);
   assertStringIncludes(
     app,
-    'storefrontStyleRevision = "2026-08-14-about-page-v33"',
+    'storefrontStyleRevision = "2026-09-22-horizontal-product-cards-v1"',
   );
 });
