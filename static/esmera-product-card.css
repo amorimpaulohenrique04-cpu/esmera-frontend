@@ -1,5 +1,5 @@
 /*
- * Product card v4 — horizontal editorial commerce for collectible stone objects.
+ * Product card v5 — horizontal editorial commerce for collectible stone objects.
  * One photographic grammar for the whole catalog: fixed 3:2 frame + contain.
  */
 :root {
@@ -181,7 +181,7 @@
   display: flex;
   flex: 1;
   flex-direction: column;
-  min-height: 142px;
+  min-height: 156px;
   padding: 13px 1px 0;
 }
 
@@ -218,10 +218,11 @@
 
 .esv-card-value-row {
   display: flex;
-  align-items: baseline;
+  flex-direction: column;
+  align-items: flex-start;
   justify-content: flex-start;
-  gap: 12px;
-  min-height: 1.45em;
+  gap: 3px;
+  min-height: 2.8em;
   margin-top: 10px;
 }
 
@@ -232,6 +233,21 @@
   letter-spacing: -0.015em;
   line-height: 1.2;
   white-space: nowrap;
+}
+
+.esv-card-installment {
+  display: block;
+  color: var(--product-card-muted);
+  font-size: 0.72rem;
+  font-weight: 300;
+  letter-spacing: 0.005em;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.esv-card-installment strong {
+  color: var(--product-card-text);
+  font-weight: 400;
 }
 
 .esv-card-action-slot {
@@ -366,7 +382,7 @@
   .esv-product-card-copy,
   .esv-collection-v2-grid .esv-product-card-copy,
   .esv-product-shelf .esv-product-card-copy {
-    min-height: 136px;
+    min-height: 150px;
   }
 }
 
@@ -382,7 +398,7 @@
   }
 
   .esv-card-value-row {
-    align-items: flex-end;
+    align-items: flex-start;
   }
 }
 
