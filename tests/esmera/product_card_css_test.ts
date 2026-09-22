@@ -67,16 +67,12 @@ Deno.test("product card stylesheet is the only owner of card presentation", asyn
   assertStringIncludes(header, 'openOverlay("enquiry")');
 
   const cardIndex = app.indexOf(
-    "/esmera-product-card.css?v=${productCardStyleRevision}",
+    "/esmera-product-card.css?v=${storefrontStyleRevision}",
   );
   const headerIndex = app.indexOf("/esmera-header.css");
   assert(cardIndex > headerIndex);
   assertStringIncludes(
     app,
     'storefrontStyleRevision = "2026-08-14-about-page-v33"',
-  );
-  assertStringIncludes(
-    app,
-    'productCardStyleRevision = "2026-09-22-horizontal-product-cards-v1"',
   );
 });
