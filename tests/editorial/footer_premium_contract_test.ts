@@ -18,12 +18,24 @@ Deno.test("premium footer is one compact surface and receives shell channels", a
   assertEquals(footer.includes('class="esv-footer-newsletter"'), false);
   assertEquals(footer.includes("FOOTER_ART"), false);
 
+  // O rodapé deve seguir a taxonomia publicada no backend, sem uma segunda
+  // lista editorial hardcoded que possa divergir do menu principal.
   assertStringIncludes(layout, "collectionLinks={shell.categories}");
+  assertStringIncludes(layout, "categoryTree={shell.menu}");
+  assertStringIncludes(footer, "categoryTree?: NavigationNode[]");
+  assertStringIncludes(footer, 'normalizedLabel(node.label) === "pecas"');
+  assertStringIncludes(footer, ".slice(0, 6)");
+  assertEquals(footer.includes("COLLECTION_ORDER"), false);
+  assertEquals(footer.includes("Matéria e Registro"), false);
   assertStringIncludes(layout, "instagramHref={shell.instagramHref}");
 
   const aboutCss = app.indexOf("/esmera-about-page.css");
   const footerCss = app.indexOf("/esmera-footer.css");
   assert(aboutCss >= 0 && footerCss > aboutCss);
+  assertStringIncludes(
+    app,
+    'aboutStyleRevision = "2026-09-22-about-type-v1"',
+  );
   assertStringIncludes(
     app,
     'footerStyleRevision = "2026-08-15-footer-whatsapp-form-v3"',
