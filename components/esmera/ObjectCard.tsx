@@ -81,8 +81,8 @@ export default function ObjectCard({ item, motionOrder = 0 }: Props) {
             alt={vm.imageAlt}
             loading="lazy"
             decoding="async"
-            width={900}
-            height={1125}
+            width={1200}
+            height={800}
             sizes="(max-width: 639px) calc(100vw - 44px), (max-width: 1023px) 46vw, 31vw"
           />
           {vm.hoverImage && (
@@ -92,8 +92,8 @@ export default function ObjectCard({ item, motionOrder = 0 }: Props) {
               alt={vm.hoverImageAlt}
               loading="lazy"
               decoding="async"
-              width={900}
-              height={1125}
+              width={1200}
+              height={800}
               sizes="(max-width: 639px) calc(100vw - 44px), (max-width: 1023px) 46vw, 31vw"
             />
           )}
