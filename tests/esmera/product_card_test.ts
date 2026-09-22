@@ -20,8 +20,8 @@ function product(
       id: "1",
       url: "/pc.jpg",
       alt: "Ponta de Esmeralda",
-      width: 900,
-      height: 1200,
+      width: 1200,
+      height: 800,
     },
     identity: {
       name: "Gelato",
@@ -43,7 +43,7 @@ function product(
   };
 }
 
-Deno.test("reproduz o card do mockup", () => {
+Deno.test("reproduz o card editorial com a mesma regra de parcelamento do PDP", () => {
   const vm = toProductCardViewModel(product());
   assertEquals(vm.eyebrow, "PONTA DE ESMERALDA");
   assertEquals(vm.title, "Gelato");
@@ -52,15 +52,15 @@ Deno.test("reproduz o card do mockup", () => {
   assertEquals(vm.price, "R$ 490,00");
   assertEquals(vm.installment, {
     prefix: "ou ",
-    emphasis: "12x de R$ 40,83",
+    emphasis: "5x de R$ 98,00",
     suffix: " sem juros",
   });
   assertEquals(vm.image, "/pc.jpg");
-  assertEquals(vm.mediaFit, "cover");
+  assertEquals(vm.mediaFit, "contain");
   assertEquals(vm.isPurchasable, true);
 });
 
-Deno.test("bandejas e bandejinhas preservam a composição inteira", () => {
+Deno.test("todos os cards usam contain sem exceções por categoria", () => {
   assertEquals(
     resolveCardMediaFit("Bandeja Grande em Bege Bahia", "Bandejas para Lavabo"),
     "contain",
@@ -71,21 +71,9 @@ Deno.test("bandejas e bandejinhas preservam a composição inteira", () => {
   );
   assertEquals(
     resolveCardMediaFit("Porta-sabonete Líquido em Bege Bahia", "Porta-sabonete"),
-    "cover",
+    "contain",
   );
-
-  const vm = toProductCardViewModel(
-    product({
-      title: "Bandejinha para Lavabo em Jadeíta",
-      identity: {
-        name: "Bandejinha para Lavabo em Jadeíta",
-        pieceType: "Bandejas para Lavabo",
-        material: "Jadeíta",
-      },
-      pieceType: "Bandejas para Lavabo",
-    }),
-  );
-  assertEquals(vm.mediaFit, "contain");
+  assertEquals(resolveCardMediaFit("Vaso Cilíndrico", "Vasos"), "contain");
 });
 
 Deno.test("título é sempre o nome, mesmo quando há pieceType", () => {
@@ -156,7 +144,7 @@ Deno.test("sob encomenda não repete PEÇA ÚNICA quando não é única", () => 
   assertEquals(vm.status, "SOB ENCOMENDA");
 });
 
-Deno.test("parcelamento com juros omite 'sem juros'", () => {
+Deno.test("card ignora regra divergente do contrato e mantém os 5x do PDP", () => {
   const vm = toProductCardViewModel(
     product({
       pricing: {
@@ -166,7 +154,11 @@ Deno.test("parcelamento com juros omite 'sem juros'", () => {
       },
     }),
   );
-  assertEquals(vm.installment?.suffix, "");
+  assertEquals(vm.installment, {
+    prefix: "ou ",
+    emphasis: "5x de R$ 98,00",
+    suffix: " sem juros",
+  });
 });
 
 Deno.test("altura fracionária e peso abaixo de 1 kg", () => {
@@ -215,18 +207,18 @@ Deno.test("bridge EsmeraObject → ViewModel usa categoria, nome e parcelamento"
   assertEquals(vm.price, "R$ 490,00");
   assertEquals(vm.installment, {
     prefix: "ou ",
-    emphasis: "12x de R$ 40,83",
+    emphasis: "5x de R$ 98,00",
     suffix: " sem juros",
   });
-  assertEquals(vm.mediaFit, "cover");
+  assertEquals(vm.mediaFit, "contain");
   assertEquals(vm.isPurchasable, true);
 });
 
-Deno.test("bridge legado também detecta bandejinhas", () => {
+Deno.test("bridge legado também mantém contain", () => {
   const vm = esmeraObjectToCardViewModel(
     esmera({
-      title: "Bandejinha para Lavabo em Jadeíta",
-      category: "Bandejas para Lavabo",
+      title: "Porta-sabonete Líquido em Bege Bahia",
+      category: "Porta-sabonete",
     }),
   );
   assertEquals(vm.mediaFit, "contain");
@@ -267,5 +259,6 @@ Deno.test("bridge: sob consulta não é comprável e esconde preço", () => {
     }),
   );
   assertEquals(vm.price, null);
+  assertEquals(vm.installment, null);
   assertEquals(vm.isPurchasable, false);
 });
