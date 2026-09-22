@@ -4,6 +4,7 @@ import {
   loadResolvedHome,
   type ResolvedHome,
 } from "../../lib/esmera/homeData.ts";
+import type { NavigationNode } from "../../lib/payload/navigation.ts";
 import type { NavigationLink } from "../../lib/payload/types.ts";
 
 export interface Props {
@@ -20,6 +21,7 @@ export interface Props {
   whatsappHref?: string;
   instagramHref?: string;
   collectionLinks?: NavigationLink[];
+  categoryTree?: NavigationNode[];
 }
 
 export const loader = async (props: Props) => ({
@@ -27,46 +29,42 @@ export const loader = async (props: Props) => ({
   resolvedHome: await loadResolvedHome(),
 });
 
-const COLLECTION_ORDER = [
-  "Pronta Entrega",
-  "Sob Encomenda",
-  "Kit Lavabo",
-  "Bandejas",
-  "Vasos",
-  "Esculturas",
-];
-
-const FALLBACK_COLLECTIONS: NavigationLink[] = [
-  { label: "Pronta Entrega", href: "/colecao/pronta-entrega", external: false },
-  { label: "Sob Encomenda", href: "/colecao/sob-encomenda", external: false },
-  { label: "Kit Lavabo", href: "/colecao/kit-lavabo", external: false },
-  { label: "Bandejas", href: "/colecao/bandejas", external: false },
-  { label: "Vasos", href: "/colecao/vasos", external: false },
-  { label: "Esculturas", href: "/colecao/esculturas", external: false },
-];
-
 function normalizedLabel(value: string): string {
-  return value.trim().toLocaleLowerCase("pt-BR");
+  return value
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .trim()
+    .toLocaleLowerCase("pt-BR");
 }
 
-function resolveCollectionLinks(links: NavigationLink[]): NavigationLink[] {
-  if (links.length === 0) return FALLBACK_COLLECTIONS;
+function resolvePieceLinks(
+  tree: NavigationNode[],
+  fallbackLinks: NavigationLink[],
+): NavigationLink[] {
+  const piecesRoot = tree.find((node) =>
+    node.href === "/colecao/pecas" || normalizedLabel(node.label) === "pecas"
+  );
 
-  const selected: NavigationLink[] = [];
-  for (const label of COLLECTION_ORDER) {
-    const match = links.find((link) =>
-      normalizedLabel(link.label) === normalizedLabel(label)
-    );
-    if (match) selected.push(match);
-  }
+  const fromTree = (piecesRoot?.children ?? [])
+    .filter((node) => Boolean(node.href))
+    .map((node) => ({
+      label: node.label,
+      href: node.href,
+      external: node.external,
+    }));
 
-  for (const link of links) {
-    if (selected.length >= 6) break;
-    if (selected.some((candidate) => candidate.href === link.href)) continue;
-    selected.push(link);
-  }
+  if (fromTree.length > 0) return fromTree.slice(0, 6);
 
-  return selected.length > 0 ? selected.slice(0, 6) : FALLBACK_COLLECTIONS;
+  const fromBackend = fallbackLinks
+    .filter((link) => link.href.startsWith("/colecao/"))
+    .filter((link, index, links) =>
+      links.findIndex((candidate) => candidate.href === link.href) === index
+    )
+    .slice(0, 6);
+
+  return fromBackend.length > 0
+    ? fromBackend
+    : [{ label: "Todas as peças", href: "/colecao", external: false }];
 }
 
 function ExternalAttrs({ external }: { external: boolean }) {
@@ -111,15 +109,16 @@ export default function Footer(
   if (!source.siteName && !source.contactHref && !source.statement) return null;
 
   const year = new Date().getFullYear();
-  const collections = resolveCollectionLinks(props.collectionLinks ?? []);
+  const pieces = resolvePieceLinks(
+    props.categoryTree ?? [],
+    props.collectionLinks ?? [],
+  );
   const contactHref = source.contactHref || "#contact";
   const instagramHref = props.instagramHref || "";
   const siteName = source.siteName || "ESMÉRA";
 
   const institutionalLinks = [
     { label: "A Esméra", href: "/pagina/a-esmera" },
-    { label: "Matéria e Registro", href: "/pagina/a-esmera#nossa-essencia" },
-    { label: "Presença em Escala Real", href: "/#context" },
     { label: "Contato", href: contactHref },
   ];
 
@@ -160,10 +159,10 @@ export default function Footer(
             aria-labelledby="esv-footer-collections"
           >
             <h2 id="esv-footer-collections" class="esv-footer-heading">
-              Coleções
+              Peças
             </h2>
             <ul class="esv-footer-links">
-              {collections.map((link) => (
+              {pieces.map((link) => (
                 <li key={`${link.label}-${link.href}`}>
                   <a
                     href={link.href}
