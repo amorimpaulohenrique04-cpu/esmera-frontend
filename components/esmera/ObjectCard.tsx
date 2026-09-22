@@ -27,7 +27,7 @@ export default function ObjectCard({ item, motionOrder = 0 }: Props) {
     ? esmeraObjectToCardViewModel(item)
     : toProductCardViewModel(item);
   const mediaStyle = vm.mediaFit === "contain"
-    ? "object-fit:contain;object-position:center;padding:clamp(10px,1.25vw,18px);transform:none;"
+    ? "box-sizing:border-box;object-fit:contain;object-position:center;padding:clamp(10px,1.25vw,18px);transform:none;"
     : undefined;
 
   // Compatibilidade temporária apenas com o modal legado; a apresentação do
