@@ -24,7 +24,7 @@ export default function PrivateInvitation(
   if (props.resolvedHome?.privateInvitation === null) return null;
   const source = props.resolvedHome?.privateInvitation ?? props;
   const {
-    eyebrow = "08 — Private Client",
+    eyebrow = "08 — Atendimento Exclusivo",
     title = "Uma peça pode começar com uma ideia.",
     text =
       "Para projetos especiais, desenvolvemos criações sob encomenda a partir da necessidade, do espaço e da matéria.\n\nDo desenho à escolha da pedra, cada detalhe pode ser pensado para criar uma peça que tenha sentido naquele lugar.",

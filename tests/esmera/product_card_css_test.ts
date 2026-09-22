@@ -38,6 +38,7 @@ Deno.test("product card stylesheet is the only owner of card presentation", asyn
     "grid-template-columns: repeat(3, minmax(0, 1fr))",
   );
   assertStringIncludes(card, ".esv-card-value-row");
+  assertStringIncludes(card, ".esv-card-installment");
   assertStringIncludes(card, ".esv-card-action-slot");
   assertStringIncludes(card, ".esv-product-card-copy");
   assertStringIncludes(card, "z-index: 3;");
@@ -48,7 +49,9 @@ Deno.test("product card stylesheet is the only owner of card presentation", asyn
   assertStringIncludes(card, "background: transparent");
   assertFalse(card.includes("border-top: 1px solid var(--product-card-line)"));
 
-  assertFalse(component.includes("esv-card-installment"));
+  assertStringIncludes(component, 'class="esv-card-installment"');
+  assertFalse(component.includes("containClass"));
+  assertFalse(component.includes("is-media-contain"));
   assertFalse(component.includes("style={{ aspectRatio"));
   assertFalse(component.includes("compactCardStatus"));
   assertStringIncludes(component, 'vm.status.includes("SOB ENCOMENDA")');
@@ -67,12 +70,12 @@ Deno.test("product card stylesheet is the only owner of card presentation", asyn
   assertStringIncludes(header, 'openOverlay("enquiry")');
 
   const cardIndex = app.indexOf(
-    "/esmera-product-card.css?v=${storefrontStyleRevision}",
+    "/esmera-product-card.css?v=${productCardStyleRevision}",
   );
   const headerIndex = app.indexOf("/esmera-header.css");
   assert(cardIndex > headerIndex);
   assertStringIncludes(
     app,
-    'storefrontStyleRevision = "2026-08-14-about-page-v33"',
+    'productCardStyleRevision = "2026-09-22-card-installments-v2"',
   );
 });

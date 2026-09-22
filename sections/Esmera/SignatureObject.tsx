@@ -130,9 +130,7 @@ function SignatureObjectView({
             product={product}
             compact
           />
-          {showFullDetails && (
-            <ShareProductLink productTitle={product.title} />
-          )}
+          {showFullDetails && <ShareProductLink productTitle={product.title} />}
         </div>
       </div>
       {showFullDetails && additionalGallery.length > 0 && (
