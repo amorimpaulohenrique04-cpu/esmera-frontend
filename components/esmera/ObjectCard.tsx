@@ -58,7 +58,9 @@ export default function ObjectCard({ item, motionOrder = 0 }: Props) {
 
   return (
     <div
-      class={`esv-product-card${vm.hoverImage ? " has-detail" : ""}`}
+      class={`esv-product-card${vm.hoverImage ? " has-detail" : ""}${
+        vm.mediaFit === "contain" ? " is-media-contain" : ""
+      }`}
       role="listitem"
       data-product-id={vm.id}
       data-motion="reveal"
