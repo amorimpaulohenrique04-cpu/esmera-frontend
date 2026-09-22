@@ -74,11 +74,9 @@ export default function ObjectCard({ item, motionOrder = 0 }: Props) {
       <div class="esv-product-media-wrap">
         <figure class="esv-product-media">
           <EsmeraImage
-            class={
-              vm.hoverImage
-                ? "esv-product-image-primary"
-                : "esv-product-image-static"
-            }
+            class={vm.hoverImage
+              ? "esv-product-image-primary"
+              : "esv-product-image-static"}
             src={vm.image ?? ""}
             alt={vm.imageAlt}
             loading="lazy"
