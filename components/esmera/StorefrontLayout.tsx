@@ -64,6 +64,7 @@ export default function StorefrontLayout(
       <Footer
         {...shell.footer}
         collectionLinks={shell.categories}
+        categoryTree={shell.menu}
         instagramHref={shell.instagramHref}
       />
     </>
