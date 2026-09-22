@@ -5,9 +5,10 @@ import { Context } from "@deco/deco";
 
 export default defineApp(async (_req, ctx) => {
   const revision = await Context.active().release?.revision();
-  // Preserve the stable storefront token for unchanged CSS contracts and bump
-  // only the layers that own new visual behavior.
-  const storefrontStyleRevision = "2026-09-22-horizontal-product-cards-v1";
+  // Preserve stable tokens for unchanged storefront surfaces. Product cards
+  // have their own revision so this visual change cannot invalidate modal/home CSS.
+  const storefrontStyleRevision = "2026-08-14-about-page-v33";
+  const productCardStyleRevision = "2026-09-22-horizontal-product-cards-v1";
   const homeStyleRevision = "2026-08-14-motion-system-v34";
   const footerStyleRevision = "2026-08-15-footer-whatsapp-form-v3";
   return (
@@ -71,7 +72,7 @@ export default defineApp(async (_req, ctx) => {
         <link
           rel="stylesheet"
           href={asset(
-            `/esmera-product-card.css?v=${storefrontStyleRevision}`,
+            `/esmera-product-card.css?v=${productCardStyleRevision}`,
           )}
         />
         <link
