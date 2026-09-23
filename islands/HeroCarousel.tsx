@@ -72,6 +72,8 @@ function SlidePicture(
           media="(max-width: 767px)"
           srcset={payloadMediaSrcSet(slide.mobileImage, 900)}
           sizes="100vw"
+          width="900"
+          height="1125"
         />
       )}
       <img
@@ -80,6 +82,8 @@ function SlidePicture(
         srcset={payloadMediaSrcSet(slide.desktopImage, 1800)}
         sizes="100vw"
         alt={slide.alt}
+        width="1800"
+        height="1200"
         loading={priority === "high" ? "eager" : "lazy"}
         decoding="async"
       />
