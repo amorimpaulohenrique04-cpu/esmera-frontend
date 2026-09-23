@@ -1,7 +1,6 @@
 import type { Handlers } from "$fresh/server.ts";
 import { storefrontDetailToModalMedia } from "../../lib/esmera/productDetail.ts";
 import { fetchStorefrontProduct } from "../../lib/esmera/storefront.ts";
-import { getProductBySlug } from "../../lib/payload/loaders.ts";
 
 const SLUG_PATTERN = /^[a-z0-9-]+$/;
 
@@ -18,10 +17,7 @@ export const handler: Handlers = {
     }
 
     try {
-      const [detail, fullProduct] = await Promise.all([
-        fetchStorefrontProduct(slug, { cache: "no-store" }),
-        getProductBySlug(slug),
-      ]);
+      const detail = await fetchStorefrontProduct(slug, { cache: "no-store" });
       const product = storefrontDetailToModalMedia(detail);
       if (!product) {
         return Response.json({ error: "product_media_unavailable" }, {
@@ -30,7 +26,7 @@ export const handler: Handlers = {
         });
       }
 
-      return Response.json({ product, fullProduct }, {
+      return Response.json({ product }, {
         headers: {
           "cache-control":
             "public, max-age=30, s-maxage=60, stale-while-revalidate=120",

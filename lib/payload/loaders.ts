@@ -258,7 +258,7 @@ const storefrontSort: Record<string, string> = {
   "-basePriceCents,title": "price_desc",
 };
 
-function storefrontParams(input: ProductListInput): URLSearchParams {
+export function storefrontParams(input: ProductListInput): URLSearchParams {
   const params = new URLSearchParams();
   params.set("limit", String(Math.min(48, Math.max(1, input.limit ?? 12))));
   params.set("page", String(Math.max(1, input.page ?? 1)));

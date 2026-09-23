@@ -1,20 +1,16 @@
-import { getNavigation, getSiteSettings } from "./loaders.ts";
-import { listStorefrontCategories } from "./navigationLoader.ts";
+import StorefrontPageData from "../../loaders/Esmera/StorefrontPageData.ts";
 
+/**
+ * Shared page shell sourced from the same cached bootstrap used by Home.
+ * This avoids three independent CMS reads (navigation/settings/categories)
+ * on catalog, PDP and institutional routes.
+ */
 export async function getPageChrome() {
-  const [navigation, settings, categories] = await Promise.allSettled([
-    getNavigation(),
-    getSiteSettings(),
-    listStorefrontCategories(),
-  ]);
+  const data = await StorefrontPageData();
   return {
-    navigation: navigation.status === "fulfilled" ? navigation.value : null,
-    settings: settings.status === "fulfilled" ? settings.value : null,
-    categories: categories.status === "fulfilled" ? categories.value : [],
-    unavailable: [
-      navigation.status === "rejected" ? "navigation" : null,
-      settings.status === "rejected" ? "site-settings" : null,
-      categories.status === "rejected" ? "categories" : null,
-    ].filter((value): value is string => Boolean(value)),
+    navigation: data.navigation,
+    settings: data.siteSettings,
+    categories: data.categories,
+    unavailable: data.unavailable,
   };
 }

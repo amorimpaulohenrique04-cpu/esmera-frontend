@@ -2,38 +2,45 @@ import type { Handlers } from "$fresh/server.ts";
 import { collectionFacetCategories } from "../../lib/esmera/categoryFacets.ts";
 import {
   buildCatalogQuery,
-  normalizeVisibleFilters,
+  type CatalogFilter,
 } from "../../lib/payload/catalog.ts";
 import {
-  getCategoryBySlug,
-  getCollectionPage,
   listProducts,
   listProductsByCategory,
 } from "../../lib/payload/loaders.ts";
 import { getPageChrome } from "../../lib/payload/pageData.ts";
 
+const CATALOG_FILTERS: CatalogFilter[] = [
+  "category",
+  "material",
+  "availability",
+  "sort",
+];
+const COLLECTION_FILTERS: CatalogFilter[] = [
+  "material",
+  "availability",
+  "sort",
+];
+
 export const handler: Handlers = {
   async GET(req) {
     const url = new URL(req.url);
     const slug = url.searchParams.get("slug")?.trim() ?? "";
+
     try {
-      const [chrome, collectionPage, category] = await Promise.all([
-        getPageChrome(),
-        getCollectionPage(),
-        slug ? getCategoryBySlug(slug) : Promise.resolve(null),
-      ]);
-      if (slug && !category) {
-        return Response.json({ error: "collection_not_found" }, {
-          status: 404,
-          headers: { "cache-control": "no-store" },
-        });
-      }
-      const visibleFilters = normalizeVisibleFilters(
-        collectionPage?.visibleFilters,
-      )
-        .filter((filter) => !slug || filter !== "category");
-      const categories = collectionFacetCategories(chrome.categories);
-      const query = buildCatalogQuery(url, visibleFilters, categories);
+      // The shell is only needed to validate a category refinement on the
+      // catalog root. Collection-by-slug filtering needs no extra CMS read.
+      const categoryRefinement = !slug &&
+        Boolean(url.searchParams.get("category")?.trim());
+      const chrome = categoryRefinement ? await getPageChrome() : null;
+      const categories = chrome
+        ? collectionFacetCategories(chrome.categories)
+        : [];
+      const query = buildCatalogQuery(
+        url,
+        slug ? COLLECTION_FILTERS : CATALOG_FILTERS,
+        categories,
+      );
       const common = {
         limit: 24,
         page: query.page,
@@ -45,11 +52,10 @@ export const handler: Handlers = {
           : undefined,
         availability: query.availability || undefined,
       };
-      const result = category
-        ? await listProductsByCategory(category.slug, common)
-        : await listProducts({
-          ...common,
-        });
+
+      const result = slug
+        ? await listProductsByCategory(slug, common)
+        : await listProducts(common);
 
       return Response.json({
         items: result.docs,

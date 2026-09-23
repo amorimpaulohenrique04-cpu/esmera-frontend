@@ -2,6 +2,10 @@ import type { Handlers, PageProps } from "$fresh/server.ts";
 import StorefrontLayout from "../../components/esmera/StorefrontLayout.tsx";
 import { collectionFacetCategories } from "../../lib/esmera/categoryFacets.ts";
 import {
+  fetchStorefrontProducts,
+  type StorefrontProductsV2,
+} from "../../lib/esmera/storefront.ts";
+import {
   buildCatalogQuery,
   type CatalogFilter,
   hasCollectionRefinements,
@@ -9,15 +13,15 @@ import {
 } from "../../lib/payload/catalog.ts";
 import { lexicalToText } from "../../lib/payload/richText.ts";
 import { toSEO } from "../../lib/payload/adapters.ts";
-import { getCollectionPage, listProducts } from "../../lib/payload/loaders.ts";
+import { storefrontParams } from "../../lib/payload/loaders.ts";
 import { getPageChrome } from "../../lib/payload/pageData.ts";
 import type { StorefrontProductV2 } from "../../lib/esmera/storefront.ts";
 import type {
   PayloadCollectionPage,
   SEOModel,
 } from "../../lib/payload/types.ts";
-import MaterialFacets, {
-  expandMaterialFilters,
+import {
+  normalizeMaterials,
   type MaterialFacet,
   resolveMaterialFilterKeys,
 } from "../../loaders/Esmera/MaterialFacets.ts";
@@ -25,7 +29,7 @@ import Collection from "../../sections/Esmera/Collection.tsx";
 
 interface Data {
   products: StorefrontProductV2[];
-  page: PayloadCollectionPage | null;
+  page: PayloadCollectionPage;
   chrome: Awaited<ReturnType<typeof getPageChrome>>;
   categories: ReturnType<typeof collectionFacetCategories>;
   seo: SEOModel;
@@ -38,35 +42,68 @@ interface Data {
   materials: MaterialFacet[];
 }
 
+const CATALOG_FILTERS: CatalogFilter[] = [
+  "category",
+  "material",
+  "availability",
+  "sort",
+];
+
+function pageFromStorefront(
+  response: StorefrontProductsV2,
+): PayloadCollectionPage {
+  const seo = response.catalog.seo;
+  return {
+    title: response.catalog.title,
+    introduction: response.catalog.introduction,
+    visibleFilters: response.catalog.visibleFilters,
+    emptyStateTitle: response.catalog.emptyStateTitle,
+    emptyStateCopy: response.catalog.emptyStateCopy,
+    callToAction: response.catalog.callToAction,
+    seo: seo
+      ? {
+        title: seo.title,
+        description: seo.description,
+        canonical: seo.canonical,
+        noindex: seo.noIndex,
+        socialImage: seo.socialImage,
+      }
+      : null,
+    _status: "published",
+  };
+}
+
 export const handler: Handlers<Data> = {
   async GET(req, ctx) {
-    const [page, chrome, materials] = await Promise.all([
-      getCollectionPage(),
-      getPageChrome(),
-      MaterialFacets({}),
-    ]);
+    const chrome = await getPageChrome();
     const categories = collectionFacetCategories(chrome.categories);
-    const visibleFilters = normalizeVisibleFilters(page?.visibleFilters);
     const url = new URL(req.url);
-    const query = buildCatalogQuery(url, visibleFilters, categories);
-    const materialQueryValues = expandMaterialFilters(
-      query.materials,
-      materials,
+    const query = buildCatalogQuery(url, CATALOG_FILTERS, categories);
+
+    const response = await fetchStorefrontProducts(
+      storefrontParams({
+        limit: 24,
+        page: query.page,
+        sort: query.payloadSort,
+        q: query.q.length >= 2 ? query.q : undefined,
+        category: query.category || undefined,
+        material: query.materials.length
+          ? query.materials.join(",")
+          : undefined,
+        availability: query.availability || undefined,
+      }),
     );
-    const products = await listProducts({
-      limit: 24,
-      page: query.page,
-      sort: query.payloadSort,
-      q: query.q.length >= 2 ? query.q : undefined,
-      category: query.category || undefined,
-      material: materialQueryValues.length
-        ? materialQueryValues.join(",")
-        : undefined,
-      availability: query.availability || undefined,
-    });
-    const seo = toSEO(page?.seo, chrome.settings);
+
+    const page = pageFromStorefront(response);
+    const visibleFilters = normalizeVisibleFilters(page.visibleFilters);
+    const materials = normalizeMaterials(
+      (response.facets as { materials?: unknown }).materials,
+      12,
+    );
+    const seo = toSEO(page.seo, chrome.settings);
+
     return ctx.render({
-      products: products.docs,
+      products: response.items,
       page,
       chrome,
       categories,
@@ -77,9 +114,9 @@ export const handler: Handlers<Data> = {
       },
       visibleFilters,
       query,
-      totalDocs: products.totalDocs,
-      totalPages: products.totalPages,
-      hasNextPage: products.hasNextPage,
+      totalDocs: response.pagination.totalDocs,
+      totalPages: response.pagination.totalPages,
+      hasNextPage: response.pagination.hasNextPage,
       baseHref: `${url.pathname}${url.search}`,
       materials,
     });
