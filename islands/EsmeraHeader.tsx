@@ -117,6 +117,20 @@ function SearchIcon() {
   );
 }
 
+function HeartIcon({ filled = false }: { filled?: boolean }) {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24" width="19" height="19">
+      <path
+        d="M12 20.25 4.8 13a4.55 4.55 0 0 1 6.45-6.4L12 7.35l.75-.75A4.55 4.55 0 0 1 19.2 13Z"
+        fill={filled ? "currentColor" : "none"}
+        stroke="currentColor"
+        stroke-width="1.4"
+        stroke-linejoin="round"
+      />
+    </svg>
+  );
+}
+
 function BagIcon() {
   return (
     <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20">
@@ -164,6 +178,7 @@ export default function EsmeraHeader({
   const [overlayPhase, setOverlayPhase] = useState<OverlayPhase>("closed");
   const [cart, setCart] = useState<CartItem[]>([]);
   const [cartReady, setCartReady] = useState(false);
+  const [wishlistCount, setWishlistCount] = useState(0);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<EsmeraObject[]>([]);
   const [searchState, setSearchState] = useState<
@@ -229,6 +244,26 @@ export default function EsmeraHeader({
   };
 
   useEffect(() => () => clearOverlayExit(), []);
+
+  useEffect(() => {
+    const updateWishlistCount = () => {
+      try {
+        const raw = globalThis.localStorage?.getItem("esmera:wishlist");
+        const parsed = raw ? JSON.parse(raw) : [];
+        setWishlistCount(Array.isArray(parsed) ? new Set(parsed.map(String)).size : 0);
+      } catch {
+        setWishlistCount(0);
+      }
+    };
+
+    updateWishlistCount();
+    globalThis.addEventListener("esmera:wishlist-sync", updateWishlistCount);
+    globalThis.addEventListener("storage", updateWishlistCount);
+    return () => {
+      globalThis.removeEventListener("esmera:wishlist-sync", updateWishlistCount);
+      globalThis.removeEventListener("storage", updateWishlistCount);
+    };
+  }, []);
 
   useEffect(() => {
     let frame = 0;
@@ -529,6 +564,19 @@ export default function EsmeraHeader({
           >
             <SearchIcon />
           </button>
+          <a
+            class="esv-header-icon esv-wishlist-header-link"
+            href="/favoritos"
+            aria-label={wishlistCount > 0
+              ? `Meus favoritos, ${wishlistCount} ${wishlistCount === 1 ? "peça" : "peças"}`
+              : "Meus favoritos"}
+            title="Meus favoritos"
+          >
+            <HeartIcon filled={wishlistCount > 0} />
+            {wishlistCount > 0 && (
+              <sup key={wishlistCount} aria-live="polite">{wishlistCount}</sup>
+            )}
+          </a>
           <button
             class="esv-enquiry-link esv-cart-link"
             type="button"
