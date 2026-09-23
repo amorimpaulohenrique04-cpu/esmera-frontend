@@ -731,9 +731,13 @@
 .esv-favorite-media {
   display: block;
   min-width: 0;
+  width: 100%;
+  padding: 0;
   aspect-ratio: 3 / 2;
   overflow: hidden;
+  border: 0;
   background: var(--product-card-ground);
+  cursor: pointer;
 }
 
 .esv-favorite-media img {
@@ -773,9 +777,17 @@
   letter-spacing: -.035em;
 }
 
-.esv-favorite-copy h2 a {
+.esv-favorite-copy h2 button {
+  max-width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
   color: inherit;
-  text-decoration: none;
+  font: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  text-align: left;
+  cursor: pointer;
 }
 
 .esv-favorite-value {
@@ -891,6 +903,7 @@
 @media (hover: hover) and (pointer: fine) {
   .esv-favorite-actions a:hover,
   .esv-favorite-actions button:hover,
+  .esv-favorite-copy h2 button:hover,
   .esv-favorites-empty a:hover,
   .esv-favorites-state button:hover {
     color: var(--product-card-cta);
