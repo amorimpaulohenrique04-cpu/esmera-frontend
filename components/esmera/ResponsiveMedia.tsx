@@ -5,6 +5,26 @@ import { Picture, Source } from "apps/website/components/Picture.tsx";
 const PAYLOAD_MEDIA_PATH_PREFIX = "/api/media/file/";
 const GOOGLE_DRIVE_THUMBNAIL_HOST = "drive.google.com";
 const GOOGLE_DRIVE_THUMBNAIL_PATH = "/thumbnail";
+const NEXT_IMAGE_WIDTHS = [640, 750, 828, 1080, 1200, 1920, 2048, 3840] as const;
+
+function nextImageWidth(requested: number): number {
+  return NEXT_IMAGE_WIDTHS.find((width) => width >= requested) ??
+    NEXT_IMAGE_WIDTHS[NEXT_IMAGE_WIDTHS.length - 1];
+}
+
+export function optimizePayloadMediaURL(src: string, width: number): string {
+  if (!isPayloadMediaURL(src)) return src;
+  try {
+    const source = new URL(src);
+    const optimized = new URL("/_next/image", source.origin);
+    optimized.searchParams.set("url", `${source.pathname}${source.search}`);
+    optimized.searchParams.set("w", String(nextImageWidth(width)));
+    optimized.searchParams.set("q", "75");
+    return optimized.toString();
+  } catch {
+    return src;
+  }
+}
 
 /**
  * Payload serves uploads through /api/media/file/*, including custom domains.
@@ -65,10 +85,13 @@ export function EsmeraImage(
   }: EsmeraImageProps,
 ) {
   if (isDirectMediaURL(src)) {
+    const directSrc = isPayloadMediaURL(src)
+      ? optimizePayloadMediaURL(src, width)
+      : src;
     return (
       <img
         class={className}
-        src={src}
+        src={directSrc}
         alt={alt}
         loading={loading}
         decoding={decoding}
@@ -127,6 +150,12 @@ export function EsmeraPicture({
     isDirectMediaURL(mobileAsset);
 
   if (usesDirectMedia) {
+    const optimizedDesktop = isPayloadMediaURL(desktopSrc)
+      ? optimizePayloadMediaURL(desktopSrc, desktopWidth)
+      : desktopSrc;
+    const optimizedMobile = isPayloadMediaURL(mobileAsset)
+      ? optimizePayloadMediaURL(mobileAsset, mobileWidth)
+      : mobileAsset;
     return (
       <>
         {preload && (
@@ -134,14 +163,14 @@ export function EsmeraPicture({
             <link
               rel="preload"
               as="image"
-              href={mobileAsset}
+              href={optimizedMobile}
               media="(max-width: 767px)"
               {...{ fetchPriority }}
             />
             <link
               rel="preload"
               as="image"
-              href={desktopSrc}
+              href={optimizedDesktop}
               media="(min-width: 768px)"
               {...{ fetchPriority }}
             />
@@ -150,7 +179,7 @@ export function EsmeraPicture({
         <picture class={className}>
           <source
             media="(max-width: 767px)"
-            srcSet={mobileAsset}
+            srcSet={optimizedMobile}
             width={mobileWidth}
             height={mobileHeight}
             sizes="100vw"
@@ -158,7 +187,7 @@ export function EsmeraPicture({
           />
           <source
             media="(min-width: 768px)"
-            srcSet={desktopSrc}
+            srcSet={optimizedDesktop}
             width={desktopWidth}
             height={desktopHeight}
             sizes="100vw"
@@ -166,7 +195,7 @@ export function EsmeraPicture({
           />
           <img
             {...{ fetchPriority }}
-            src={desktopSrc}
+            src={optimizedDesktop}
             alt={alt}
             loading={loading}
             decoding={decoding}

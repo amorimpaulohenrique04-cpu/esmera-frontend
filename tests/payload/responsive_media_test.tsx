@@ -9,6 +9,7 @@ import {
   EsmeraImage,
   EsmeraPicture,
   isPayloadMediaURL,
+  optimizePayloadMediaURL,
 } from "../../components/esmera/ResponsiveMedia.tsx";
 
 const payloadDesktop =
@@ -39,7 +40,10 @@ Deno.test("renders Payload card images without a Deco optimized srcset", () => {
     />,
   );
 
-  assertStringIncludes(html, `src="${payloadDesktop}"`);
+  assertStringIncludes(
+    html,
+    `src="${optimizePayloadMediaURL(payloadDesktop, 960).replaceAll("&", "&amp;")}"`,
+  );
   assertStringIncludes(html, 'alt="Produto Esméra"');
   assertFalse(html.includes("decoims.com/image"));
   assertFalse(html.includes("srcset="));
@@ -58,10 +62,20 @@ Deno.test("renders Payload picture sources directly for mobile and desktop", () 
     />,
   );
 
-  assertStringIncludes(html, `srcset="${payloadMobile}"`);
-  assertStringIncludes(html, `srcset="${payloadDesktop}"`);
-  assertStringIncludes(html, `src="${payloadDesktop}"`);
+  assertStringIncludes(
+    html,
+    `srcset="${optimizePayloadMediaURL(payloadMobile, 768).replaceAll("&", "&amp;")}"`,
+  );
+  assertStringIncludes(
+    html,
+    `srcset="${optimizePayloadMediaURL(payloadDesktop, 1920).replaceAll("&", "&amp;")}"`,
+  );
+  assertStringIncludes(
+    html,
+    `src="${optimizePayloadMediaURL(payloadDesktop, 1920).replaceAll("&", "&amp;")}"`,
+  );
   assertFalse(html.includes("decoims.com/image"));
+  assertStringIncludes(html, "/_next/image?url=");
 });
 
 Deno.test("keeps Deco optimization for native Deco assets", () => {
