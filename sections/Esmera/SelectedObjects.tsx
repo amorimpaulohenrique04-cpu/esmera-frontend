@@ -15,7 +15,7 @@ export interface Props {
   title?: string;
   /** @format textarea */
   text?: string;
-  /** @maxItems 3 */
+  /** @maxItems 4 */
   products?: EsmeraObject[];
   collectionLabel?: string;
   collectionHref?: string;
@@ -32,7 +32,7 @@ function hasRenderableImage(product: CuratedProduct): boolean {
 export const loader = async (props: Props) => {
   const resolvedHome = await loadResolvedHome();
   const source = resolvedHome.selectedObjects ?? props;
-  const selectedProducts = (source.products ?? []).slice(0, 3);
+  const selectedProducts = (source.products ?? []).slice(0, 4);
   const storefrontProducts = await Promise.all(
     selectedProducts.map(async (product): Promise<CuratedProduct> => {
       try {
@@ -79,7 +79,7 @@ export default function SelectedObjects(
           hasRenderableImage(product),
       )
     )
-    .slice(0, 3);
+    .slice(0, 4);
 
   return (
     <section
