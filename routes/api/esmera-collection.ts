@@ -32,8 +32,9 @@ export const handler: Handlers = {
       // catalog root. Collection-by-slug filtering needs no extra CMS read.
       const categoryRefinement = !slug &&
         Boolean(url.searchParams.get("category")?.trim());
-      const categories = categoryRefinement
-        ? collectionFacetCategories((await getPageChrome()).categories)
+      const chrome = categoryRefinement ? await getPageChrome() : null;
+      const categories = chrome
+        ? collectionFacetCategories(chrome.categories)
         : [];
       const query = buildCatalogQuery(
         url,
