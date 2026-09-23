@@ -208,9 +208,6 @@ export default function HeroCarousel(
   const firstMobile = firstSlide.mobileImage ?? firstSlide.desktopImage;
   const firstDesktopSrc = optimizePayloadMediaURL(firstSlide.desktopImage, 1800);
   const firstMobileSrc = optimizePayloadMediaURL(firstMobile, 900);
-  const firstDesktopSrcSet = payloadMediaSrcSet(firstSlide.desktopImage, 1800);
-  const firstMobileSrcSet = payloadMediaSrcSet(firstMobile, 900);
-
   return (
     <>
       <Head>
@@ -218,19 +215,13 @@ export default function HeroCarousel(
           rel="preload"
           as="image"
           href={firstMobileSrc}
-          imageSrcSet={firstMobileSrcSet}
-          imageSizes="100vw"
           media="(max-width: 767px)"
-          fetchPriority="high"
         />
         <link
           rel="preload"
           as="image"
           href={firstDesktopSrc}
-          imageSrcSet={firstDesktopSrcSet}
-          imageSizes="100vw"
           media="(min-width: 768px)"
-          fetchPriority="high"
         />
       </Head>
       <section
