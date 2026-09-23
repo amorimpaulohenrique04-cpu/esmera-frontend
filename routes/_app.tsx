@@ -21,10 +21,8 @@ export default defineApp(async (_req, ctx) => {
   const isHome = pathname === "/";
   const isCatalog = pathname === "/colecao" || pathname.startsWith("/colecao/");
   const isAbout = pathname === "/sobre" || pathname === "/pagina/a-esmera";
-  const isProduct = pathname.startsWith("/produto/");
   const isFavorites = pathname === "/favoritos";
   const hasProductCards = isHome || isCatalog || isFavorites;
-  const hasCommerceUI = hasProductCards || isProduct;
   return (
     <>
       <Theme colorScheme="any" />
@@ -55,26 +53,16 @@ export default defineApp(async (_req, ctx) => {
           href={asset(`/esmera-master.css?v=${storefrontStyleRevision}`)}
         />
         <link rel="stylesheet" href={asset("/esmera-finish.css")} />
-        {hasCommerceUI && (
-          <>
-            <link
-              rel="stylesheet"
-              href={asset("/esmera-commerce-refine.css")}
-            />
-            <link
-              rel="stylesheet"
-              href={asset(
-                `/esmera-product-modal.css?v=${storefrontStyleRevision}`,
-              )}
-            />
-            <link
-              rel="stylesheet"
-              href={asset(
-                `/esmera-product-modal-refine.css?v=${storefrontStyleRevision}`,
-              )}
-            />
-          </>
-        )}
+        <link
+          rel="stylesheet"
+          href={asset("/esmera-commerce-refine.css")}
+        />
+        <meta
+          name="esmera-product-modal-css"
+          content={asset(
+            `/esmera-product-modal.css?v=${storefrontStyleRevision}`,
+          )}
+        />
 
         {isHome && (
           <>
