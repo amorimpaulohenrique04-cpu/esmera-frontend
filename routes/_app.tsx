@@ -12,6 +12,7 @@ export default defineApp(async (_req, ctx) => {
   const aboutStyleRevision = "2026-09-22-about-type-v1";
   const homeStyleRevision = "2026-08-14-motion-system-v34";
   const footerStyleRevision = "2026-08-15-footer-whatsapp-form-v3";
+  const homeArtDirectionRevision = "2026-09-22-home-art-direction-v2";
   return (
     <>
       <Theme colorScheme="any" />
@@ -93,6 +94,12 @@ export default defineApp(async (_req, ctx) => {
         <link
           rel="stylesheet"
           href={asset(`/esmera-footer.css?v=${footerStyleRevision}`)}
+        />
+        <link
+          rel="stylesheet"
+          href={asset(
+            `/esmera-home-art-direction-v2.css?v=${homeArtDirectionRevision}`,
+          )}
         />
 
         <link rel="manifest" href={asset("/site.webmanifest")} />
