@@ -3,6 +3,7 @@ import DynamicMenu from "./DynamicMenu.tsx";
 import type { HeaderVariant } from "../lib/esmera/shellData.ts";
 import type { NavigationNode } from "../lib/payload/navigation.ts";
 import type { EsmeraObject, EsmeraVariant } from "../lib/payload/types.ts";
+import { useMenuNavigationCoordinator } from "../lib/esmera/useMenuNavigationCoordinator.ts";
 
 type Overlay = "search" | "enquiry" | null;
 type OverlayPhase = "closed" | "opening" | "open" | "closing";
@@ -174,6 +175,7 @@ export default function EsmeraHeader({
   instagramHref = "",
   variant = "solid",
 }: Props) {
+  useMenuNavigationCoordinator();
   const [overlay, setOverlay] = useState<Overlay>(null);
   const [overlayPhase, setOverlayPhase] = useState<OverlayPhase>("closed");
   const [cart, setCart] = useState<CartItem[]>([]);
