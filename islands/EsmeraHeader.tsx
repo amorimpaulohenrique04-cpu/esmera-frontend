@@ -42,7 +42,7 @@ export interface Props {
 }
 
 const CART_STORAGE_KEY = "esmera-cart-v2";
-const OVERLAY_EXIT_MS = 280;
+const OVERLAY_EXIT_FALLBACK_MS = 210;
 const FOCUSABLE_SELECTOR = [
   "a[href]",
   "button:not([disabled])",
@@ -178,6 +178,7 @@ export default function EsmeraHeader({
   const lastTriggerRef = useRef<HTMLElement | null>(null);
   const overlayExitTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const overlayAfterClose = useRef<(() => void) | null>(null);
+  const overlayHandoffRef = useRef(false);
 
   const clearOverlayExit = () => {
     if (overlayExitTimer.current !== null) {
@@ -201,7 +202,7 @@ export default function EsmeraHeader({
     setOverlayPhase("closing");
     overlayExitTimer.current = globalThis.setTimeout(
       finalizeOverlayClose,
-      OVERLAY_EXIT_MS,
+      OVERLAY_EXIT_FALLBACK_MS,
     );
   };
 
@@ -253,17 +254,20 @@ export default function EsmeraHeader({
   }, []);
 
   useEffect(() => {
-    if (!overlay) return;
+    if (!overlay || overlayPhase === "closing") return;
     const body = document.body;
     const root = document.documentElement;
-    const scrollY = globalThis.scrollY || 0;
+    const handoff = overlayHandoffRef.current;
+    overlayHandoffRef.current = false;
+    const lockedScrollY = Math.abs(Number.parseInt(body.style.top || "0", 10));
+    const scrollY = handoff ? lockedScrollY : globalThis.scrollY || 0;
     const previous = {
-      position: body.style.position,
-      top: body.style.top,
-      left: body.style.left,
-      right: body.style.right,
-      width: body.style.width,
-      overflow: body.style.overflow,
+      position: handoff ? "" : body.style.position,
+      top: handoff ? "" : body.style.top,
+      left: handoff ? "" : body.style.left,
+      right: handoff ? "" : body.style.right,
+      width: handoff ? "" : body.style.width,
+      overflow: handoff ? "" : body.style.overflow,
     };
 
     root.classList.add("esv-overlay-active");
@@ -315,6 +319,7 @@ export default function EsmeraHeader({
       globalThis.removeEventListener("keydown", onKeyDown);
       root.classList.remove("esv-overlay-active");
       body.classList.remove("esv-overlay-open");
+      if (root.classList.contains("esv-product-modal-active")) return;
       body.style.position = previous.position;
       body.style.top = previous.top;
       body.style.left = previous.left;
@@ -324,7 +329,7 @@ export default function EsmeraHeader({
       globalThis.scrollTo({ top: scrollY, left: 0, behavior: "auto" });
       globalThis.setTimeout(() => lastTriggerRef.current?.focus(), 0);
     };
-  }, [overlay]);
+  }, [overlay, overlayPhase]);
 
   useEffect(() => {
     if (overlay !== "search" || overlayPhase === "closing") return;
@@ -431,10 +436,14 @@ export default function EsmeraHeader({
 
   useEffect(() => {
     const add = (event: Event) => {
-      const product = (event as CustomEvent<{ product?: EsmeraObject }>).detail
-        ?.product;
+      const detail = (event as CustomEvent<{
+        product?: EsmeraObject;
+        handoff?: boolean;
+      }>).detail;
+      const product = detail?.product;
       if (!product) return;
       addToCart(product, product.variants.find((variant) => !variant.disabled));
+      overlayHandoffRef.current = Boolean(detail?.handoff);
       openOverlay("enquiry");
     };
     globalThis.addEventListener("esmera:add-to-enquiry", add);
@@ -472,16 +481,13 @@ export default function EsmeraHeader({
   const overlayTitle = overlay === "search" ? "Busca" : "Carrinho";
 
   const openSearchProduct = (product: EsmeraObject) => {
-    closeAll(() => {
-      const trigger = document.querySelector<HTMLElement>(
-        ".esv-search-trigger",
-      );
-      globalThis.dispatchEvent(
-        new CustomEvent("esmera:open-product", {
-          detail: { product, trigger: trigger ?? undefined },
-        }),
-      );
-    });
+    const trigger = document.querySelector<HTMLElement>(".esv-search-trigger");
+    closeAll();
+    globalThis.dispatchEvent(
+      new CustomEvent("esmera:open-product", {
+        detail: { product, trigger: trigger ?? undefined, handoff: true },
+      }),
+    );
   };
 
   return (

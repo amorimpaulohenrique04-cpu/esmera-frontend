@@ -1,6 +1,6 @@
 import { assert, assertEquals, assertStringIncludes } from "@std/assert";
 
-Deno.test("menu navigation waits for an open surface to exit before changing documents", async () => {
+Deno.test("menu navigation starts immediately while an open surface exits", async () => {
   const coordinator = await Deno.readTextFile(
     "islands/MenuNavigationCoordinator.tsx",
   );
@@ -8,20 +8,16 @@ Deno.test("menu navigation waits for an open surface to exit before changing doc
     "components/esmera/StorefrontLayout.tsx",
   );
 
-  assertStringIncludes(coordinator, "const MENU_EXIT_MS = 220;");
   assertStringIncludes(coordinator, "anchor.closest(MENU_SELECTOR)");
+  assertStringIncludes(coordinator, "beginMenuExit();");
+  assertEquals(coordinator.includes("event.preventDefault()"), false);
+  assertEquals(coordinator.includes("location.assign"), false);
+  assertEquals(coordinator.includes("MENU_EXIT_MS"), false);
   assertStringIncludes(coordinator, 'mega?.classList.add("is-closing")');
   assertStringIncludes(
     coordinator,
     'drawerBackdrop?.classList.add("is-closing")',
   );
-  assertStringIncludes(coordinator, "if (!beginMenuExit()) return;");
-  assertStringIncludes(coordinator, "event.preventDefault();");
-  assertStringIncludes(
-    coordinator,
-    "() => globalThis.location.assign(url.href)",
-  );
-  assertStringIncludes(coordinator, "reduceMotion ? 0 : MENU_EXIT_MS");
   assertStringIncludes(
     coordinator,
     'document.addEventListener("click", onClick, true)',

@@ -19,8 +19,8 @@ const FOCUSABLE = [
   '[tabindex]:not([tabindex="-1"])',
 ].join(",");
 
-const MEGA_EXIT_MS = 220;
-const DRAWER_EXIT_MS = 220;
+const MEGA_EXIT_FALLBACK_MS = 180;
+const DRAWER_EXIT_FALLBACK_MS = 180;
 
 function Chevron({ direction = "right" }: { direction?: "left" | "right" }) {
   return (
@@ -199,7 +199,7 @@ export default function DynamicMenu(
     setMegaPhase("closing");
     megaExitTimer.current = globalThis.setTimeout(
       finalizeDesktopClose,
-      MEGA_EXIT_MS,
+      MEGA_EXIT_FALLBACK_MS,
     );
   };
 
@@ -222,7 +222,7 @@ export default function DynamicMenu(
     openTimer.current = globalThis.setTimeout(() => {
       openDesktop(id);
       openTimer.current = null;
-    }, 120);
+    }, 80);
   };
 
   const scheduleDesktopClose = () => {
@@ -230,7 +230,7 @@ export default function DynamicMenu(
     closeTimer.current = globalThis.setTimeout(() => {
       closeTimer.current = null;
       requestDesktopClose();
-    }, 140);
+    }, 90);
   };
 
   const finalizeMobileClose = () => {
@@ -251,7 +251,7 @@ export default function DynamicMenu(
     setDrawerPhase("closing");
     drawerExitTimer.current = globalThis.setTimeout(
       finalizeMobileClose,
-      DRAWER_EXIT_MS,
+      DRAWER_EXIT_FALLBACK_MS,
     );
   };
 
@@ -368,7 +368,7 @@ export default function DynamicMenu(
       requestDesktopClose();
       globalThis.setTimeout(
         () => activeTriggerRef.current?.focus(),
-        MEGA_EXIT_MS,
+        MEGA_EXIT_FALLBACK_MS,
       );
     };
     globalThis.addEventListener("keydown", closeDesktop);

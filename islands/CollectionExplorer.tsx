@@ -180,6 +180,8 @@ function FacetSelect({
   );
 }
 
+type FilterDrawerPhase = "closed" | "opening" | "open" | "closing";
+
 interface FilterState {
   q: string;
   category: string;
@@ -234,16 +236,43 @@ export default function CollectionExplorer(props: CollectionExplorerProps) {
   const [materials, setMaterials] = useState<string[]>(props.initial.materials);
   const [availability, setAvailability] = useState(props.initial.availability);
   const [sort, setSort] = useState<CollectionSort>(props.initial.sort);
-  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [filterPhase, setFilterPhase] = useState<FilterDrawerPhase>("closed");
   const [loading, setLoading] = useState(false);
   const [replacing, setReplacing] = useState(false);
   const [error, setError] = useState("");
   const controllerRef = useRef<AbortController | null>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const firstFilterRun = useRef(true);
+  const filterExitTimer = useRef<
+    ReturnType<typeof globalThis.setTimeout> | null
+  >(null);
+  const filtersOpen = filterPhase !== "closed";
+
+  const finalizeFilterClose = () => {
+    if (filterExitTimer.current !== null) {
+      globalThis.clearTimeout(filterExitTimer.current);
+      filterExitTimer.current = null;
+    }
+    setFilterPhase("closed");
+  };
+
+  const setFiltersOpen = (next: boolean | ((current: boolean) => boolean)) => {
+    const shouldOpen = typeof next === "function" ? next(filtersOpen) : next;
+    if (shouldOpen) {
+      if (filterExitTimer.current !== null) {
+        globalThis.clearTimeout(filterExitTimer.current);
+      }
+      setFilterPhase("opening");
+      requestAnimationFrame(() => setFilterPhase("open"));
+      return;
+    }
+    if (!filtersOpen || filterPhase === "closing") return;
+    setFilterPhase("closing");
+    filterExitTimer.current = globalThis.setTimeout(finalizeFilterClose, 240);
+  };
 
   useEffect(() => {
-    const timer = globalThis.setTimeout(() => setQ(qInput.trim()), 250);
+    const timer = globalThis.setTimeout(() => setQ(qInput.trim()), 180);
     return () => globalThis.clearTimeout(timer);
   }, [qInput]);
 
@@ -540,10 +569,10 @@ export default function CollectionExplorer(props: CollectionExplorerProps) {
         </div>
       </div>
 
-      {filtersOpen && (
+      {filterPhase !== "closed" && (
         <button
           type="button"
-          class="esv-collection-v2-filter-backdrop"
+          class={`esv-collection-v2-filter-backdrop is-${filterPhase}`}
           aria-label="Fechar filtros"
           onClick={() => setFiltersOpen(false)}
         />
@@ -551,7 +580,14 @@ export default function CollectionExplorer(props: CollectionExplorerProps) {
 
       <div
         id="esv-collection-filters"
-        class={`esv-collection-v2-filters${filtersOpen ? " is-open" : ""}`}
+        class={`esv-collection-v2-filters is-${filterPhase}`}
+        onTransitionEnd={(event) => {
+          if (
+            filterPhase === "closing" &&
+            event.currentTarget === event.target &&
+            event.propertyName === "transform"
+          ) finalizeFilterClose();
+        }}
       >
         <div class="esv-collection-v2-filter-head">
           <strong>Filtros</strong>

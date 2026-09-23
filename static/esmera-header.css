@@ -32,7 +32,7 @@ html:root {
   background: transparent;
   color: var(--ink);
   isolation: isolate;
-  transition: color 260ms var(--ease-out), border-color 260ms var(--ease-out);
+  transition: color 160ms var(--ease-out), border-color 160ms var(--ease-out);
 }
 
 .esv-header.esv-header::before {
@@ -43,7 +43,7 @@ html:root {
   background: rgba(243, 240, 232, .96);
   backdrop-filter: blur(12px);
   opacity: 1;
-  transition: opacity 260ms var(--ease-out);
+  transition: opacity 160ms var(--ease-out);
 }
 
 .esv-header.esv-header[data-header-variant="transparent"]:not(.is-solid) {
@@ -95,7 +95,7 @@ html:root {
   text-decoration: none;
   white-space: nowrap;
   transform: none;
-  transition: opacity 280ms var(--ease-out);
+  transition: opacity 180ms var(--ease-out);
 }
 
 .esv-brand-image {
@@ -162,7 +162,7 @@ html:root {
   background: currentColor;
   opacity: 0;
   transform: scale(.82);
-  transition: opacity 200ms var(--ease-out), transform 280ms var(--ease-out);
+  transition: opacity 160ms var(--ease-out), transform 180ms var(--ease-out);
 }
 
 .esv-header .esv-header-icon svg,
@@ -174,7 +174,7 @@ html:root {
 
 .esv-header svg path,
 .esv-header svg circle {
-  transition: stroke-width 200ms var(--ease-out);
+  transition: stroke-width 160ms var(--ease-out);
 }
 
 .esv-header .esv-enquiry-link {
@@ -198,7 +198,7 @@ html:root {
   font-size: 9px;
   line-height: 1;
   text-align: center;
-  transition: transform 280ms var(--ease-out);
+  transition: transform 180ms var(--ease-out);
 }
 
 .esv-header .esv-cart-icon {
@@ -255,7 +255,7 @@ html:root {
   text-decoration: none;
   text-transform: uppercase;
   white-space: nowrap;
-  transition: opacity 280ms var(--ease-out);
+  transition: opacity 180ms var(--ease-out);
 }
 
 .esv-header .esv-nav-v2-root-link::after,
@@ -269,7 +269,7 @@ html:root {
   background: currentColor;
   transform: scaleX(0);
   transform-origin: right;
-  transition: transform 200ms var(--ease-out);
+  transition: transform 160ms var(--ease-out);
 }
 
 .esv-header .esv-nav-v2-root-link:focus-visible::after,
@@ -294,7 +294,7 @@ html:root {
   inset: 0;
   background: rgba(17, 18, 16, .28);
   pointer-events: none;
-  animation: esv-overlay-in 300ms var(--ease-out) both;
+  animation: esv-overlay-in 200ms var(--ease-out) both;
 }
 
 .esv-mega-v2.esv-mega-v2 {
@@ -308,7 +308,7 @@ html:root {
   background: rgba(243, 240, 232, .985);
   color: var(--ink);
   box-shadow: 0 28px 64px rgba(17, 18, 16, .09);
-  animation: esv-mega-v2-in 300ms var(--ease-out) both;
+  animation: esv-mega-v2-in 200ms var(--ease-out) both;
 }
 
 .esv-mega-v2 .esv-mega-v2-inner {
@@ -355,12 +355,12 @@ html:root {
   font-size: 11px;
   letter-spacing: .08em;
   text-transform: uppercase;
-  transition: color 200ms var(--ease-out), opacity 200ms var(--ease-out);
+  transition: color 160ms var(--ease-out), opacity 160ms var(--ease-out);
 }
 
 .esv-mega-v2 .esv-mega-v2-heading > a span {
   display: inline-block;
-  transition: transform 200ms var(--ease-out);
+  transition: transform 160ms var(--ease-out);
 }
 
 .esv-mega-v2 .esv-mega-v2-columns {
@@ -371,7 +371,7 @@ html:root {
 
 .esv-mega-v2 .esv-mega-v2-column {
   gap: 11px;
-  animation: esv-mega-column-in 260ms var(--ease-out) both;
+  animation: esv-mega-column-in 160ms var(--ease-out) both;
 }
 
 .esv-mega-v2 .esv-mega-v2-column a {
@@ -379,7 +379,7 @@ html:root {
   color: var(--muted);
   font-size: 12px;
   line-height: 1.4;
-  transition: color 200ms var(--ease-out), opacity 200ms var(--ease-out);
+  transition: color 160ms var(--ease-out), opacity 160ms var(--ease-out);
 }
 
 .esv-mega-v2 .esv-mega-v2-column .esv-mega-v2-column-title {
@@ -406,7 +406,7 @@ html:root {
 .esv-mega-v2 .esv-mega-v2-editorial strong {
   font-size: 13px;
   font-weight: 500;
-  transition: color 200ms var(--ease-out);
+  transition: color 160ms var(--ease-out);
 }
 
 .esv-mega-v2 .esv-mega-v2-editorial span {
@@ -424,7 +424,7 @@ html:root {
   height: 100dvh;
   background: rgba(17, 18, 16, .56);
   backdrop-filter: blur(4px);
-  animation: esv-overlay-in 220ms var(--ease-out) both;
+  animation: esv-overlay-in 180ms var(--ease-out) both;
 }
 
 .esv-nav-v2-drawer.esv-nav-v2-drawer {
@@ -435,7 +435,7 @@ html:root {
   overflow: hidden;
   background: var(--bg);
   color: var(--ink);
-  animation: esv-panel-in-left 300ms var(--ease-out) both;
+  animation: esv-panel-in-left 200ms var(--ease-out) both;
 }
 
 .esv-nav-v2-drawer .esv-nav-v2-drawer-header {
@@ -569,7 +569,7 @@ html:root {
 .esv-nav-v2-mobile-row > a,
 .esv-nav-v2-drawer-footer :is(a, button),
 .esv-nav-v2-back {
-  transition: background-color 200ms var(--ease-out), color 200ms var(--ease-out), opacity 200ms var(--ease-out), transform 420ms var(--ease-out);
+  transition: background-color 160ms var(--ease-out), color 160ms var(--ease-out), opacity 160ms var(--ease-out), transform 420ms var(--ease-out);
 }
 
 .esv-search-results img,

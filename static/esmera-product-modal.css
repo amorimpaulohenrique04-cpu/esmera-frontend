@@ -86,7 +86,7 @@ body.esv-product-modal-open {
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   opacity: 1;
-  transition: opacity 260ms cubic-bezier(.4, 0, .2, 1);
+  transition: opacity 160ms cubic-bezier(.4, 0, .2, 1);
 }
 
 .esv-product-modal {
@@ -105,8 +105,8 @@ body.esv-product-modal-open {
   opacity: 1;
   transform: translate3d(0, 0, 0) scale(1);
   transition:
-    opacity 260ms cubic-bezier(.4, 0, .2, 1),
-    transform 260ms cubic-bezier(.4, 0, .2, 1);
+    opacity 180ms cubic-bezier(.4, 0, .2, 1),
+    transform 200ms cubic-bezier(.4, 0, .2, 1);
 }
 
 .esv-product-modal-backdrop[data-phase="opening"],
@@ -201,8 +201,8 @@ body.esv-product-modal-open {
   .esv-product-modal-slide {
     opacity: 0;
     transition:
-      opacity 240ms cubic-bezier(.4, 0, .2, 1),
-      visibility 0s linear 240ms;
+      opacity 160ms cubic-bezier(.4, 0, .2, 1),
+      visibility 0s linear 160ms;
   }
 
   .esv-product-modal-slide.is-active {

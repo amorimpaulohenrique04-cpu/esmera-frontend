@@ -28,7 +28,7 @@ export default function EsmeraMotion() {
       if (Number.isFinite(order)) {
         element.style.setProperty(
           "--esv-reveal-delay",
-          `${Math.min(Math.max(order, 0) * 45, 180)}ms`,
+          `${Math.min(Math.max(order, 0) * 30, 90)}ms`,
         );
       }
 

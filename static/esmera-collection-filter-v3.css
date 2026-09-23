@@ -408,11 +408,11 @@
 }
 
 .esv-collection-v2-grid {
-  transition: opacity 180ms ease;
+  transition: opacity 120ms ease;
 }
 
 .esv-collection-v2-grid.is-updating {
-  opacity: 0.48;
+  opacity: 0.76;
   pointer-events: none;
 }
 
@@ -507,7 +507,9 @@
     padding: 0;
     border: 0;
     background: rgba(17, 18, 16, 0.38);
-    backdrop-filter: blur(2px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 160ms var(--ease-esmera);
   }
 
   .esv-collection-v2-filters,
@@ -526,11 +528,27 @@
     box-shadow: -24px 0 70px rgba(17, 18, 16, 0.18);
     transform: translateX(105%);
     visibility: hidden;
-    transition: transform 260ms var(--ease-esmera), visibility 260ms;
+    transition: transform 200ms var(--ease-esmera), visibility 0s linear 200ms;
   }
 
+  .esv-collection-v2-filter-backdrop.is-opening,
+  .esv-collection-v2-filter-backdrop.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .esv-collection-v2-filter-backdrop.is-closing {
+    opacity: 0;
+  }
+
+  .esv-collection-v2-filters.is-opening,
   .esv-collection-v2-filters.is-open {
     transform: translateX(0);
+    visibility: visible;
+    transition-delay: 0s;
+  }
+
+  .esv-collection-v2-filters.is-closing {
     visibility: visible;
   }
 

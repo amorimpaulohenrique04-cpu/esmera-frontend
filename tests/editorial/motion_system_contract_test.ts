@@ -27,7 +27,7 @@ Deno.test("motion lifecycle keeps menu, drawer and overlays mounted through exit
     'overlayPhase === "closing" ? " is-closing" : ""',
   );
   assertStringIncludes(header, "data-header-surface={headerSurface}");
-  assertStringIncludes(header, "OVERLAY_EXIT_MS");
+  assertStringIncludes(header, "OVERLAY_EXIT_FALLBACK_MS");
 
   assertStringIncludes(
     modal,
@@ -53,7 +53,7 @@ Deno.test("hero carousel uses decoded dual-layer crossfade instead of hard swap"
     motion,
     ".esv-hero-carousel.is-transitioning .esv-hero-carousel-media.is-incoming",
   );
-  assertStringIncludes(motion, "--motion-hero: 800ms;");
+  assertStringIncludes(motion, "--motion-hero: 360ms;");
 });
 
 Deno.test("homepage reveal contract is explicit and product cards reveal as one unit", async () => {
@@ -99,5 +99,8 @@ Deno.test("page navigation animates only main and motion CSS owns final behavior
     ".esv-product-card:hover .esv-product-media-wrap",
   );
   assertStringIncludes(motion, "box-shadow: none !important;");
-  assertStringIncludes(motion, "transform: scale(1.015);");
+  assertEquals(
+    motion.includes(".esv-product-card .esv-product-media img {"),
+    false,
+  );
 });
