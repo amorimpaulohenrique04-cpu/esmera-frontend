@@ -313,7 +313,7 @@ export function resolveHome({
     : (hasSignatureOverride
       ? cmsSignature.map((slide) => ({
         product: slide.product,
-        eyebrow: present(slide.eyebrow, "05 — Peça assinatura"),
+        eyebrow: present(slide.eyebrow, "05 — Peça em destaque"),
         editorialText: present(
           slide.editorialText,
           slide.product.description ?? "",
