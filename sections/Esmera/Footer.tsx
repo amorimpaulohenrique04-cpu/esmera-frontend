@@ -151,7 +151,7 @@ export default function Footer(
               design e do fazer manual. Da pedra à forma, cada criação carrega
               sua própria história.
             </p>
-            <span class="esv-footer-curation-badge">Curadoria autoral</span>
+            <span class="esv-footer-curation-badge">Peças autorais</span>
           </section>
 
           <nav
@@ -203,10 +203,10 @@ export default function Footer(
               id="esv-footer-relationship"
               class="esv-footer-newsletter-title"
             >
-              Novos lançamentos, matérias e peças especiais.
+              Novos lançamentos, histórias e peças especiais.
             </h2>
             <p class="esv-footer-newsletter-copy">
-              Receba curadorias e novidades em primeira mão.
+              Receba novidades, lançamentos e seleções da Esméra em primeira mão.
             </p>
 
             <FooterLeadForm />
