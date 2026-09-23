@@ -131,6 +131,12 @@
   margin-top: clamp(64px, 5.4vw, 88px);
 }
 
+@media (min-width: 1024px) {
+  .esv-selected .esv-product-shelf {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
 .esv-selected .esv-product-card .esv-product-media-wrap,
 .esv-selected .esv-product-card .esv-product-media {
   background: #f4f1e9;
