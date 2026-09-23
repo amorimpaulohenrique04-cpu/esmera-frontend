@@ -1,4 +1,5 @@
 import Arrow from "../components/esmera/Arrow.tsx";
+import { ensureProductModalStyles } from "../lib/esmera/productModalStyles.ts";
 import type { ModalProductMedia } from "../lib/esmera/productDetail.ts";
 import type { EsmeraObject } from "../lib/payload/types.ts";
 
@@ -67,6 +68,7 @@ export default function ProductActions(
   };
 
   const warmDetailImage = () => {
+    void ensureProductModalStyles();
     if (product?.detailImage && typeof globalThis.Image === "function") {
       const image = new globalThis.Image();
       image.decoding = "async";
@@ -113,6 +115,7 @@ export default function ProductActions(
 
   const commonWarmup = {
     onPointerEnter: warmDetailImage,
+    onPointerDown: warmDetailImage,
     onFocus: warmDetailImage,
   };
 
