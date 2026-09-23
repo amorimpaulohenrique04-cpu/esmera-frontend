@@ -91,21 +91,26 @@ async function syncLeadFavorite(
   profile: WishlistProfile,
   productId: string,
   action: "add" | "remove",
-): Promise<boolean> {
-  try {
-    const response = await fetch("/api/esmera-lead", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        name: profile.name,
-        phone: profile.phone,
-        productId,
-        action,
-      }),
-    });
-    return response.ok;
-  } catch {
-    return false;
+): Promise<void> {
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    try {
+      const response = await fetch("/api/esmera-lead", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          name: profile.name,
+          phone: profile.phone,
+          productId,
+          action,
+        }),
+      });
+      if (response.ok) return;
+    } catch {
+      // Retry once without exposing network latency to the customer.
+    }
+    if (attempt === 0) {
+      await new Promise((resolve) => globalThis.setTimeout(resolve, 500));
+    }
   }
 }
 
@@ -116,7 +121,6 @@ export default function WishlistButton(
   const [dialogOpen, setDialogOpen] = useState(false);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [busy, setBusy] = useState(false);
   const [feedback, setFeedback] = useState("");
   const dialogRef = useRef<HTMLDialogElement>(null);
 
@@ -159,19 +163,11 @@ export default function WishlistButton(
     setDialogOpen(true);
   };
 
-  const toggle = async () => {
-    if (busy) return;
-
+  const toggle = () => {
     if (favorited) {
+      saveState(false);
       const profile = readProfile();
-      if (!profile) {
-        saveState(false);
-        return;
-      }
-      setBusy(true);
-      const synced = await syncLeadFavorite(profile, productId, "remove");
-      setBusy(false);
-      if (synced) saveState(false);
+      if (profile) void syncLeadFavorite(profile, productId, "remove");
       return;
     }
 
@@ -181,20 +177,12 @@ export default function WishlistButton(
       return;
     }
 
-    setBusy(true);
-    const synced = await syncLeadFavorite(profile, productId, "add");
-    setBusy(false);
-    if (synced) {
-      saveState(true);
-    } else {
-      setFeedback("Não foi possível salvar agora. Confirme seus dados e tente novamente.");
-      openCapture();
-    }
+    saveState(true);
+    void syncLeadFavorite(profile, productId, "add");
   };
 
-  const submit = async (event: Event) => {
+  const submit = (event: Event) => {
     event.preventDefault();
-    if (busy) return;
 
     const normalizedName = name.trim();
     const normalizedPhone = normalizePhone(phone);
@@ -208,19 +196,11 @@ export default function WishlistButton(
     }
 
     const profile = { name: normalizedName, phone: normalizedPhone };
-    setBusy(true);
     setFeedback("");
-    const synced = await syncLeadFavorite(profile, productId, "add");
-    setBusy(false);
-
-    if (!synced) {
-      setFeedback("Não foi possível salvar agora. Tente novamente.");
-      return;
-    }
-
     writeProfile(profile);
     saveState(true);
     setDialogOpen(false);
+    void syncLeadFavorite(profile, productId, "add");
   };
 
   return (
@@ -233,9 +213,7 @@ export default function WishlistButton(
           ? `Remover ${productTitle} dos favoritos`
           : `Adicionar ${productTitle} aos favoritos`}
         data-favorited={favorited ? "true" : "false"}
-        data-busy={busy ? "true" : "false"}
-        disabled={busy}
-        onClick={() => void toggle()}
+        onClick={toggle}
       >
         <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
           <path
@@ -273,8 +251,7 @@ export default function WishlistButton(
             Salve suas peças favoritas.
           </h2>
           <p class="esv-wishlist-dialog-copy">
-            Informe seu nome e WhatsApp para vincular esta seleção ao seu
-            atendimento Esméra.
+            Informe seu nome e WhatsApp para salvar seus favoritos.
           </p>
 
           <label>
@@ -288,7 +265,6 @@ export default function WishlistButton(
               value={name}
               onInput={(event) => setName(event.currentTarget.value)}
               placeholder="Seu nome"
-              disabled={busy}
             />
           </label>
 
@@ -303,7 +279,6 @@ export default function WishlistButton(
               value={phone}
               onInput={(event) => setPhone(event.currentTarget.value)}
               placeholder="(87) 99999-9999"
-              disabled={busy}
             />
           </label>
 
@@ -316,16 +291,9 @@ export default function WishlistButton(
           <button
             class="esv-wishlist-dialog-submit"
             type="submit"
-            disabled={busy}
           >
-            {busy ? "Salvando..." : "Salvar nos favoritos"}
+            Salvar nos favoritos
           </button>
-
-          <p class="esv-wishlist-dialog-privacy">
-            Usaremos esses dados para identificar seus favoritos e facilitar o
-            atendimento. Não enviaremos comunicações promocionais sem sua
-            autorização.
-          </p>
         </form>
       </dialog>
     </>
