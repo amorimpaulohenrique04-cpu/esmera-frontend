@@ -471,3 +471,187 @@
   outline: 1px solid #fff;
   outline-offset: 2px;
 }
+
+/* -------------------------------------------------------------------------- */
+/* Wishlist lead capture                                                      */
+/* -------------------------------------------------------------------------- */
+
+.esv-wishlist-dialog {
+  width: min(92vw, 500px);
+  max-width: 500px;
+  margin: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--product-card-text);
+}
+
+.esv-wishlist-dialog::backdrop {
+  background: rgba(17, 18, 16, 0.52);
+  backdrop-filter: blur(4px);
+}
+
+.esv-wishlist-dialog-card {
+  position: relative;
+  padding: clamp(30px, 4vw, 46px);
+  border: 1px solid rgba(17, 18, 16, 0.1);
+  background: #f3f0e8;
+  box-shadow: 0 22px 70px rgba(17, 18, 16, 0.16);
+}
+
+.esv-wishlist-dialog-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: rgba(17, 18, 16, 0.66);
+  font-size: 25px;
+  font-weight: 300;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.esv-wishlist-dialog-card > .esv-kicker {
+  margin: 0 0 18px;
+}
+
+.esv-wishlist-dialog-card h2 {
+  max-width: 11ch;
+  margin: 0;
+  font-size: clamp(31px, 4vw, 42px);
+  font-weight: 300;
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+}
+
+.esv-wishlist-dialog-copy {
+  max-width: 40ch;
+  margin: 18px 0 28px;
+  color: #74756f;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.esv-wishlist-dialog-card label {
+  display: block;
+  margin-top: 17px;
+}
+
+.esv-wishlist-dialog-card label > span {
+  display: block;
+  margin-bottom: 8px;
+  color: #62635e;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.esv-wishlist-dialog-card input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 0 8px;
+  border: 0;
+  border-bottom: 1px solid rgba(17, 18, 16, 0.22);
+  border-radius: 0;
+  outline: 0;
+  background: transparent;
+  color: #111210;
+  font: inherit;
+  font-size: 15px;
+  transition: border-color 160ms ease;
+}
+
+.esv-wishlist-dialog-card input::placeholder {
+  color: #9a9a94;
+}
+
+.esv-wishlist-dialog-card input:focus {
+  border-bottom-color: #111210;
+}
+
+.esv-wishlist-dialog-feedback {
+  margin: 14px 0 0;
+  color: #8a3f35;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.esv-wishlist-dialog-submit {
+  width: 100%;
+  min-height: 48px;
+  margin-top: 26px;
+  padding: 0 20px;
+  border: 1px solid #111210;
+  background: #111210;
+  color: #f3f0e8;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    opacity 160ms ease;
+}
+
+.esv-wishlist-dialog-submit:disabled,
+.esv-card-wishlist:disabled {
+  cursor: wait;
+  opacity: 0.56;
+}
+
+.esv-wishlist-dialog-privacy {
+  max-width: 46ch;
+  margin: 14px 0 0;
+  color: #858680;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .esv-wishlist-dialog-submit:hover {
+    background: transparent;
+    color: #111210;
+  }
+
+  .esv-wishlist-dialog-close:hover {
+    color: #111210;
+  }
+}
+
+@media (max-width: 767px) {
+  .esv-card-wishlist {
+    opacity: 1;
+    pointer-events: auto;
+    transform: none;
+  }
+
+  .esv-wishlist-dialog {
+    width: calc(100vw - 28px);
+  }
+
+  .esv-wishlist-dialog-card {
+    padding: 34px 24px 26px;
+  }
+
+  .esv-wishlist-dialog-card h2 {
+    font-size: clamp(30px, 9vw, 38px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .esv-wishlist-dialog-card input,
+  .esv-wishlist-dialog-submit,
+  .esv-wishlist-dialog-close {
+    transition: none;
+  }
+}
+
