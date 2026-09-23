@@ -230,6 +230,335 @@
 }
 
 /* -------------------------------------------------------------------------- */
+/* Dedicated tablet composition — 768–1023                                   */
+/* Bridges the approved desktop direction and the intentional mobile layout.  */
+/* -------------------------------------------------------------------------- */
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  :root {
+    --page-x: clamp(28px, 4vw, 42px);
+    --grid-gap: clamp(18px, 2.4vw, 24px);
+    --section-y: clamp(88px, 10vw, 108px);
+  }
+
+  /* Hero — retain editorial impact without desktop-scale typography. */
+  .esv-hero {
+    min-height: max(620px, 82svh);
+  }
+
+  .esv-hero-content {
+    padding-bottom: clamp(58px, 7vw, 78px);
+  }
+
+  .esv-hero-statement {
+    grid-column: 1 / span 5;
+    max-width: 9ch;
+    font-size: clamp(46px, 6.2vw, 60px);
+    line-height: .95;
+  }
+
+  .esv-hero-cta {
+    grid-column: 1 / span 4;
+    margin-top: 24px;
+  }
+
+  /* Maison — asymmetric two-column editorial composition. */
+  .esv-maison {
+    padding-block: clamp(90px, 10vw, 112px);
+  }
+
+  .esv-maison-copy {
+    grid-column: 1 / span 3;
+  }
+
+  .esv-maison-copy h2 {
+    max-width: 8.6ch;
+    font-size: clamp(38px, 5vw, 50px);
+    line-height: .97;
+  }
+
+  .esv-maison-text {
+    max-width: 35ch;
+    font-size: 13px;
+    line-height: 1.58;
+  }
+
+  .esv-maison-media {
+    grid-column: 4 / -1;
+    min-height: clamp(450px, 56vw, 570px);
+  }
+
+  .esv-maison-main {
+    inset: 0 0 0 6%;
+  }
+
+  .esv-maison-secondary {
+    left: -4%;
+    bottom: 9%;
+    width: 30%;
+  }
+
+  /* Selection — four products only on tablet, balanced as 2 × 2. */
+  .esv-selected {
+    padding-block: clamp(86px, 9.5vw, 106px) !important;
+  }
+
+  .esv-selected-head > .esv-kicker {
+    grid-column: 1 / span 2;
+    grid-row: 1;
+  }
+
+  .esv-selected-head h2 {
+    grid-column: 1 / span 4;
+    grid-row: 2;
+    max-width: 9ch;
+    margin-top: 22px;
+    font-size: clamp(38px, 5vw, 48px);
+    line-height: .97;
+  }
+
+  .esv-selected-head > p {
+    grid-column: 5 / -1;
+    grid-row: 2;
+    align-self: end;
+    max-width: 31ch;
+    margin: 0 0 2px;
+    font-size: 13px;
+    line-height: 1.58;
+  }
+
+  .esv-selected .esv-product-shelf {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(38px, 5vw, 50px) clamp(20px, 3vw, 28px);
+    margin-top: 46px;
+  }
+
+  .esv-selected .esv-product-shelf > .esv-product-card:nth-child(n + 4) {
+    display: flex;
+  }
+
+  .esv-selected .esv-product-card-copy {
+    min-height: 150px;
+    padding-top: 13px;
+  }
+
+  .esv-selected .esv-card-title {
+    font-size: clamp(16px, 2vw, 18px);
+  }
+
+  .esv-selected-collection-link {
+    margin-top: 32px !important;
+  }
+
+  /* Territories — keep the desktop triptych, but scale type for tablet. */
+  .esv-territory-track {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    height: clamp(470px, 58vw, 590px);
+  }
+
+  .esv-territory-copy {
+    right: clamp(18px, 2.4vw, 26px);
+    bottom: clamp(28px, 3.8vw, 38px);
+    left: clamp(18px, 2.4vw, 26px);
+  }
+
+  .esv-territory-copy h2 {
+    max-width: 9ch;
+    font-size: clamp(28px, 3.7vw, 36px);
+    line-height: .97;
+  }
+
+  .esv-territory-copy p {
+    max-width: 25ch;
+    font-size: 12px;
+    line-height: 1.48;
+  }
+
+  .esv-territory-copy span {
+    margin-top: 12px;
+    font-size: 11px;
+  }
+
+  /* Signature object — true 4/4 split instead of a squeezed desktop rail. */
+  .esv-signature {
+    padding-block: clamp(88px, 9.5vw, 110px);
+  }
+
+  .esv-signature-grid {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    align-items: center;
+  }
+
+  .esv-signature-media {
+    grid-column: 1 / span 4;
+    aspect-ratio: 4 / 3;
+  }
+
+  .esv-signature-copy {
+    grid-column: 5 / -1;
+    padding-left: clamp(8px, 1.5vw, 18px);
+  }
+
+  .esv-signature-copy h2 {
+    max-width: 10ch;
+    font-size: clamp(30px, 4vw, 39px);
+    line-height: .99;
+  }
+
+  .esv-signature-subtitle,
+  .esv-signature-text {
+    font-size: 12.5px;
+    line-height: 1.55;
+  }
+
+  .esv-signature-text {
+    margin-top: 16px;
+  }
+
+  .esv-signature-facts {
+    margin-top: 20px;
+  }
+
+  .esv-signature-facts > div {
+    grid-template-columns: 78px 1fr;
+    padding: 8px 0;
+  }
+
+  /* Matter — full-width pause, but proportioned to a tablet viewport. */
+  .esv-matter-interlude {
+    min-height: clamp(500px, 60svh, 620px);
+  }
+
+  .esv-matter-interlude-content {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    padding-bottom: clamp(54px, 7vw, 74px);
+  }
+
+  .esv-matter-interlude-meta,
+  .esv-matter-interlude-title {
+    grid-column: 1 / span 4;
+  }
+
+  .esv-matter-interlude-title {
+    max-width: 8.6ch;
+    font-size: clamp(36px, 4.8vw, 48px);
+    line-height: .97;
+  }
+
+  /* Provenance — use the new desktop card logic instead of the legacy
+   * alternating, oversized tablet composition. */
+  .esv-provenance {
+    padding-block: clamp(88px, 9.5vw, 110px);
+  }
+
+  .esv-provenance-intro-grid {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+  }
+
+  .esv-provenance-intro-grid .esv-kicker {
+    grid-column: 1 / span 2;
+  }
+
+  .esv-provenance-intro-copy {
+    grid-column: 3 / span 5;
+  }
+
+  .esv-provenance-intro-copy h2 {
+    max-width: 8.5ch;
+    font-size: clamp(36px, 4.7vw, 46px);
+    line-height: .97;
+  }
+
+  .esv-provenance-intro-copy > p {
+    max-width: 42ch;
+    font-size: 13px;
+  }
+
+  .esv-provenance-stages {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(18px, 2.4vw, 24px);
+    margin-top: 52px;
+  }
+
+  .esv-provenance-stage,
+  .esv-provenance-stage + .esv-provenance-stage {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    margin-top: 0;
+    padding: 11px 0 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .esv-provenance-stage-origin .esv-provenance-stage-media,
+  .esv-provenance-stage-transform .esv-provenance-stage-media,
+  .esv-provenance-stage-register .esv-provenance-stage-media {
+    width: 100%;
+    height: auto !important;
+    aspect-ratio: 4 / 3;
+  }
+
+  .esv-provenance-stage-copy {
+    display: block;
+    margin-top: 16px;
+  }
+
+  .esv-provenance-stage-copy small {
+    font-size: 10px;
+  }
+
+  .esv-provenance-stage-copy h3 {
+    margin-top: 8px;
+    font-size: clamp(21px, 2.8vw, 27px);
+    line-height: 1.02;
+  }
+
+  .esv-provenance-stage-copy p {
+    margin-top: 9px;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  /* Exclusive service — preserve the black editorial close with a tablet
+   * hierarchy rather than a compressed desktop headline. */
+  .esv-private {
+    min-height: clamp(520px, 58svh, 620px);
+  }
+
+  .esv-private-grid {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    padding-block: clamp(86px, 9.5vw, 108px);
+  }
+
+  .esv-private-grid > .esv-kicker {
+    grid-column: 1 / span 2;
+  }
+
+  .esv-private-copy {
+    grid-column: 3 / -1;
+  }
+
+  .esv-private-copy h2 {
+    max-width: 10ch;
+    font-size: clamp(38px, 5vw, 49px);
+    line-height: .96;
+  }
+
+  .esv-private-copy p {
+    max-width: 40ch;
+    margin-top: 20px;
+    font-size: 13px;
+    line-height: 1.58;
+  }
+
+  .esv-private-cta {
+    margin-top: 22px;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
 /* Mobile — preserve editorial pauses while removing redundant scroll         */
 /* -------------------------------------------------------------------------- */
 
