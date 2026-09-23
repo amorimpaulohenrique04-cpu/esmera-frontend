@@ -78,8 +78,9 @@ function SignatureObjectView({
             class="esv-signature-image-primary"
             src={primaryImage}
             alt={primaryAlt}
-            loading="lazy"
+            loading={showFullDetails ? "eager" : "lazy"}
             decoding="async"
+            fetchPriority={showFullDetails ? "high" : "auto"}
             width={1400}
             height={1050}
             sizes="(max-width: 429px) calc(100vw - 36px), (max-width: 767px) calc(100vw - 44px), (max-width: 1023px) 62vw, 58vw"
