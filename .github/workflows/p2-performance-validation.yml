@@ -1,0 +1,166 @@
+name: P2 performance validation
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "components/esmera/**"
+      - "islands/**"
+      - "lib/esmera/**"
+      - "routes/**"
+      - "sections/Esmera/**"
+      - "static/**"
+      - "tests/performance/**"
+      - ".github/workflows/p2-performance-validation.yml"
+  push:
+    branches: [main]
+    paths:
+      - "components/esmera/**"
+      - "islands/**"
+      - "lib/esmera/**"
+      - "routes/**"
+      - "sections/Esmera/**"
+      - "static/**"
+      - "tests/performance/**"
+      - ".github/workflows/p2-performance-validation.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  performance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    env:
+      DECO_SITE_NAME: testeesmera
+      PAYLOAD_API_URL: https://esmeracms-green.vercel.app
+      PORT: "8000"
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Format P2 files
+        run: >-
+          deno fmt --check
+          components/esmera/ResponsiveMedia.tsx
+          components/esmera/ObjectCard.tsx
+          components/esmera/StorefrontLayout.tsx
+          islands/CollectionExplorer.tsx
+          islands/EsmeraHeader.tsx
+          islands/HeroCarousel.tsx
+          islands/ProductModal.tsx
+          lib/esmera/useMenuNavigationCoordinator.ts
+          lib/esmera/useProductModalLinkSync.ts
+          routes/_app.tsx
+          sections/Esmera/Header.tsx
+          sections/Esmera/SignatureObject.tsx
+          tests/performance/p2_performance_contract_test.ts
+          .github/workflows/p2-performance-validation.yml
+
+      - name: Lint P2 code
+        run: >-
+          deno lint
+          components/esmera/ResponsiveMedia.tsx
+          components/esmera/ObjectCard.tsx
+          components/esmera/StorefrontLayout.tsx
+          islands/CollectionExplorer.tsx
+          islands/EsmeraHeader.tsx
+          islands/HeroCarousel.tsx
+          islands/ProductModal.tsx
+          lib/esmera/useMenuNavigationCoordinator.ts
+          lib/esmera/useProductModalLinkSync.ts
+          routes/_app.tsx
+          sections/Esmera/Header.tsx
+          sections/Esmera/SignatureObject.tsx
+          tests/performance/p2_performance_contract_test.ts
+
+      - name: Typecheck
+        run: deno check dev.ts main.ts
+
+      - name: P2 contracts
+        run: deno test -A tests/performance/p2_performance_contract_test.ts
+
+      - name: Full regression suite
+        run: deno test -A
+
+      - name: Build
+        run: deno task build
+
+      - name: Enforce generated JavaScript budget
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t js_files < <(find _fresh -type f -name '*.js' 2>/dev/null | sort)
+          if [ "${#js_files[@]}" -eq 0 ]; then
+            echo "::error title=P2 budget::No generated Fresh JavaScript assets found"
+            exit 1
+          fi
+
+          total=0
+          max_file=0
+          max_name=""
+          for file in "${js_files[@]}"; do
+            bytes=$(stat -c%s "$file")
+            total=$((total + bytes))
+            if [ "$bytes" -gt "$max_file" ]; then
+              max_file="$bytes"
+              max_name="$file"
+            fi
+            if [ "$bytes" -gt 300000 ]; then
+              echo "::error title=P2 JS budget::$file is $bytes bytes; per-file budget is 300000"
+              exit 1
+            fi
+          done
+
+          echo "Fresh JS total: $total bytes"
+          echo "Largest bundle: $max_name ($max_file bytes)"
+          if [ "$total" -gt 2000000 ]; then
+            echo "::error title=P2 JS budget::Generated JS total is $total bytes; budget is 2000000"
+            exit 1
+          fi
+
+      - name: Start preview
+        shell: bash
+        run: |
+          deno task preview > /tmp/esmera-p2-preview.log 2>&1 &
+          for attempt in $(seq 1 60); do
+            if curl --silent --fail http://127.0.0.1:8000/ > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/esmera-p2-preview.log
+          exit 1
+
+      - name: Runtime smoke and hydration budget
+        shell: bash
+        run: |
+          set -euo pipefail
+          home="$(curl --silent --show-error --fail http://127.0.0.1:8000/)"
+          collection="$(curl --silent --show-error --fail http://127.0.0.1:8000/colecao)"
+
+          [[ "$home" == *'srcset='* ]] || {
+            echo "::error title=P2 media::Home does not expose responsive srcset"
+            exit 1
+          }
+
+          for obsolete in             island-buyflow.js             island-menunavigationcoordinator.js             island-productmodallinksync.js             esmera-collection-filter-label-fix.css             esmera-header-proportions.css
+          do
+            if [[ "$home" == *"$obsolete"* ]] || [[ "$collection" == *"$obsolete"* ]]; then
+              echo "::error title=P2 dead code::$obsolete leaked into runtime HTML"
+              exit 1
+            fi
+          done
+
+          product_slug="$(
+            curl --silent --show-error --fail               'https://esmeracms-green.vercel.app/api/storefront/products?page=1&limit=1&sort=editorial' |
+            python3 -c 'import json,sys; data=json.load(sys.stdin); print(data["items"][0]["slug"] if data.get("items") else "")'
+          )"
+
+          if [ -n "$product_slug" ]; then
+            curl --silent --show-error --fail               "http://127.0.0.1:8000/produto/$product_slug" > /dev/null
+          fi

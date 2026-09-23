@@ -3,7 +3,6 @@ import type { NavigationNode } from "../../lib/payload/navigation.ts";
 import EsmeraHeader from "../../islands/EsmeraHeader.tsx";
 import EsmeraMotion from "../../islands/EsmeraMotion.tsx";
 import ProductModal from "../../islands/ProductModal.tsx";
-import BuyFlow from "../../islands/BuyFlow.tsx";
 
 export interface Props {
   logo?: string;
@@ -36,7 +35,6 @@ export default function Header({
         variant={variant}
       />
       <ProductModal />
-      <BuyFlow />
       <EsmeraMotion />
     </>
   );

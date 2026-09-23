@@ -5,11 +5,35 @@ import { Picture, Source } from "apps/website/components/Picture.tsx";
 const PAYLOAD_MEDIA_PATH_PREFIX = "/api/media/file/";
 const GOOGLE_DRIVE_THUMBNAIL_HOST = "drive.google.com";
 const GOOGLE_DRIVE_THUMBNAIL_PATH = "/thumbnail";
-const NEXT_IMAGE_WIDTHS = [640, 750, 828, 1080, 1200, 1920, 2048, 3840] as const;
+const NEXT_IMAGE_WIDTHS = [
+  640,
+  750,
+  828,
+  1080,
+  1200,
+  1920,
+  2048,
+  3840,
+] as const;
 
 function nextImageWidth(requested: number): number {
   return NEXT_IMAGE_WIDTHS.find((width) => width >= requested) ??
     NEXT_IMAGE_WIDTHS[NEXT_IMAGE_WIDTHS.length - 1];
+}
+
+function responsiveImageWidths(maxWidth: number): number[] {
+  const normalizedMax = nextImageWidth(maxWidth);
+  const candidates = NEXT_IMAGE_WIDTHS.filter((width) =>
+    width <= normalizedMax
+  );
+  return candidates.length > 0 ? [...candidates] : [normalizedMax];
+}
+
+export function payloadMediaSrcSet(src: string, maxWidth: number): string {
+  if (!isPayloadMediaURL(src)) return "";
+  return responsiveImageWidths(maxWidth)
+    .map((width) => `${optimizePayloadMediaURL(src, width)} ${width}w`)
+    .join(", ");
 }
 
 export function optimizePayloadMediaURL(src: string, width: number): string {
@@ -70,6 +94,7 @@ export interface EsmeraImageProps {
   class?: string;
   loading?: "lazy" | "eager";
   decoding?: "async" | "auto" | "sync";
+  fetchPriority?: "high" | "low" | "auto";
 }
 
 export function EsmeraImage(
@@ -82,22 +107,25 @@ export function EsmeraImage(
     class: className,
     loading = "lazy",
     decoding = "async",
+    fetchPriority = "auto",
   }: EsmeraImageProps,
 ) {
   if (isDirectMediaURL(src)) {
-    const directSrc = isPayloadMediaURL(src)
-      ? optimizePayloadMediaURL(src, width)
-      : src;
+    const payloadMedia = isPayloadMediaURL(src);
+    const directSrc = payloadMedia ? optimizePayloadMediaURL(src, width) : src;
+    const srcSet = payloadMedia ? payloadMediaSrcSet(src, width) : undefined;
     return (
       <img
         class={className}
         src={directSrc}
+        srcSet={srcSet}
         alt={alt}
         loading={loading}
         decoding={decoding}
         width={width}
         height={height}
         sizes={sizes}
+        {...{ fetchPriority }}
       />
     );
   }
@@ -112,6 +140,7 @@ export function EsmeraImage(
       width={width}
       height={height}
       sizes={sizes}
+      fetchPriority={fetchPriority}
     />
   );
 }
@@ -150,12 +179,20 @@ export function EsmeraPicture({
     isDirectMediaURL(mobileAsset);
 
   if (usesDirectMedia) {
-    const optimizedDesktop = isPayloadMediaURL(desktopSrc)
+    const desktopPayload = isPayloadMediaURL(desktopSrc);
+    const mobilePayload = isPayloadMediaURL(mobileAsset);
+    const optimizedDesktop = desktopPayload
       ? optimizePayloadMediaURL(desktopSrc, desktopWidth)
       : desktopSrc;
-    const optimizedMobile = isPayloadMediaURL(mobileAsset)
+    const optimizedMobile = mobilePayload
       ? optimizePayloadMediaURL(mobileAsset, mobileWidth)
       : mobileAsset;
+    const desktopSrcSet = desktopPayload
+      ? payloadMediaSrcSet(desktopSrc, desktopWidth)
+      : optimizedDesktop;
+    const mobileSrcSet = mobilePayload
+      ? payloadMediaSrcSet(mobileAsset, mobileWidth)
+      : optimizedMobile;
     return (
       <>
         {preload && (
@@ -165,21 +202,19 @@ export function EsmeraPicture({
               as="image"
               href={optimizedMobile}
               media="(max-width: 767px)"
-              {...{ fetchPriority }}
             />
             <link
               rel="preload"
               as="image"
               href={optimizedDesktop}
               media="(min-width: 768px)"
-              {...{ fetchPriority }}
             />
           </Head>
         )}
         <picture class={className}>
           <source
             media="(max-width: 767px)"
-            srcSet={optimizedMobile}
+            srcSet={mobileSrcSet}
             width={mobileWidth}
             height={mobileHeight}
             sizes="100vw"
@@ -187,7 +222,7 @@ export function EsmeraPicture({
           />
           <source
             media="(min-width: 768px)"
-            srcSet={optimizedDesktop}
+            srcSet={desktopSrcSet}
             width={desktopWidth}
             height={desktopHeight}
             sizes="100vw"

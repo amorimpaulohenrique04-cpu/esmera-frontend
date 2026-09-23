@@ -1,6 +1,10 @@
+import { Head } from "$fresh/runtime.ts";
 import { useEffect, useRef, useState } from "preact/hooks";
 import type { HeroSlide } from "../sections/Esmera/Hero.tsx";
-import { optimizePayloadMediaURL } from "../components/esmera/ResponsiveMedia.tsx";
+import {
+  optimizePayloadMediaURL,
+  payloadMediaSrcSet,
+} from "../components/esmera/ResponsiveMedia.tsx";
 
 export interface Props {
   slides: HeroSlide[];
@@ -66,13 +70,20 @@ function SlidePicture(
       {slide.mobileImage && (
         <source
           media="(max-width: 767px)"
-          srcset={optimizePayloadMediaURL(slide.mobileImage, 900)}
+          srcset={payloadMediaSrcSet(slide.mobileImage, 900)}
+          sizes="100vw"
+          width="900"
+          height="1125"
         />
       )}
       <img
         {...{ fetchPriority: priority }}
         src={optimizePayloadMediaURL(slide.desktopImage, 1800)}
+        srcset={payloadMediaSrcSet(slide.desktopImage, 1800)}
+        sizes="100vw"
         alt={slide.alt}
+        width="1800"
+        height="1200"
         loading={priority === "high" ? "eager" : "lazy"}
         decoding="async"
       />
@@ -193,81 +204,105 @@ export default function HeroCarousel(
   const incomingSlide = incoming === null ? null : slides[incoming];
   const transitioning = phase === "transitioning";
 
+  const firstSlide = slides[0];
+  const firstMobile = firstSlide.mobileImage ?? firstSlide.desktopImage;
+  const firstDesktopSrc = optimizePayloadMediaURL(
+    firstSlide.desktopImage,
+    1800,
+  );
+  const firstMobileSrc = optimizePayloadMediaURL(firstMobile, 900);
+
   return (
-    <section
-      class={`esv-hero esv-hero-carousel is-overlay-${overlay} is-focal-${focalPoint}${
-        transitioning ? " is-transitioning" : ""
-      }${phase === "loading" ? " is-loading" : ""}`}
-      style={{ display: "grid" }}
-      aria-roledescription="carousel"
-      aria-label="Destaques Esméra"
-      aria-busy={phase === "loading" ? "true" : undefined}
-      onPointerEnter={() => setPaused(true)}
-      onPointerLeave={() => setPaused(false)}
-      onFocusIn={() => setPaused(true)}
-      onFocusOut={() => setPaused(false)}
-    >
-      <SlidePicture
-        slide={currentSlide}
-        className="is-current"
-        priority={active === 0 ? "high" : "low"}
-      />
-      {incomingSlide && (
-        <SlidePicture
-          slide={incomingSlide}
-          className="is-incoming"
-          priority="low"
-          onTransitionEnd={(event) => {
-            if (
-              phase === "transitioning" &&
-              event.propertyName === "opacity" &&
-              incoming !== null &&
-              event.currentTarget === event.target
-            ) {
-              finishTransition(incoming);
-            }
-          }}
+    <>
+      <Head>
+        <link
+          rel="preload"
+          as="image"
+          href={firstMobileSrc}
+          media="(max-width: 767px)"
         />
-      )}
-
-      <div class="esv-hero-overlay" aria-hidden="true" />
-
-      <SlideCopy
-        slide={currentSlide}
-        className="is-current"
-        hidden={incomingSlide !== null}
-      />
-      {incomingSlide && (
-        <SlideCopy
-          slide={incomingSlide}
-          className="is-incoming"
-          hidden={false}
+        <link
+          rel="preload"
+          as="image"
+          href={firstDesktopSrc}
+          media="(min-width: 768px)"
         />
-      )}
-
-      <div
-        class="esv-hero-carousel-controls"
-        aria-label="Controles do carrossel"
+      </Head>
+      <section
+        class={`esv-hero esv-hero-carousel is-overlay-${overlay} is-focal-${focalPoint}${
+          transitioning ? " is-transitioning" : ""
+        }${phase === "loading" ? " is-loading" : ""}`}
+        style={{ display: "grid" }}
+        aria-roledescription="carousel"
+        aria-label="Destaques Esméra"
+        aria-busy={phase === "loading" ? "true" : undefined}
+        onPointerEnter={() => setPaused(true)}
+        onPointerLeave={() => setPaused(false)}
+        onFocusIn={() => setPaused(true)}
+        onFocusOut={() => setPaused(false)}
       >
-        <button
-          type="button"
-          aria-label="Slide anterior"
-          disabled={phase !== "idle"}
-          onClick={() =>
-            requestSlide((active - 1 + slides.length) % slides.length)}
+        <SlidePicture
+          slide={currentSlide}
+          className="is-current"
+          priority={active === 0 ? "high" : "low"}
+        />
+        {incomingSlide && (
+          <SlidePicture
+            slide={incomingSlide}
+            className="is-incoming"
+            priority="low"
+            onTransitionEnd={(event) => {
+              if (
+                phase === "transitioning" &&
+                event.propertyName === "opacity" &&
+                incoming !== null &&
+                event.currentTarget === event.target
+              ) {
+                finishTransition(incoming);
+              }
+            }}
+          />
+        )}
+
+        <div class="esv-hero-overlay" aria-hidden="true" />
+
+        <SlideCopy
+          slide={currentSlide}
+          className="is-current"
+          hidden={incomingSlide !== null}
+        />
+        {incomingSlide && (
+          <SlideCopy
+            slide={incomingSlide}
+            className="is-incoming"
+            hidden={false}
+          />
+        )}
+
+        <div
+          class="esv-hero-carousel-controls"
+          aria-label="Controles do carrossel"
         >
-          ←
-        </button>
-        <span aria-live="polite">{active + 1} / {slides.length}</span>
-        <button
-          type="button"
-          aria-label="Próximo slide"
-          disabled={phase !== "idle"}
-          onClick={() => requestSlide((active + 1) % slides.length)}
-        >
-          →
-        </button>
-      </div>
-    </section>
+          <button
+            type="button"
+            aria-label="Slide anterior"
+            disabled={phase !== "idle"}
+            onClick={() =>
+              requestSlide((active - 1 + slides.length) % slides.length)}
+          >
+            ←
+          </button>
+          <span aria-live="polite">{active + 1} / {slides.length}</span>
+          <button
+            type="button"
+            aria-label="Próximo slide"
+            disabled={phase !== "idle"}
+            onClick={() => requestSlide((active + 1) % slides.length)}
+          >
+            →
+          </button>
+        </div>
+      </section>
+    </>
   );
 }

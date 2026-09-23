@@ -39,6 +39,13 @@ export default defineApp(async (_req, ctx) => {
           crossorigin=""
         />
         <link
+          rel="preload"
+          as="font"
+          type="font/woff2"
+          crossorigin=""
+          href="https://cdn.jsdelivr.net/fontsource/fonts/inter@5.3.0/latin-300-normal.woff2"
+        />
+        <link
           rel="preconnect"
           href="https://esmeracms-green.vercel.app"
           crossorigin=""
@@ -100,12 +107,6 @@ export default defineApp(async (_req, ctx) => {
               rel="stylesheet"
               href={asset(
                 `/esmera-collection-filter-v3.css?v=${storefrontStyleRevision}`,
-              )}
-            />
-            <link
-              rel="stylesheet"
-              href={asset(
-                `/esmera-collection-filter-label-fix.css?v=${storefrontStyleRevision}`,
               )}
             />
           </>

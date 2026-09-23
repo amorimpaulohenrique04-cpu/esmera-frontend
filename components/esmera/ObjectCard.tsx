@@ -13,6 +13,7 @@ import { EsmeraImage } from "./ResponsiveMedia.tsx";
 export interface Props {
   item: StorefrontProductV2 | EsmeraObject;
   motionOrder?: number;
+  priority?: boolean;
 }
 
 function isEsmeraObject(
@@ -21,7 +22,9 @@ function isEsmeraObject(
   return typeof item.image === "string";
 }
 
-export default function ObjectCard({ item, motionOrder = 0 }: Props) {
+export default function ObjectCard(
+  { item, motionOrder = 0, priority = false }: Props,
+) {
   const legacyItem = isEsmeraObject(item);
   const vm = legacyItem
     ? esmeraObjectToCardViewModel(item)
@@ -79,8 +82,9 @@ export default function ObjectCard({ item, motionOrder = 0 }: Props) {
               : "esv-product-image-static"}
             src={vm.image ?? ""}
             alt={vm.imageAlt}
-            loading="lazy"
+            loading={priority ? "eager" : "lazy"}
             decoding="async"
+            fetchPriority={priority ? "high" : "auto"}
             width={1200}
             height={800}
             sizes="(max-width: 639px) calc(100vw - 44px), (max-width: 1023px) 46vw, 31vw"

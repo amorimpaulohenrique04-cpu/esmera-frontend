@@ -1,5 +1,5 @@
 import { useEffect } from "preact/hooks";
-import type { EsmeraObject } from "../lib/payload/types.ts";
+import type { EsmeraObject } from "../payload/types.ts";
 
 interface OpenProductDetail {
   product?: EsmeraObject;
@@ -22,7 +22,11 @@ function productSharePath(slug: string): string {
   return `/colecao?${PRODUCT_QUERY_PARAM}=${encodeURIComponent(slug)}`;
 }
 
-export default function ProductModalLinkSync() {
+/**
+ * URL/deep-link synchronization belongs to ProductModal. Keeping it in the
+ * modal island avoids an additional global hydration root and JS request.
+ */
+export function useProductModalLinkSync(): void {
   useEffect(() => {
     let returnPath: string | null = null;
     let modalWasOpen = document.body.classList.contains(
@@ -49,7 +53,6 @@ export default function ProductModalLinkSync() {
     const restoreReturnURL = () => {
       const current = new URL(globalThis.location.href);
       if (!current.searchParams.has(PRODUCT_QUERY_PARAM) && !returnPath) return;
-
       const target = returnPath ?? pathWithoutProduct(current) ?? "/colecao";
       globalThis.history.replaceState(globalThis.history.state, "", target);
       returnPath = null;
@@ -58,8 +61,7 @@ export default function ProductModalLinkSync() {
     const onOpenProduct = (event: Event) => {
       const detail = (event as CustomEvent<OpenProductDetail>).detail;
       const slug = detail?.product?.slug?.trim();
-      if (!slug) return;
-      writeProductURL(slug);
+      if (slug) writeProductURL(slug);
     };
 
     globalThis.addEventListener("esmera:open-product", onOpenProduct);
@@ -68,7 +70,6 @@ export default function ProductModalLinkSync() {
       const modalIsOpen = document.body.classList.contains(
         "esv-product-modal-open",
       );
-
       if (modalWasOpen && !modalIsOpen) restoreReturnURL();
       modalWasOpen = modalIsOpen;
     });
@@ -79,15 +80,15 @@ export default function ProductModalLinkSync() {
     });
 
     const initialURL = new URL(globalThis.location.href);
-    const initialSlug = initialURL.searchParams
-      .get(PRODUCT_QUERY_PARAM)
+    const initialSlug = initialURL.searchParams.get(PRODUCT_QUERY_PARAM)
       ?.trim();
 
     if (initialSlug) {
       returnPath = pathWithoutProduct(initialURL) || "/colecao";
-
       void fetch(
-        `/api/esmera-product-detail?slug=${encodeURIComponent(initialSlug)}&full=1`,
+        `/api/esmera-product-detail?slug=${
+          encodeURIComponent(initialSlug)
+        }&full=1`,
         { headers: { accept: "application/json" } },
       )
         .then((response) => {
@@ -96,7 +97,6 @@ export default function ProductModalLinkSync() {
         })
         .then((data) => {
           if (!data.fullProduct) throw new Error("product unavailable");
-
           const dispatchOpen = () => {
             globalThis.dispatchEvent(
               new CustomEvent("esmera:open-product", {
@@ -104,7 +104,6 @@ export default function ProductModalLinkSync() {
               }),
             );
           };
-
           requestAnimationFrame(() => requestAnimationFrame(dispatchOpen));
           retryTimer = globalThis.setTimeout(() => {
             if (!document.body.classList.contains("esv-product-modal-open")) {
@@ -121,6 +120,4 @@ export default function ProductModalLinkSync() {
       globalThis.removeEventListener("esmera:open-product", onOpenProduct);
     };
   }, []);
-
-  return null;
 }

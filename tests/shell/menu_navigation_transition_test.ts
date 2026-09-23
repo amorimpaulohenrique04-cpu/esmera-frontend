@@ -2,12 +2,10 @@ import { assertEquals, assertStringIncludes } from "@std/assert";
 
 Deno.test("menu navigation waits for the owned exit lifecycle before routing", async () => {
   const coordinator = await Deno.readTextFile(
-    "islands/MenuNavigationCoordinator.tsx",
+    "lib/esmera/useMenuNavigationCoordinator.ts",
   );
   const menu = await Deno.readTextFile("islands/DynamicMenu.tsx");
-  const layout = await Deno.readTextFile(
-    "components/esmera/StorefrontLayout.tsx",
-  );
+  const header = await Deno.readTextFile("islands/EsmeraHeader.tsx");
 
   assertStringIncludes(coordinator, "anchor.closest(MENU_SELECTOR)");
   assertStringIncludes(coordinator, "hasActiveMenuSurface()");
@@ -27,7 +25,7 @@ Deno.test("menu navigation waits for the owned exit lifecycle before routing", a
   );
   assertStringIncludes(
     coordinator,
-    'from "../lib/esmera/navigationMotion.ts"',
+    'from "./navigationMotion.ts"',
   );
   assertStringIncludes(menu, "megaAfterClose");
   assertStringIncludes(menu, "drawerAfterClose");
@@ -49,15 +47,8 @@ Deno.test("menu navigation waits for the owned exit lifecycle before routing", a
   assertStringIncludes(coordinator, "isSameDocumentHash(url)");
 
   assertStringIncludes(
-    layout,
-    'import MenuNavigationCoordinator from "../../islands/MenuNavigationCoordinator.tsx";',
+    header,
+    'import { useMenuNavigationCoordinator } from "../lib/esmera/useMenuNavigationCoordinator.ts";',
   );
-  assertEquals(
-    layout.match(/<MenuNavigationCoordinator \/>/g)?.length ?? 0,
-    1,
-  );
-
-  const coordinatorIndex = layout.indexOf("<MenuNavigationCoordinator />");
-  const headerIndex = layout.indexOf("<Header");
-  assertEquals(coordinatorIndex >= 0 && headerIndex > coordinatorIndex, true);
+  assertStringIncludes(header, "useMenuNavigationCoordinator();");
 });

@@ -63,7 +63,7 @@ Deno.test("menu lifecycle motion is not duplicated in the catalog layer", async 
 Deno.test("menu navigation event contract has one source of truth", async () => {
   const contract = await Deno.readTextFile("lib/esmera/navigationMotion.ts");
   const coordinator = await Deno.readTextFile(
-    "islands/MenuNavigationCoordinator.tsx",
+    "lib/esmera/useMenuNavigationCoordinator.ts",
   );
   const menu = await Deno.readTextFile("islands/DynamicMenu.tsx");
 
@@ -73,7 +73,7 @@ Deno.test("menu navigation event contract has one source of truth", async () => 
   );
   assertStringIncludes(
     coordinator,
-    'from "../lib/esmera/navigationMotion.ts"',
+    'from "./navigationMotion.ts"',
   );
   assertStringIncludes(
     menu,

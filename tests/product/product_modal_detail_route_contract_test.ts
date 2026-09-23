@@ -5,7 +5,7 @@ import {
 
 Deno.test("product modal keeps normal opens on the lean detail path", async () => {
   const actions = await Deno.readTextFile("islands/ProductActions.tsx");
-  const linkSync = await Deno.readTextFile("islands/ProductModalLinkSync.tsx");
+  const linkSync = await Deno.readTextFile("lib/esmera/useProductModalLinkSync.ts");
   const route = await Deno.readTextFile("routes/api/esmera-product-detail.ts");
 
   assertStringIncludes(

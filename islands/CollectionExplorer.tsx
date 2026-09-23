@@ -743,7 +743,12 @@ export default function CollectionExplorer(props: CollectionExplorerProps) {
             role="list"
           >
             {items.map((item, index) => (
-              <ObjectCard key={item.id} item={item} motionOrder={index % 4} />
+              <ObjectCard
+                key={item.id}
+                item={item}
+                motionOrder={index % 4}
+                priority={page === props.initialPage && index < 3}
+              />
             ))}
           </div>
         )

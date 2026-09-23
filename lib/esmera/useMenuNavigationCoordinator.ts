@@ -2,7 +2,7 @@ import { useEffect } from "preact/hooks";
 import {
   MENU_NAVIGATION_REQUEST_EVENT,
   type MenuNavigationRequestDetail,
-} from "../lib/esmera/navigationMotion.ts";
+} from "./navigationMotion.ts";
 
 const MENU_SELECTOR = ".esv-nav-v2-desktop, .esv-mega-v2, .esv-nav-v2-drawer";
 const ACTIVE_MENU_SURFACE_SELECTOR = ".esv-mega-v2, .esv-nav-v2-backdrop";
@@ -10,8 +10,7 @@ const MENU_NAVIGATION_FALLBACK_MS = 240;
 
 function isModifiedActivation(event: MouseEvent): boolean {
   return event.button !== 0 || event.metaKey || event.ctrlKey ||
-    event.shiftKey ||
-    event.altKey;
+    event.shiftKey || event.altKey;
 }
 
 function isSameDocumentHash(url: URL): boolean {
@@ -29,7 +28,11 @@ function prefersReducedMotion(): boolean {
     false;
 }
 
-export default function MenuNavigationCoordinator() {
+/**
+ * Navigation handoff belongs to the header interaction surface. Keeping it in
+ * the EsmeraHeader island avoids a second global hydration root and bundle.
+ */
+export function useMenuNavigationCoordinator(): void {
   useEffect(() => {
     let fallbackTimer: ReturnType<typeof globalThis.setTimeout> | null = null;
     let navigationPending = false;
@@ -52,9 +55,9 @@ export default function MenuNavigationCoordinator() {
 
       if (url.origin !== globalThis.location.origin) return;
       if (url.protocol !== "http:" && url.protocol !== "https:") return;
-      if (isSameDocumentHash(url)) return;
-      if (url.href === globalThis.location.href) return;
-
+      if (isSameDocumentHash(url) || url.href === globalThis.location.href) {
+        return;
+      }
       if (!hasActiveMenuSurface() || prefersReducedMotion()) return;
 
       event.preventDefault();
@@ -90,6 +93,4 @@ export default function MenuNavigationCoordinator() {
       if (fallbackTimer) globalThis.clearTimeout(fallbackTimer);
     };
   }, []);
-
-  return null;
 }

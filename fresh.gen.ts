@@ -27,7 +27,6 @@ import * as $sitemap_xml from "./routes/sitemap.xml.ts";
 import * as $sobre from "./routes/sobre.tsx";
 import * as $termos from "./routes/termos.tsx";
 import * as $BuyButton from "./islands/BuyButton.tsx";
-import * as $BuyFlow from "./islands/BuyFlow.tsx";
 import * as $CollectionExplorer from "./islands/CollectionExplorer.tsx";
 import * as $DynamicMenu from "./islands/DynamicMenu.tsx";
 import * as $EsmeraHeader from "./islands/EsmeraHeader.tsx";
@@ -35,10 +34,8 @@ import * as $EsmeraMotion from "./islands/EsmeraMotion.tsx";
 import * as $FavoritesPage from "./islands/FavoritesPage.tsx";
 import * as $FooterLeadForm from "./islands/FooterLeadForm.tsx";
 import * as $HeroCarousel from "./islands/HeroCarousel.tsx";
-import * as $MenuNavigationCoordinator from "./islands/MenuNavigationCoordinator.tsx";
 import * as $ProductActions from "./islands/ProductActions.tsx";
 import * as $ProductModal from "./islands/ProductModal.tsx";
-import * as $ProductModalLinkSync from "./islands/ProductModalLinkSync.tsx";
 import * as $ShareProductLink from "./islands/ShareProductLink.tsx";
 import * as $WishlistButton from "./islands/WishlistButton.tsx";
 import type { Manifest } from "$fresh/server.ts";
@@ -72,7 +69,6 @@ const manifest = {
   },
   islands: {
     "./islands/BuyButton.tsx": $BuyButton,
-    "./islands/BuyFlow.tsx": $BuyFlow,
     "./islands/CollectionExplorer.tsx": $CollectionExplorer,
     "./islands/DynamicMenu.tsx": $DynamicMenu,
     "./islands/EsmeraHeader.tsx": $EsmeraHeader,
@@ -80,10 +76,8 @@ const manifest = {
     "./islands/FavoritesPage.tsx": $FavoritesPage,
     "./islands/FooterLeadForm.tsx": $FooterLeadForm,
     "./islands/HeroCarousel.tsx": $HeroCarousel,
-    "./islands/MenuNavigationCoordinator.tsx": $MenuNavigationCoordinator,
     "./islands/ProductActions.tsx": $ProductActions,
     "./islands/ProductModal.tsx": $ProductModal,
-    "./islands/ProductModalLinkSync.tsx": $ProductModalLinkSync,
     "./islands/ShareProductLink.tsx": $ShareProductLink,
     "./islands/WishlistButton.tsx": $WishlistButton,
   },
