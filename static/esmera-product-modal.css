@@ -361,7 +361,7 @@ body.esv-product-modal-open {
 .esv-product-modal-heading h2 {
   max-width: 12ch;
   margin: 16px 0 10px;
-  font-size: 30px;
+  font-size: clamp(30px, 2.6vw, 44px);
   font-weight: 300;
   line-height: .98;
   letter-spacing: -.035em;
@@ -943,7 +943,7 @@ body.esv-product-modal-open {
 
   .esv-product-modal-heading h2 {
     max-width: 11ch;
-    font-size: 30px;
+    font-size: clamp(30px, 8vw, 40px);
   }
 
   .esv-product-modal-facts > div {

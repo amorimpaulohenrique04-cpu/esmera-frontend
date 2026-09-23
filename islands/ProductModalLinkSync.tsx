@@ -87,7 +87,7 @@ export default function ProductModalLinkSync() {
       returnPath = pathWithoutProduct(initialURL) || "/colecao";
 
       void fetch(
-        `/api/esmera-product-detail?slug=${encodeURIComponent(initialSlug)}`,
+        `/api/esmera-product-detail?slug=${encodeURIComponent(initialSlug)}&full=1`,
         { headers: { accept: "application/json" } },
       )
         .then((response) => {

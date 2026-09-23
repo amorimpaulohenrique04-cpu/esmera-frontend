@@ -4,10 +4,7 @@ import {
   loadResolvedHome,
   type ResolvedHome,
 } from "../../lib/esmera/homeData.ts";
-import {
-  fetchStorefrontProduct,
-  type StorefrontProductV2,
-} from "../../lib/esmera/storefront.ts";
+import type { StorefrontProductV2 } from "../../lib/esmera/storefront.ts";
 import type { EsmeraObject } from "../../lib/payload/types.ts";
 
 export interface Props {
@@ -31,28 +28,12 @@ function hasRenderableImage(product: CuratedProduct): boolean {
 
 export const loader = async (props: Props) => {
   const resolvedHome = await loadResolvedHome();
-  const source = resolvedHome.selectedObjects ?? props;
-  const selectedProducts = (source.products ?? []).slice(0, 4);
-  const storefrontProducts = await Promise.all(
-    selectedProducts.map(async (product): Promise<CuratedProduct> => {
-      try {
-        return (await fetchStorefrontProduct(product.slug)).product;
-      } catch (error) {
-        console.warn(JSON.stringify({
-          event: "selected_object_enrichment_failed",
-          slug: product.slug,
-          fallbackUsed: true,
-          errorType: error instanceof Error ? error.name : "unknown",
-        }));
-        return product;
-      }
-    }),
-  );
 
   return {
     ...props,
     resolvedHome,
-    storefrontProducts,
+    storefrontProducts: (resolvedHome.selectedObjects?.products ?? props.products ?? [])
+      .slice(0, 4),
   };
 };
 

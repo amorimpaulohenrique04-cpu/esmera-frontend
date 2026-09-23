@@ -21,10 +21,8 @@ export default defineApp(async (_req, ctx) => {
   const isHome = pathname === "/";
   const isCatalog = pathname === "/colecao" || pathname.startsWith("/colecao/");
   const isAbout = pathname === "/sobre" || pathname === "/pagina/a-esmera";
-  const isProduct = pathname.startsWith("/produto/");
   const isFavorites = pathname === "/favoritos";
   const hasProductCards = isHome || isCatalog || isFavorites;
-  const hasCommerceUI = hasProductCards || isProduct;
   return (
     <>
       <Theme colorScheme="any" />
@@ -35,15 +33,10 @@ export default defineApp(async (_req, ctx) => {
           rel="stylesheet"
         />
 
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
-          href="https://fonts.gstatic.com"
+          href="https://cdn.jsdelivr.net"
           crossorigin=""
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap"
-          rel="stylesheet"
         />
         <link
           rel="preconnect"
@@ -55,26 +48,23 @@ export default defineApp(async (_req, ctx) => {
           href={asset(`/esmera-master.css?v=${storefrontStyleRevision}`)}
         />
         <link rel="stylesheet" href={asset("/esmera-finish.css")} />
-        {hasCommerceUI && (
-          <>
-            <link
-              rel="stylesheet"
-              href={asset("/esmera-commerce-refine.css")}
-            />
-            <link
-              rel="stylesheet"
-              href={asset(
-                `/esmera-product-modal.css?v=${storefrontStyleRevision}`,
-              )}
-            />
-            <link
-              rel="stylesheet"
-              href={asset(
-                `/esmera-product-modal-refine.css?v=${storefrontStyleRevision}`,
-              )}
-            />
-          </>
-        )}
+        <link
+          rel="stylesheet"
+          href={asset("/esmera-commerce-refine.css")}
+        />
+        <link
+          rel="preload"
+          as="style"
+          href={asset(
+            `/esmera-product-modal.css?v=${storefrontStyleRevision}`,
+          )}
+        />
+        <meta
+          name="esmera-product-modal-css"
+          content={asset(
+            `/esmera-product-modal.css?v=${storefrontStyleRevision}`,
+          )}
+        />
 
         {isHome && (
           <>
