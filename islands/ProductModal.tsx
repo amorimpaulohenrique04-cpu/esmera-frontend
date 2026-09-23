@@ -11,6 +11,7 @@ import {
   plateLabel,
 } from "../lib/esmera/gallery.ts";
 import { buildInstallmentFromPriceCents } from "../lib/esmera/productCard.ts";
+import { ensureProductModalStyles } from "../lib/esmera/productModalStyles.ts";
 import type { EsmeraObject, EsmeraVariant } from "../lib/payload/types.ts";
 
 interface ProductModalImage {
@@ -455,16 +456,19 @@ export default function ProductModal() {
     const open = (event: Event) => {
       const detail = (event as CustomEvent<OpenProductDetail>).detail;
       if (!detail?.product) return;
-      if (closeTimerRef.current !== null) {
-        globalThis.clearTimeout(closeTimerRef.current);
-        closeTimerRef.current = null;
-      }
-      afterCloseRef.current = null;
-      triggerRef.current = detail.trigger ?? null;
-      handoffRef.current = Boolean(detail.handoff);
-      viewerTriggerRef.current = null;
-      selectProduct(detail.product);
-      updatePhase("opening");
+
+      void ensureProductModalStyles().then(() => {
+        if (closeTimerRef.current !== null) {
+          globalThis.clearTimeout(closeTimerRef.current);
+          closeTimerRef.current = null;
+        }
+        afterCloseRef.current = null;
+        triggerRef.current = detail.trigger ?? null;
+        handoffRef.current = Boolean(detail.handoff);
+        viewerTriggerRef.current = null;
+        selectProduct(detail.product!);
+        updatePhase("opening");
+      });
     };
 
     globalThis.addEventListener("esmera:open-product", open);
