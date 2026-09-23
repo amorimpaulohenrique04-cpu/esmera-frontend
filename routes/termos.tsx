@@ -240,7 +240,7 @@ export default function TermsPage({ data }: PageProps<Data>) {
                   solicitados novamente.
                 </p>
                 <p>
-                  As peças favoritedas passam a constar como produtos de
+                  As peças favoritadas passam a constar como produtos de
                   interesse associados ao contato no sistema da Esméra. Favoritar
                   não constitui reserva, compra ou garantia de disponibilidade.
                   A limpeza dos dados do navegador poderá remover a identificação
