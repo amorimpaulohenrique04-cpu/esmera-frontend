@@ -32,7 +32,8 @@ export const handler: Handlers = {
 
       return Response.json({ product, fullProduct }, {
         headers: {
-          "cache-control": "public, max-age=30, s-maxage=60, stale-while-revalidate=120",
+          "cache-control":
+            "public, max-age=30, s-maxage=60, stale-while-revalidate=120",
         },
       });
     } catch {

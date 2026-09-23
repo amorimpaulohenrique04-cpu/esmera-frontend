@@ -15,7 +15,9 @@ type ProductDetailResponse = { product?: ModalProductMedia };
 
 const modalMediaCache = new Map<string, Promise<ModalProductMedia | null>>();
 
-async function requestModalMedia(slug: string): Promise<ModalProductMedia | null> {
+async function requestModalMedia(
+  slug: string,
+): Promise<ModalProductMedia | null> {
   try {
     const response = await fetch(
       `/api/esmera-product-detail?slug=${encodeURIComponent(slug)}`,
@@ -32,8 +34,12 @@ async function requestModalMedia(slug: string): Promise<ModalProductMedia | null
   }
 }
 
-function loadModalMedia(product?: EsmeraObject): Promise<ModalProductMedia | null> {
-  if (!product?.slug || product.gallery.length > 0) return Promise.resolve(null);
+function loadModalMedia(
+  product?: EsmeraObject,
+): Promise<ModalProductMedia | null> {
+  if (!product?.slug || product.gallery.length > 0) {
+    return Promise.resolve(null);
+  }
 
   const cached = modalMediaCache.get(product.slug);
   if (cached) return cached;
@@ -76,15 +82,15 @@ export default function ProductActions(
     const sourceImage = findSourceImage(trigger);
     const cachedSource = sourceImage?.currentSrc || sourceImage?.src;
 
-    let eventProduct =
-      name === "esmera:open-product" && product && cachedSource
-        ? { ...product, image: cachedSource }
-        : product;
+    let eventProduct = name === "esmera:open-product" && product && cachedSource
+      ? { ...product, image: cachedSource }
+      : product;
 
     if (name === "esmera:open-product" && eventProduct) {
       const media = await loadModalMedia(eventProduct);
       if (media?.gallery.length) {
-        const detailImage = media.gallery.find((item) => item.role === "detail")?.url;
+        const detailImage = media.gallery.find((item) => item.role === "detail")
+          ?.url;
         eventProduct = {
           ...eventProduct,
           image: media.image,

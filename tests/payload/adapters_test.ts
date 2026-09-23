@@ -72,10 +72,16 @@ Deno.test("product gallery prefers the uncropped gallery rendition and preserves
   }, "https://cms.example.com");
   const gallery = adapted?.gallery[0];
 
-  assertEquals(gallery?.url, "https://cms.example.com/media/portrait-gallery.jpg");
+  assertEquals(
+    gallery?.url,
+    "https://cms.example.com/media/portrait-gallery.jpg",
+  );
   assertEquals(gallery?.width, 1280);
   assertEquals(gallery?.height, 1600);
-  assertEquals(gallery?.fullUrl, "https://cms.example.com/media/portrait-original.jpg");
+  assertEquals(
+    gallery?.fullUrl,
+    "https://cms.example.com/media/portrait-original.jpg",
+  );
   assertEquals(gallery?.fullWidth, 2000);
   assertEquals(gallery?.fullHeight, 2500);
 });
@@ -102,7 +108,10 @@ Deno.test("product gallery falls back to the original instead of the cropped wid
   }, "https://cms.example.com");
   const gallery = adapted?.gallery[0];
 
-  assertEquals(gallery?.url, "https://cms.example.com/media/legacy-original.jpg");
+  assertEquals(
+    gallery?.url,
+    "https://cms.example.com/media/legacy-original.jpg",
+  );
   assertEquals(gallery?.width, 1600);
   assertEquals(gallery?.height, 2000);
   assertEquals(gallery?.fullWidth, 1600);

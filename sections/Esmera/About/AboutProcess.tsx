@@ -35,7 +35,10 @@ export default function AboutProcess({
   if (!title && !text && visibleSteps.length === 0) return null;
 
   return (
-    <section class="esv-about-process" aria-labelledby="esv-about-process-title">
+    <section
+      class="esv-about-process"
+      aria-labelledby="esv-about-process-title"
+    >
       <div class="esv-shell esv-about-process-head">
         {eyebrow && (
           <p class="esv-kicker" data-motion="reveal" data-motion-order="0">
@@ -43,13 +46,15 @@ export default function AboutProcess({
           </p>
         )}
         {title && (
-          <h2 id="esv-about-process-title" data-motion="reveal" data-motion-order="1">
+          <h2
+            id="esv-about-process-title"
+            data-motion="reveal"
+            data-motion-order="1"
+          >
             {title}
           </h2>
         )}
-        {text && (
-          <p data-motion="reveal" data-motion-order="2">{text}</p>
-        )}
+        {text && <p data-motion="reveal" data-motion-order="2">{text}</p>}
       </div>
       {visibleSteps.length > 0 && (
         <div class="esv-shell esv-about-process-steps">

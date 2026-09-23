@@ -137,8 +137,10 @@ export function normalizeMaterials(
       sourceValues: [...item.sourceValues],
     }))
     .sort((left, right) => {
-      const leftOrder = MATERIAL_ORDER.get(left.value) ?? Number.MAX_SAFE_INTEGER;
-      const rightOrder = MATERIAL_ORDER.get(right.value) ?? Number.MAX_SAFE_INTEGER;
+      const leftOrder = MATERIAL_ORDER.get(left.value) ??
+        Number.MAX_SAFE_INTEGER;
+      const rightOrder = MATERIAL_ORDER.get(right.value) ??
+        Number.MAX_SAFE_INTEGER;
       return leftOrder - rightOrder ||
         right.count - left.count ||
         left.label.localeCompare(right.label, "pt-BR");

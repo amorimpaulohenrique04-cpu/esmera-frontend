@@ -28,7 +28,7 @@ export default function ProductModalLinkSync() {
     let modalWasOpen = document.body.classList.contains(
       "esv-product-modal-open",
     );
-    let retryTimer: number | null = null;
+    let retryTimer: ReturnType<typeof globalThis.setTimeout> | null = null;
 
     const rememberReturnPath = () => {
       if (returnPath) return;

@@ -78,7 +78,9 @@ Deno.test("P1 secondary text token meets WCAG AA on Esmera light surfaces", asyn
   for (const background of ["#F3F0E8", "#E9E5DC"]) {
     const ratio = contrast(muted, background);
     if (ratio < 4.5) {
-      throw new Error(`${muted} on ${background} is only ${ratio.toFixed(2)}:1`);
+      throw new Error(
+        `${muted} on ${background} is only ${ratio.toFixed(2)}:1`,
+      );
     }
   }
 
@@ -94,7 +96,9 @@ Deno.test("P1 category sanitization is wired into page and API queries", async (
   ]);
   for (const source of [page, api]) {
     if (!source.includes("collectionFacetCategories(chrome.categories)")) {
-      throw new Error("collection category sanitization is not wired end-to-end");
+      throw new Error(
+        "collection category sanitization is not wired end-to-end",
+      );
     }
   }
 });

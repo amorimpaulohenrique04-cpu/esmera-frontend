@@ -71,14 +71,16 @@ type PayloadCategoryV2 = PayloadCategory & {
   externalHref?: string | null;
   url?: string | null;
   editorialSlug?: string | null;
-  menuHighlights?: Array<{
-    title?: string | null;
-    eyebrow?: string | null;
-    copy?: string | null;
-    text?: string | null;
-    image?: Relationship<PayloadMedia>;
-    callToAction?: PayloadCTA | null;
-  }> | null;
+  menuHighlights?:
+    | Array<{
+      title?: string | null;
+      eyebrow?: string | null;
+      copy?: string | null;
+      text?: string | null;
+      image?: Relationship<PayloadMedia>;
+      callToAction?: PayloadCTA | null;
+    }>
+    | null;
 };
 
 function relationId<T extends { id: string | number }>(
@@ -149,9 +151,10 @@ export function toStorefrontCategory(
     order: category.order ?? 100,
     parentId: relationId(category.parent),
     showInMenu: menu?.showInMenu === true,
-    menuVisibility: menu?.visibility === "desktop" || menu?.visibility === "mobile"
-      ? menu.visibility
-      : "both",
+    menuVisibility:
+      menu?.visibility === "desktop" || menu?.visibility === "mobile"
+        ? menu.visibility
+        : "both",
     nodeType: category.nodeType ?? "collection",
     href: destination.href,
     external: destination.external,
@@ -203,7 +206,9 @@ export function buildNavigationTree(
     byParent.set(category.parentId, siblings);
   }
   for (const siblings of byParent.values()) {
-    siblings.sort((a, b) => a.order - b.order || a.label.localeCompare(b.label));
+    siblings.sort((a, b) =>
+      a.order - b.order || a.label.localeCompare(b.label)
+    );
   }
 
   const buildNode = (
@@ -245,7 +250,9 @@ export function buildNavigationTree(
     const category = visible.find((item) => item.id === id);
     return category ? [category] : [];
   });
-  const referencedRootIds = new Set(referencedRoots.map((category) => category.id));
+  const referencedRootIds = new Set(
+    referencedRoots.map((category) => category.id),
+  );
   const roots = referenced.length > 0
     ? [
       ...referencedRoots,

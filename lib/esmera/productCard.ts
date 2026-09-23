@@ -155,7 +155,8 @@ export function buildInstallmentFromPriceCents(
 ): ProductCardInstallment | null {
   if (
     typeof priceCents !== "number" || !Number.isFinite(priceCents) ||
-    priceCents <= 0 || !Number.isInteger(installmentCount) || installmentCount < 2
+    priceCents <= 0 || !Number.isInteger(installmentCount) ||
+    installmentCount < 2
   ) return null;
   const amount = formatPriceCents(Math.floor(priceCents / installmentCount));
   return amount

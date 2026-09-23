@@ -1,10 +1,7 @@
 import { payloadGet } from "./client.ts";
 import { whereEquals } from "./query.ts";
 import { toStorefrontCategory } from "./navigation.ts";
-import type {
-  PayloadCategory,
-  PayloadPaginated,
-} from "./types.ts";
+import type { PayloadCategory, PayloadPaginated } from "./types.ts";
 
 export async function listStorefrontCategories(limit = 100) {
   try {

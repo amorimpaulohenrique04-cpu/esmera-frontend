@@ -1,11 +1,11 @@
 import { useEffect } from "preact/hooks";
 
-const MENU_SELECTOR =
-  ".esv-nav-v2-desktop, .esv-mega-v2, .esv-nav-v2-drawer";
+const MENU_SELECTOR = ".esv-nav-v2-desktop, .esv-mega-v2, .esv-nav-v2-drawer";
 const MENU_EXIT_MS = 220;
 
 function isModifiedActivation(event: MouseEvent): boolean {
-  return event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey ||
+  return event.button !== 0 || event.metaKey || event.ctrlKey ||
+    event.shiftKey ||
     event.altKey;
 }
 

@@ -18,7 +18,9 @@ import type {
 } from "../lib/payload/types.ts";
 import Manifesto from "../sections/Esmera/Manifesto.tsx";
 
-type ContactChannel = NonNullable<PayloadSiteSettings["officialChannels"]>[number];
+type ContactChannel = NonNullable<
+  PayloadSiteSettings["officialChannels"]
+>[number];
 
 function channelHref(channel: ContactChannel): string {
   if (channel.url) return sanitizePublicHref(channel.url);
@@ -70,11 +72,14 @@ export default function ContactRoute({ data }: PageProps<Data>) {
     external: false,
   };
   const title = page?.title?.trim() || institutionalBaseline.contact.title;
-  const eyebrow = page?.eyebrow?.trim() || institutionalBaseline.contact.eyebrow;
-  const text = lexicalToText(page?.content) || institutionalBaseline.contact.text;
+  const eyebrow = page?.eyebrow?.trim() ||
+    institutionalBaseline.contact.eyebrow;
+  const text = lexicalToText(page?.content) ||
+    institutionalBaseline.contact.text;
   const hasEditorialFeature = Boolean(page?.title && image);
-  const channels = (page?.channels ?? data.chrome.settings?.officialChannels ?? [])
-    .filter((channel) => channel.active !== false && channelHref(channel));
+  const channels =
+    (page?.channels ?? data.chrome.settings?.officialChannels ?? [])
+      .filter((channel) => channel.active !== false && channelHref(channel));
 
   return (
     <StorefrontLayout {...data.chrome} seo={data.seo}>

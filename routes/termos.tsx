@@ -22,7 +22,8 @@ export default function TermsPage({ data }: PageProps<Data>) {
       canonical={data.canonical}
       seo={{
         title: "Termos de Uso | Esméra",
-        description: "Condições gerais de uso do catálogo digital e dos canais de atendimento Esméra.",
+        description:
+          "Condições gerais de uso do catálogo digital e dos canais de atendimento Esméra.",
         noindex: false,
       }}
     >
@@ -47,15 +48,15 @@ export default function TermsPage({ data }: PageProps<Data>) {
           </p>
           <h2>Conteúdo e imagens</h2>
           <p>
-            Fotografias, textos, identidade visual e demais conteúdos do site são
-            apresentados para identificação e divulgação dos objetos Esméra e não
-            devem ser reutilizados comercialmente sem autorização.
+            Fotografias, textos, identidade visual e demais conteúdos do site
+            são apresentados para identificação e divulgação dos objetos Esméra
+            e não devem ser reutilizados comercialmente sem autorização.
           </p>
           <h2>Atualizações</h2>
           <p>
-            O catálogo e estes termos podem ser atualizados para refletir mudanças
-            de produtos, serviços e operação. A versão publicada nesta página é a
-            referência vigente do storefront.
+            O catálogo e estes termos podem ser atualizados para refletir
+            mudanças de produtos, serviços e operação. A versão publicada nesta
+            página é a referência vigente do storefront.
           </p>
           <a class="esv-text-link" href="/contato">Falar com a Esméra</a>
         </div>

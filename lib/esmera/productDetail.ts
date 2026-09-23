@@ -1,4 +1,7 @@
-import type { StorefrontProductDetailV2, StorefrontMediaV2 } from "./storefront.ts";
+import type {
+  StorefrontMediaV2,
+  StorefrontProductDetailV2,
+} from "./storefront.ts";
 import type { EsmeraObject } from "../payload/types.ts";
 
 export type ModalProductMedia = {

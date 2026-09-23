@@ -49,7 +49,10 @@ export const handler: Handlers<Data> = {
     const visibleFilters = normalizeVisibleFilters(page?.visibleFilters);
     const url = new URL(req.url);
     const query = buildCatalogQuery(url, visibleFilters, categories);
-    const materialQueryValues = expandMaterialFilters(query.materials, materials);
+    const materialQueryValues = expandMaterialFilters(
+      query.materials,
+      materials,
+    );
     const products = await listProducts({
       limit: 24,
       page: query.page,

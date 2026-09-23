@@ -45,7 +45,11 @@ export default function AboutHero({
               {eyebrow}
             </p>
           )}
-          <h1 id="esv-about-hero-title" data-motion="reveal" data-motion-order="1">
+          <h1
+            id="esv-about-hero-title"
+            data-motion="reveal"
+            data-motion-order="1"
+          >
             {title}
           </h1>
           {text && (

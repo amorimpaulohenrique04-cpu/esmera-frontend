@@ -30,5 +30,7 @@ Deno.test("collection v2 ignores one-character searches", () => {
     ["sort"],
     [],
   );
-  if (query.where) throw new Error("one-character search must not query Payload");
+  if (query.where) {
+    throw new Error("one-character search must not query Payload");
+  }
 });

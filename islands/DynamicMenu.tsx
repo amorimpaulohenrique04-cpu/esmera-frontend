@@ -140,7 +140,9 @@ export default function DynamicMenu(
   const megaExitTimer = useRef<ReturnType<typeof globalThis.setTimeout> | null>(
     null,
   );
-  const drawerExitTimer = useRef<ReturnType<typeof globalThis.setTimeout> | null>(
+  const drawerExitTimer = useRef<
+    ReturnType<typeof globalThis.setTimeout> | null
+  >(
     null,
   );
   const drawerAfterClose = useRef<(() => void) | null>(null);
@@ -364,7 +366,10 @@ export default function DynamicMenu(
       if (!desktopOpen || event.key !== "Escape") return;
       event.preventDefault();
       requestDesktopClose();
-      globalThis.setTimeout(() => activeTriggerRef.current?.focus(), MEGA_EXIT_MS);
+      globalThis.setTimeout(
+        () => activeTriggerRef.current?.focus(),
+        MEGA_EXIT_MS,
+      );
     };
     globalThis.addEventListener("keydown", closeDesktop);
     return () => globalThis.removeEventListener("keydown", closeDesktop);
@@ -397,9 +402,7 @@ export default function DynamicMenu(
         />
         <div
           id={MEGA_ID}
-          class={`esv-mega-v2${
-            megaPhase === "closing" ? " is-closing" : ""
-          }`}
+          class={`esv-mega-v2${megaPhase === "closing" ? " is-closing" : ""}`}
           onPointerEnter={cancelDesktopClose}
           onPointerLeave={scheduleDesktopClose}
           onAnimationEnd={(event) => {
@@ -464,15 +467,16 @@ export default function DynamicMenu(
                     {highlight.copy && <span>{highlight.copy}</span>}
                   </a>
                 ))}
-                {activeDesktop.highlights.length === 0 && activeDesktop.image && (
-                  <a href={activeDesktop.href || undefined}>
-                    <img
-                      src={activeDesktop.image.url}
-                      alt={activeDesktop.image.alt}
-                    />
-                    <strong>{activeDesktop.label}</strong>
-                  </a>
-                )}
+                {activeDesktop.highlights.length === 0 && activeDesktop.image &&
+                  (
+                    <a href={activeDesktop.href || undefined}>
+                      <img
+                        src={activeDesktop.image.url}
+                        alt={activeDesktop.image.alt}
+                      />
+                      <strong>{activeDesktop.label}</strong>
+                    </a>
+                  )}
               </div>
             )}
           </div>
@@ -548,7 +552,9 @@ export default function DynamicMenu(
                       ? "page"
                       : undefined}
                     onClick={() => {
-                      if (item.children.length === 0) requestMobileClose();
+                      if (item.children.length === 0) {
+                        requestMobileClose();
+                      }
                     }}
                   >
                     {item.label}

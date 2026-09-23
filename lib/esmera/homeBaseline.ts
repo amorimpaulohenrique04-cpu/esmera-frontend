@@ -128,7 +128,8 @@ export const defaultHome: HomeBaseline = {
     material: "esmeralda",
     image:
       "https://decoims.com/testeesmera/0eb6ebf2-58bd-44d6-a226-fcc452bcd9fc/IMG_3638.jpg",
-    imageAlt: "Composição mineral com pedra azul, vaso claro e pequeno pássaro dourado",
+    imageAlt:
+      "Composição mineral com pedra azul, vaso claro e pequeno pássaro dourado",
     focalPoint: "center",
   },
   provenance: {
@@ -169,7 +170,8 @@ export const defaultHome: HomeBaseline = {
     text:
       "Para projetos especiais, desenvolvemos criações sob encomenda a partir da necessidade, do espaço e da matéria.\n\nDo desenho à escolha da pedra, cada detalhe pode ser pensado para criar uma peça que tenha sentido naquele lugar.",
     ctaLabel: "Converse com a Esméra sobre seu projeto.",
-    ctaHref: `mailto:${defaultEmail}?subject=Consulta%20privada%20%E2%80%94%20Esm%C3%A9ra`,
+    ctaHref:
+      `mailto:${defaultEmail}?subject=Consulta%20privada%20%E2%80%94%20Esm%C3%A9ra`,
   },
   footer: {
     siteName: "ESMÉRA",
