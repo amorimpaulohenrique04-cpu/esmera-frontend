@@ -102,12 +102,6 @@ export default defineApp(async (_req, ctx) => {
                 `/esmera-collection-filter-v3.css?v=${storefrontStyleRevision}`,
               )}
             />
-            <link
-              rel="stylesheet"
-              href={asset(
-                `/esmera-collection-filter-label-fix.css?v=${storefrontStyleRevision}`,
-              )}
-            />
           </>
         )}
 
