@@ -32,8 +32,8 @@ export default function FavoritesRoute({ data }: PageProps<Data>) {
           <p class="esv-kicker">SUA SELEÇÃO</p>
           <h1>Meus Favoritos</h1>
           <p>
-            As peças que você escolheu, reunidas em um só lugar para comparar,
-            rever e continuar seu atendimento.
+            As peças que você escolheu, reunidas em um só lugar para comparar
+            e rever quando quiser.
           </p>
         </header>
 
