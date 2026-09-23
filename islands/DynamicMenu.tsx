@@ -20,6 +20,7 @@ const FOCUSABLE = [
 ].join(",");
 
 const MEGA_EXIT_FALLBACK_MS = 180;
+const DESKTOP_CLOSE_GRACE_MS = 420;
 const DRAWER_EXIT_FALLBACK_MS = 180;
 
 function Chevron({ direction = "right" }: { direction?: "left" | "right" }) {
@@ -230,7 +231,7 @@ export default function DynamicMenu(
     closeTimer.current = globalThis.setTimeout(() => {
       closeTimer.current = null;
       requestDesktopClose();
-    }, 90);
+    }, DESKTOP_CLOSE_GRACE_MS);
   };
 
   const finalizeMobileClose = () => {
@@ -587,7 +588,7 @@ export default function DynamicMenu(
             <button
               type="button"
               onClick={() =>
-                requestMobileClose(() => openHeaderControl(".esv-cart-link"))}
+                requestMobileClose(() => openHeaderControl(".esv-cart-link"))
             >
               Carrinho
             </button>
