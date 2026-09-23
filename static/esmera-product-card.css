@@ -602,20 +602,6 @@
     opacity 160ms ease;
 }
 
-.esv-wishlist-dialog-submit:disabled,
-.esv-card-wishlist:disabled {
-  cursor: wait;
-  opacity: 0.56;
-}
-
-.esv-wishlist-dialog-privacy {
-  max-width: 46ch;
-  margin: 14px 0 0;
-  color: #858680;
-  font-size: 10px;
-  line-height: 1.5;
-}
-
 @media (hover: hover) and (pointer: fine) {
   .esv-wishlist-dialog-submit:hover {
     background: transparent;
