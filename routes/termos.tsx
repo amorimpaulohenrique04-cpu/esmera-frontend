@@ -232,14 +232,19 @@ export default function TermsPage({ data }: PageProps<Data>) {
             <div id="favoritos">
               <TermsSection number="06" id="favoritos" title="Favoritos">
                 <p>
-                  A funcionalidade de favoritos permite salvar peças de interesse
-                  no próprio dispositivo. Essa seleção pode ser armazenada
-                  localmente no navegador e não constitui reserva, intenção
-                  formal de compra ou garantia de disponibilidade.
+                  A funcionalidade de favoritos permite salvar peças de
+                  interesse e vinculá-las ao atendimento Esméra. No primeiro
+                  uso, podemos solicitar nome e WhatsApp para identificar sua
+                  seleção. Essas informações e a lista local podem ser
+                  armazenadas no navegador para evitar que os mesmos dados sejam
+                  solicitados novamente.
                 </p>
                 <p>
-                  A limpeza dos dados do navegador poderá remover a lista de
-                  favoritos.
+                  As peças favoritedas passam a constar como produtos de
+                  interesse associados ao contato no sistema da Esméra. Favoritar
+                  não constitui reserva, compra ou garantia de disponibilidade.
+                  A limpeza dos dados do navegador poderá remover a identificação
+                  local e a lista exibida no dispositivo.
                 </p>
               </TermsSection>
             </div>
