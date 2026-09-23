@@ -57,6 +57,52 @@ export default defineApp(async (_req, ctx) => {
             `/esmera-product-modal-refine.css?v=${storefrontStyleRevision}`,
           )}
         />
+
+        {isHome && (
+          <>
+            <link
+              rel="stylesheet"
+              href={asset(
+                `/esmera-matter-interaction.css?v=${homeStyleRevision}`,
+              )}
+            />
+            <link
+              rel="stylesheet"
+              href={asset(
+                `/esmera-home-art-direction-v2.css?v=${homeArtDirectionRevision}`,
+              )}
+            />
+            <link
+              rel="stylesheet"
+              href={asset(
+                `/esmera-home-length-refinement-v3.css?v=${homeLengthRevision}`,
+              )}
+            />
+          </>
+        )}
+        {isCatalog && (
+          <>
+            <link
+              rel="stylesheet"
+              href={asset(
+                `/esmera-catalog-v2.css?v=${storefrontStyleRevision}`,
+              )}
+            />
+            <link
+              rel="stylesheet"
+              href={asset(
+                `/esmera-collection-filter-v3.css?v=${storefrontStyleRevision}`,
+              )}
+            />
+            <link
+              rel="stylesheet"
+              href={asset(
+                `/esmera-collection-filter-label-fix.css?v=${storefrontStyleRevision}`,
+              )}
+            />
+          </>
+        )}
+
         <link
           rel="stylesheet"
           href={asset(`/esmera-header.css?v=${storefrontStyleRevision}`)}
@@ -79,56 +125,16 @@ export default defineApp(async (_req, ctx) => {
           rel="stylesheet"
           href={asset("/esmera-accessibility-p1-v1.css")}
         />
-        <link
-          rel="stylesheet"
-          href={asset(`/esmera-footer.css?v=${footerStyleRevision}`)}
-        />
-        {isHome && (
-          <>
-            <link
-              rel="stylesheet"
-              href={asset(`/esmera-matter-interaction.css?v=${homeStyleRevision}`)}
-            />
-            <link
-              rel="stylesheet"
-              href={asset(
-                `/esmera-home-art-direction-v2.css?v=${homeArtDirectionRevision}`,
-              )}
-            />
-            <link
-              rel="stylesheet"
-              href={asset(
-                `/esmera-home-length-refinement-v3.css?v=${homeLengthRevision}`,
-              )}
-            />
-          </>
-        )}
-        {isCatalog && (
-          <>
-            <link
-              rel="stylesheet"
-              href={asset(`/esmera-catalog-v2.css?v=${storefrontStyleRevision}`)}
-            />
-            <link
-              rel="stylesheet"
-              href={asset(
-                `/esmera-collection-filter-v3.css?v=${storefrontStyleRevision}`,
-              )}
-            />
-            <link
-              rel="stylesheet"
-              href={asset(
-                `/esmera-collection-filter-label-fix.css?v=${storefrontStyleRevision}`,
-              )}
-            />
-          </>
-        )}
         {isAbout && (
           <link
             rel="stylesheet"
             href={asset(`/esmera-about-page.css?v=${aboutStyleRevision}`)}
           />
         )}
+        <link
+          rel="stylesheet"
+          href={asset(`/esmera-footer.css?v=${footerStyleRevision}`)}
+        />
         <link
           rel="stylesheet"
           href={asset(
