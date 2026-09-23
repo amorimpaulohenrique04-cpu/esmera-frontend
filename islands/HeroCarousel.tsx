@@ -1,6 +1,10 @@
+import { Head } from "$fresh/runtime.ts";
 import { useEffect, useRef, useState } from "preact/hooks";
 import type { HeroSlide } from "../sections/Esmera/Hero.tsx";
-import { optimizePayloadMediaURL } from "../components/esmera/ResponsiveMedia.tsx";
+import {
+  optimizePayloadMediaURL,
+  payloadMediaSrcSet,
+} from "../components/esmera/ResponsiveMedia.tsx";
 
 export interface Props {
   slides: HeroSlide[];
@@ -66,12 +70,15 @@ function SlidePicture(
       {slide.mobileImage && (
         <source
           media="(max-width: 767px)"
-          srcset={optimizePayloadMediaURL(slide.mobileImage, 900)}
+          srcset={payloadMediaSrcSet(slide.mobileImage, 900)}
+          sizes="100vw"
         />
       )}
       <img
         {...{ fetchPriority: priority }}
         src={optimizePayloadMediaURL(slide.desktopImage, 1800)}
+        srcset={payloadMediaSrcSet(slide.desktopImage, 1800)}
+        sizes="100vw"
         alt={slide.alt}
         loading={priority === "high" ? "eager" : "lazy"}
         decoding="async"
@@ -193,8 +200,36 @@ export default function HeroCarousel(
   const incomingSlide = incoming === null ? null : slides[incoming];
   const transitioning = phase === "transitioning";
 
+  const firstSlide = slides[0];
+  const firstMobile = firstSlide.mobileImage ?? firstSlide.desktopImage;
+  const firstDesktopSrc = optimizePayloadMediaURL(firstSlide.desktopImage, 1800);
+  const firstMobileSrc = optimizePayloadMediaURL(firstMobile, 900);
+  const firstDesktopSrcSet = payloadMediaSrcSet(firstSlide.desktopImage, 1800);
+  const firstMobileSrcSet = payloadMediaSrcSet(firstMobile, 900);
+
   return (
-    <section
+    <>
+      <Head>
+        <link
+          rel="preload"
+          as="image"
+          href={firstMobileSrc}
+          imageSrcSet={firstMobileSrcSet}
+          imageSizes="100vw"
+          media="(max-width: 767px)"
+          fetchPriority="high"
+        />
+        <link
+          rel="preload"
+          as="image"
+          href={firstDesktopSrc}
+          imageSrcSet={firstDesktopSrcSet}
+          imageSizes="100vw"
+          media="(min-width: 768px)"
+          fetchPriority="high"
+        />
+      </Head>
+      <section
       class={`esv-hero esv-hero-carousel is-overlay-${overlay} is-focal-${focalPoint}${
         transitioning ? " is-transitioning" : ""
       }${phase === "loading" ? " is-loading" : ""}`}
@@ -268,6 +303,7 @@ export default function HeroCarousel(
           →
         </button>
       </div>
-    </section>
+      </section>
+    </>
   );
 }
