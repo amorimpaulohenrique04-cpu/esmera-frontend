@@ -230,11 +230,14 @@ export default function PrivacyPage({ data }: PageProps<Data>) {
                   armazenamento local do navegador em algumas funcionalidades.
                 </p>
                 <p>
-                  Produtos adicionados ao <strong>carrinho</strong> e itens
-                  marcados como <strong>favoritos</strong> podem permanecer
-                  armazenados no dispositivo para que sua seleção não seja
-                  perdida ao sair da página. Esse armazenamento não representa,
-                  por si só, a criação de uma conta na Esméra.
+                  Produtos adicionados ao <strong>carrinho</strong> podem
+                  permanecer armazenados no dispositivo. Ao utilizar
+                  <strong> favoritos</strong>, o nome e o WhatsApp informados
+                  também podem ser mantidos localmente para reconhecer sua
+                  seleção sem solicitar os mesmos dados a cada peça. Os produtos
+                  favoritados ficam associados ao seu contato na Esméra para
+                  facilitar o atendimento. Esse fluxo não representa a criação
+                  de uma conta ou senha.
                 </p>
                 <p>
                   Esses dados podem ser removidos ao limpar os dados do site ou
