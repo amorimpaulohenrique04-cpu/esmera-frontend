@@ -22,7 +22,10 @@ Deno.test("menu navigation waits for an open surface to exit before changing doc
     "() => globalThis.location.assign(url.href)",
   );
   assertStringIncludes(coordinator, "reduceMotion ? 0 : MENU_EXIT_MS");
-  assertStringIncludes(coordinator, 'document.addEventListener("click", onClick, true)');
+  assertStringIncludes(
+    coordinator,
+    'document.addEventListener("click", onClick, true)',
+  );
 
   assertStringIncludes(coordinator, "event.metaKey");
   assertStringIncludes(coordinator, "event.ctrlKey");

@@ -38,7 +38,9 @@ export default function StorefrontSEO({
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
       <meta property="og:type" content={ogType} />
-      {resolvedCanonical && <meta property="og:url" content={resolvedCanonical} />}
+      {resolvedCanonical && (
+        <meta property="og:url" content={resolvedCanonical} />
+      )}
       {image && <meta property="og:image" content={image} />}
       <meta
         name="twitter:card"

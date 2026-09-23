@@ -9,9 +9,12 @@ export default async function StorefrontPageData() {
     getHome(),
     getPageChrome(),
   ]);
-  const resolvedChrome = chrome.status === "fulfilled"
-    ? chrome.value
-    : { navigation: null, settings: null, categories: [], unavailable: ["shell"] };
+  const resolvedChrome = chrome.status === "fulfilled" ? chrome.value : {
+    navigation: null,
+    settings: null,
+    categories: [],
+    unavailable: ["shell"],
+  };
 
   return {
     home: home.status === "fulfilled" ? home.value : null,

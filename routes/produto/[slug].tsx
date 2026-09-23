@@ -13,7 +13,9 @@ interface Data {
 }
 
 function schemaAvailability(product: EsmeraObject): string {
-  if (product.availability === "archive") return "https://schema.org/OutOfStock";
+  if (product.availability === "archive") {
+    return "https://schema.org/OutOfStock";
+  }
   if (product.availability === "made_to_order") {
     return "https://schema.org/PreOrder";
   }

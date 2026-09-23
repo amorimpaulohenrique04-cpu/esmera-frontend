@@ -22,7 +22,8 @@ export default function PrivacyPage({ data }: PageProps<Data>) {
       canonical={data.canonical}
       seo={{
         title: "Política de Privacidade | Esméra",
-        description: "Como a Esméra trata informações fornecidas no site e nos canais de atendimento.",
+        description:
+          "Como a Esméra trata informações fornecidas no site e nos canais de atendimento.",
         noindex: false,
       }}
     >
@@ -37,7 +38,8 @@ export default function PrivacyPage({ data }: PageProps<Data>) {
           <p>
             A Esméra pode tratar informações fornecidas voluntariamente durante
             contatos, solicitações de disponibilidade e atendimento, além de
-            dados técnicos necessários para o funcionamento e a segurança do site.
+            dados técnicos necessários para o funcionamento e a segurança do
+            site.
           </p>
           <h2>Finalidades</h2>
           <p>

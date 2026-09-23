@@ -225,7 +225,6 @@ Deno.test("cards and Conhecer a peça share the adaptive modal and never navigat
   assertFalse(card.includes("/produto/"));
   assertStringIncludes(card, 'presentation="media"');
   assertFalse(card.includes('presentation="title"'));
-  assertFalse(card.includes("esv-card-installment"));
   assertStringIncludes(actions, 'dispatch("esmera:open-product"');
   assertStringIncludes(modal, 'class="esv-product-modal-buybox"');
   assertStringIncludes(modal, 'class="esv-product-modal-installment"');

@@ -158,11 +158,20 @@ Deno.test("unified header stylesheet owns shell layers without trapping fixed me
   );
   assertStringIncludes(menuIsland, 'pointerType !== "mouse"');
   assertStringIncludes(menuIsland, "}, 120);");
-  assertStringIncludes(menuIsland, 'type MenuPhase = "closed" | "opening" | "open" | "closing";');
+  assertStringIncludes(
+    menuIsland,
+    'type MenuPhase = "closed" | "opening" | "open" | "closing";',
+  );
   assertStringIncludes(menuIsland, "key={activeDesktop.id}");
-  assertStringIncludes(menuIsland, 'class={`esv-mega-backdrop${');
-  assertStringIncludes(menuIsland, 'megaPhase === "closing" ? " is-closing" : ""');
-  assertStringIncludes(menuIsland, 'drawerPhase === "closing" ? " is-closing" : ""');
+  assertStringIncludes(menuIsland, "class={`esv-mega-backdrop${");
+  assertStringIncludes(
+    menuIsland,
+    'megaPhase === "closing" ? " is-closing" : ""',
+  );
+  assertStringIncludes(
+    menuIsland,
+    'drawerPhase === "closing" ? " is-closing" : ""',
+  );
   assertFalse(menuIsland.includes("animationDelay"));
   assertStringIncludes(menuIsland, "aria-current");
   assertStringIncludes(menuIsland, 'const MEGA_ID = "esv-mega-panel"');

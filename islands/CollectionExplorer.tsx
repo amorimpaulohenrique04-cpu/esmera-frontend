@@ -200,11 +200,16 @@ function paramsFromState(state: FilterState, materialValues = state.materials) {
   return params;
 }
 
-function rawMaterialValues(selected: string[], facets: MaterialFacet[]): string[] {
-  return [...new Set(selected.flatMap((value) => {
-    const facet = facets.find((item) => item.value === value);
-    return facet?.queryValues.length ? facet.queryValues : [value];
-  }))];
+function rawMaterialValues(
+  selected: string[],
+  facets: MaterialFacet[],
+): string[] {
+  return [
+    ...new Set(selected.flatMap((value) => {
+      const facet = facets.find((item) => item.value === value);
+      return facet?.queryValues.length ? facet.queryValues : [value];
+    })),
+  ];
 }
 
 function countLabel(total: number): string {
@@ -212,7 +217,9 @@ function countLabel(total: number): string {
 }
 
 function loadedCountLabel(loaded: number, total: number): string {
-  return loaded < total ? `${loaded} de ${countLabel(total)}` : countLabel(total);
+  return loaded < total
+    ? `${loaded} de ${countLabel(total)}`
+    : countLabel(total);
 }
 
 export default function CollectionExplorer(props: CollectionExplorerProps) {
@@ -241,7 +248,9 @@ export default function CollectionExplorer(props: CollectionExplorerProps) {
   }, [qInput]);
 
   useEffect(() => {
-    if (!filtersOpen || !globalThis.matchMedia?.("(max-width: 767px)").matches) {
+    if (
+      !filtersOpen || !globalThis.matchMedia?.("(max-width: 767px)").matches
+    ) {
       return;
     }
     const previous = document.documentElement.style.overflow;
@@ -285,7 +294,9 @@ export default function CollectionExplorer(props: CollectionExplorerProps) {
     ) {
       endpoint.searchParams.delete(key);
     }
-    requestParams.forEach((value, key) => endpoint.searchParams.append(key, value));
+    requestParams.forEach((value, key) =>
+      endpoint.searchParams.append(key, value)
+    );
 
     try {
       const response = await fetch(endpoint.toString(), {
@@ -378,11 +389,15 @@ export default function CollectionExplorer(props: CollectionExplorerProps) {
         key: `material:${material}`,
         label,
         clear: () =>
-          setMaterials((current) => current.filter((value) => value !== material)),
+          setMaterials((current) =>
+            current.filter((value) => value !== material)
+          ),
       });
     }
     if (availability) {
-      const label = availabilityOptions.find(([value]) => value === availability)
+      const label = availabilityOptions.find(([value]) =>
+        value === availability
+      )
         ?.[1] || availability;
       chips.push({
         key: "availability",
@@ -458,7 +473,9 @@ export default function CollectionExplorer(props: CollectionExplorerProps) {
 
         <div class="esv-collection-v2-toolbar">
           <button
-            class={`esv-collection-v2-filter-trigger${filtersOpen ? " is-active" : ""}`}
+            class={`esv-collection-v2-filter-trigger${
+              filtersOpen ? " is-active" : ""
+            }`}
             type="button"
             aria-expanded={filtersOpen}
             aria-controls="esv-collection-filters"
@@ -504,7 +521,9 @@ export default function CollectionExplorer(props: CollectionExplorerProps) {
             </svg>
             <span class="esv-collection-v2-filter-label">Filtros</span>
             {refinementCount > 0 && (
-              <span class="esv-collection-v2-filter-count">{refinementCount}</span>
+              <span class="esv-collection-v2-filter-count">
+                {refinementCount}
+              </span>
             )}
           </button>
 
@@ -564,7 +583,8 @@ export default function CollectionExplorer(props: CollectionExplorerProps) {
             </div>
           )}
 
-          {props.visibleFilters.includes("material") && props.materials.length > 0 && (
+          {props.visibleFilters.includes("material") &&
+            props.materials.length > 0 && (
             <div class="esv-collection-v2-filter-field esv-collection-v2-material-field">
               <span>Matéria</span>
               <div

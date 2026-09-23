@@ -85,6 +85,8 @@ Deno.test("menu v2 appends visible CMS roots missing from explicit navigation", 
   const tree = buildNavigationTree([...categories, kits], navigation);
   const labels = tree.map((node) => node.label).join(",");
   if (labels !== "PEÇAS,KITS") {
-    throw new Error(`expected explicit roots followed by CMS roots, got ${labels}`);
+    throw new Error(
+      `expected explicit roots followed by CMS roots, got ${labels}`,
+    );
   }
 });

@@ -70,7 +70,10 @@ Deno.test("todos os cards usam contain sem exceções por categoria", () => {
     "contain",
   );
   assertEquals(
-    resolveCardMediaFit("Porta-sabonete Líquido em Bege Bahia", "Porta-sabonete"),
+    resolveCardMediaFit(
+      "Porta-sabonete Líquido em Bege Bahia",
+      "Porta-sabonete",
+    ),
     "contain",
   );
   assertEquals(resolveCardMediaFit("Vaso Cilíndrico", "Vasos"), "contain");

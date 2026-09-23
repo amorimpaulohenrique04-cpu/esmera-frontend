@@ -148,8 +148,8 @@ export default function Footer(
             </p>
             <p class="esv-footer-description">
               Peças autorais em pedras naturais, criadas a partir da matéria, do
-              design e do fazer manual. Da pedra à forma, cada criação carrega sua
-              própria história.
+              design e do fazer manual. Da pedra à forma, cada criação carrega
+              sua própria história.
             </p>
             <span class="esv-footer-curation-badge">Curadoria autoral</span>
           </section>

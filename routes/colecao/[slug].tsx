@@ -74,7 +74,10 @@ export const handler: Handlers<Data> = {
       collectionPage?.visibleFilters,
     ).filter((filter) => filter !== "category");
     const query = buildCatalogQuery(url, visibleFilters, chrome.categories);
-    const materialQueryValues = expandMaterialFilters(query.materials, materials);
+    const materialQueryValues = expandMaterialFilters(
+      query.materials,
+      materials,
+    );
     const products = await listProductsByCategory(category.slug, {
       limit: 24,
       page: query.page,

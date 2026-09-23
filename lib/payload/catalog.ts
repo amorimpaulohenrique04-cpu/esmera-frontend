@@ -1,9 +1,4 @@
-import {
-  whereAnd,
-  whereContains,
-  whereEquals,
-  whereOr,
-} from "./query.ts";
+import { whereAnd, whereContains, whereEquals, whereOr } from "./query.ts";
 
 export type CatalogFilter = "category" | "material" | "availability" | "sort";
 export type CollectionSort =
@@ -83,12 +78,14 @@ function queryValues(
   name: string,
   maxItems = 12,
 ): string[] {
-  return [...new Set(
-    params.getAll(name)
-      .flatMap((value) => value.split(","))
-      .map((value) => value.trim().slice(0, 80))
-      .filter(Boolean),
-  )].slice(0, maxItems);
+  return [
+    ...new Set(
+      params.getAll(name)
+        .flatMap((value) => value.split(","))
+        .map((value) => value.trim().slice(0, 80))
+        .filter(Boolean),
+    ),
+  ].slice(0, maxItems);
 }
 
 export function buildCatalogQuery(

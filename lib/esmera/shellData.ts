@@ -91,9 +91,15 @@ function mergeFooter(settings: PayloadSiteSettings | null): ShellFooter {
   return {
     siteName: present(settings?.siteName, baseline.siteName ?? "ESMÉRA"),
     statement: present(cms?.statement, baseline.statement ?? ""),
-    contactLabel: present(cms?.contactLabel, baseline.contactLabel ?? "Contato"),
+    contactLabel: present(
+      cms?.contactLabel,
+      baseline.contactLabel ?? "Contato",
+    ),
     contactHref: present(cms?.contactHref, baseline.contactHref ?? "/contato"),
-    privacyLabel: present(cms?.privacyLabel, baseline.privacyLabel ?? "Privacidade"),
+    privacyLabel: present(
+      cms?.privacyLabel,
+      baseline.privacyLabel ?? "Privacidade",
+    ),
     privacyHref: present(
       cms?.privacyHref,
       baseline.privacyHref === "#contact"
@@ -103,10 +109,15 @@ function mergeFooter(settings: PayloadSiteSettings | null): ShellFooter {
     termsLabel: present(cms?.termsLabel, baseline.termsLabel ?? "Termos"),
     termsHref: present(
       cms?.termsHref,
-      baseline.termsHref === "#contact" ? "/termos" : baseline.termsHref ?? "/termos",
+      baseline.termsHref === "#contact"
+        ? "/termos"
+        : baseline.termsHref ?? "/termos",
     ),
     location: present(cms?.location, baseline.location ?? ""),
-    whatsappLabel: present(cms?.whatsappLabel, baseline.whatsappLabel ?? "WhatsApp"),
+    whatsappLabel: present(
+      cms?.whatsappLabel,
+      baseline.whatsappLabel ?? "WhatsApp",
+    ),
     whatsappHref: present(cms?.whatsappHref, baseline.whatsappHref ?? ""),
   };
 }

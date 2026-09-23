@@ -75,7 +75,8 @@ export default function SelectedObjects(
   const curatedProducts = (props.storefrontProducts ?? source.products ?? [])
     .filter((product) =>
       Boolean(
-        product.id && product.slug && product.title && hasRenderableImage(product),
+        product.id && product.slug && product.title &&
+          hasRenderableImage(product),
       )
     )
     .slice(0, 4);

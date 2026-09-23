@@ -5,7 +5,9 @@ export interface Props {
 }
 
 type ShareNavigator = Navigator & {
-  share?: (data: { title?: string; text?: string; url?: string }) => Promise<void>;
+  share?: (
+    data: { title?: string; text?: string; url?: string },
+  ) => Promise<void>;
 };
 
 export default function ShareProductLink({ productTitle }: Props) {
@@ -49,7 +51,9 @@ export default function ShareProductLink({ productTitle }: Props) {
         resetLabel();
         return;
       } catch (error) {
-        if (error instanceof DOMException && error.name === "AbortError") return;
+        if (error instanceof DOMException && error.name === "AbortError") {
+          return;
+        }
       }
     }
 

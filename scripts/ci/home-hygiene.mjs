@@ -61,7 +61,8 @@ try {
         ? getComputedStyle(picture).transform
         : null,
       heroImageTransform: document.querySelector(".esv-hero-picture img")
-        ? getComputedStyle(document.querySelector(".esv-hero-picture img")).transform
+        ? getComputedStyle(document.querySelector(".esv-hero-picture img"))
+          .transform
         : null,
       heroHeight: hero?.getBoundingClientRect().height ?? 0,
     };
@@ -176,7 +177,8 @@ try {
     `Maison primary media drifted after reveal settled: ${transition.maisonMainTransform} -> ${afterScroll.maisonMainTransform}`,
   );
   invariant(
-    afterScroll.maisonSecondaryTransform === transition.maisonSecondaryTransform,
+    afterScroll.maisonSecondaryTransform ===
+      transition.maisonSecondaryTransform,
     `Maison secondary media drifted after reveal settled: ${transition.maisonSecondaryTransform} -> ${afterScroll.maisonSecondaryTransform}`,
   );
   invariant(
@@ -192,7 +194,9 @@ try {
   metrics.status = "passed";
 } catch (error) {
   metrics.status = "failed";
-  metrics.error = error instanceof Error ? error.stack || error.message : String(error);
+  metrics.error = error instanceof Error
+    ? error.stack || error.message
+    : String(error);
   throw error;
 } finally {
   await writeFile(

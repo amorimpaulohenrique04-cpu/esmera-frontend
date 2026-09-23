@@ -169,7 +169,9 @@ function productDiagnostics(product: PayloadProduct): StorefrontDiagnostic[] {
       diagnostics.push(diagnostic(
         "product",
         "product.category_unavailable",
-        `A categoria “${category.title || category.slug || category.id}” não está pública.`,
+        `A categoria “${
+          category.title || category.slug || category.id
+        }” não está pública.`,
         { path: `categories.${index}` },
       ));
     }

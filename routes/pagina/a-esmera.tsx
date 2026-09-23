@@ -90,17 +90,20 @@ const materials = {
     {
       icon: "stone" as const,
       title: "Pedras naturais",
-      text: "Materiais únicos, formados pela natureza ao longo de milhões de anos.",
+      text:
+        "Materiais únicos, formados pela natureza ao longo de milhões de anos.",
     },
     {
       icon: "handmade" as const,
       title: "Acabamento artesanal",
-      text: "Cada detalhe recebe acabamento manual para realçar textura, cor e brilho.",
+      text:
+        "Cada detalhe recebe acabamento manual para realçar textura, cor e brilho.",
     },
     {
       icon: "care" as const,
       title: "Durabilidade e cuidado",
-      text: "Instruções simples que preservam a beleza e a integridade da sua peça.",
+      text:
+        "Instruções simples que preservam a beleza e a integridade da sua peça.",
     },
     {
       icon: "unique" as const,
@@ -139,8 +142,18 @@ export default function AboutEsmeraPage({ data }: PageProps<Data>) {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Início", item: new URL("/", data.canonical).toString() },
-      { "@type": "ListItem", position: 2, name: "A Esméra", item: data.canonical },
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Início",
+        item: new URL("/", data.canonical).toString(),
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "A Esméra",
+        item: data.canonical,
+      },
     ],
   };
 

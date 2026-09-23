@@ -11,6 +11,6 @@ Deno.test("search and cart overlays preserve the current header surface", async 
     header,
     "const headerSurface: HeaderSurface = megaOpen || desktopMenuHovered",
   );
-  assertFalse(header.includes('const headerSurface: HeaderSurface = overlay'));
+  assertFalse(header.includes("const headerSurface: HeaderSurface = overlay"));
   assertFalse(header.includes('? "overlay"'));
 });

@@ -175,7 +175,9 @@ function sectionSource(
 ): StorefrontDataSource {
   if (disabled) return "disabled";
   if (hasOverride) {
-    return homeSource === "stale_payload" ? "stale_payload" : "payload_override";
+    return homeSource === "stale_payload"
+      ? "stale_payload"
+      : "payload_override";
   }
   return "deco_baseline";
 }
@@ -308,14 +310,16 @@ export function resolveHome({
   const hasSignatureOverride = cmsSignature.length > 0;
   const signature: SignatureObjectProps[] | null = disabled.has("signature")
     ? null
-    : (hasSignatureOverride ? cmsSignature.map((slide) => ({
-      product: slide.product,
-      eyebrow: present(slide.eyebrow, "05 — Peça assinatura"),
-      editorialText: present(
-        slide.editorialText,
-        slide.product.description ?? "",
-      ),
-    })) : [...defaultHome.signature]);
+    : (hasSignatureOverride
+      ? cmsSignature.map((slide) => ({
+        product: slide.product,
+        eyebrow: present(slide.eyebrow, "05 — Peça assinatura"),
+        editorialText: present(
+          slide.editorialText,
+          slide.product.description ?? "",
+        ),
+      }))
+      : [...defaultHome.signature]);
 
   const matterInterlude: MatterInterludeProps | null = disabled.has(
       "matterInterlude",
@@ -373,10 +377,13 @@ export function resolveHome({
         defaultHome.privateInvitation.ctaHref,
     };
 
-  const headerUsesPayload = cmsNavigation.length > 0 || categoryLinks.length > 0 ||
+  const headerUsesPayload = cmsNavigation.length > 0 ||
+    categoryLinks.length > 0 ||
     Boolean(siteSettings);
   const headerSource = headerUsesPayload
-    ? [navigationSource, settingsSource, categoriesSource].includes("stale_payload")
+    ? [navigationSource, settingsSource, categoriesSource].includes(
+        "stale_payload",
+      )
       ? "stale_payload"
       : "payload_override"
     : "deco_baseline";
