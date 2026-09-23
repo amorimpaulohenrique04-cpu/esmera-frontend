@@ -22,7 +22,9 @@ function isEsmeraObject(
   return typeof item.image === "string";
 }
 
-export default function ObjectCard({ item, motionOrder = 0, priority = false }: Props) {
+export default function ObjectCard(
+  { item, motionOrder = 0, priority = false }: Props,
+) {
   const legacyItem = isEsmeraObject(item);
   const vm = legacyItem
     ? esmeraObjectToCardViewModel(item)
