@@ -588,7 +588,7 @@ export default function DynamicMenu(
             <button
               type="button"
               onClick={() =>
-                requestMobileClose(() => openHeaderControl(".esv-cart-link"))
+                requestMobileClose(() => openHeaderControl(".esv-cart-link"))}
             >
               Carrinho
             </button>
