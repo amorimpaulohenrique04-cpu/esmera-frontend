@@ -10,7 +10,7 @@ Deno.test("product modal keeps normal opens on the lean detail path", async () =
 
   assertStringIncludes(
     actions,
-    `/api/esmera-product-detail?slug=${encodeURIComponent(slug)}`,
+    "`/api/esmera-product-detail?slug=${encodeURIComponent(slug)}`",
   );
   assertFalse(actions.includes("&full=1"));
 
