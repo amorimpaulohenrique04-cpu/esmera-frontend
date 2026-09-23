@@ -1,0 +1,118 @@
+name: Navigation transition validation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "islands/DynamicMenu.tsx"
+      - "islands/MenuNavigationCoordinator.tsx"
+      - "lib/esmera/navigationMotion.ts"
+      - "routes/_app.tsx"
+      - "static/esmera-catalog-v2.css"
+      - "static/esmera-header.css"
+      - "static/esmera-mobile-recovery-v4.css"
+      - "static/esmera-motion-v2.css"
+      - "static/esmera-shell-cro-v1.css"
+      - "tests/editorial/motion_system_contract_test.ts"
+      - "tests/shell/menu_navigation_transition_test.ts"
+      - "tests/shell/navigation_motion_ownership_test.ts"
+      - "scripts/ci/navigation-transition.mjs"
+      - ".github/workflows/navigation-transition-validation.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "islands/DynamicMenu.tsx"
+      - "islands/MenuNavigationCoordinator.tsx"
+      - "lib/esmera/navigationMotion.ts"
+      - "routes/_app.tsx"
+      - "static/esmera-catalog-v2.css"
+      - "static/esmera-header.css"
+      - "static/esmera-mobile-recovery-v4.css"
+      - "static/esmera-motion-v2.css"
+      - "static/esmera-shell-cro-v1.css"
+      - "tests/editorial/motion_system_contract_test.ts"
+      - "tests/shell/menu_navigation_transition_test.ts"
+      - "tests/shell/navigation_motion_ownership_test.ts"
+      - "scripts/ci/navigation-transition.mjs"
+      - ".github/workflows/navigation-transition-validation.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  navigation-transition:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PAYLOAD_API_URL: https://esmeracms-green.vercel.app
+      PORT: "8000"
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Format transition-owned source
+        run: >-
+          deno fmt --check
+          islands/DynamicMenu.tsx
+          islands/MenuNavigationCoordinator.tsx
+          lib/esmera/navigationMotion.ts
+          routes/_app.tsx
+          static/esmera-header.css
+          static/esmera-motion-v2.css
+          tests/editorial/motion_system_contract_test.ts
+          tests/shell/menu_navigation_transition_test.ts
+          tests/shell/navigation_motion_ownership_test.ts
+
+      - name: Lint
+        run: deno lint
+
+      - name: Typecheck
+        run: deno check dev.ts main.ts
+
+      - name: Navigation motion contracts
+        run: >-
+          deno test -A
+          tests/editorial/motion_system_contract_test.ts
+          tests/shell/menu_navigation_transition_test.ts
+          tests/shell/navigation_motion_ownership_test.ts
+
+      - name: Build
+        run: deno task build
+
+      - name: Start preview
+        shell: bash
+        run: |
+          deno task preview > /tmp/esmera-navigation-transition-preview.log 2>&1 &
+          for attempt in $(seq 1 90); do
+            if curl --silent --fail http://127.0.0.1:8000/ > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/esmera-navigation-transition-preview.log
+          exit 1
+
+      - name: Install Chromium
+        run: |
+          npm install --no-save playwright@1.54.2
+          npx playwright install --with-deps chromium
+
+      - name: Validate real navigation handoff
+        run: node scripts/ci/navigation-transition.mjs
+
+      - name: Upload navigation evidence
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: navigation-transition-evidence
+          path: navigation-transition-artifacts
+          if-no-files-found: warn
+          retention-days: 7

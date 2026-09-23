@@ -1,4 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
+import {
+  MENU_NAVIGATION_REQUEST_EVENT,
+  type MenuNavigationRequestDetail,
+} from "../lib/esmera/navigationMotion.ts";
 import type { NavigationNode } from "../lib/payload/navigation.ts";
 
 type CreatePortal = typeof import("preact/compat").createPortal;
@@ -147,6 +151,7 @@ export default function DynamicMenu(
   >(
     null,
   );
+  const megaAfterClose = useRef<(() => void) | null>(null);
   const drawerAfterClose = useRef<(() => void) | null>(null);
 
   const desktopItems = useMemo(
@@ -190,14 +195,25 @@ export default function DynamicMenu(
     cancelMegaExit();
     setMegaPhase("closed");
     setDesktopOpen(null);
+    const afterClose = megaAfterClose.current;
+    megaAfterClose.current = null;
+    if (afterClose) globalThis.setTimeout(afterClose, 0);
   };
 
-  const requestDesktopClose = () => {
+  const requestDesktopClose = (afterClose?: () => void) => {
     cancelDesktopOpen();
     cancelDesktopClose();
-    if (!desktopOpen || megaPhase === "closing" || megaPhase === "closed") {
+    if (afterClose) megaAfterClose.current = afterClose;
+
+    if (!desktopOpen || megaPhase === "closed") {
+      const callback = megaAfterClose.current;
+      megaAfterClose.current = null;
+      if (callback) globalThis.setTimeout(callback, 0);
       return;
     }
+
+    if (megaPhase === "closing" || megaExitTimer.current) return;
+
     setMegaPhase("closing");
     megaExitTimer.current = globalThis.setTimeout(
       finalizeDesktopClose,
@@ -248,8 +264,17 @@ export default function DynamicMenu(
   };
 
   const requestMobileClose = (afterClose?: () => void) => {
-    if (!mobileOpen || drawerPhase === "closing") return;
-    drawerAfterClose.current = afterClose ?? null;
+    if (afterClose) drawerAfterClose.current = afterClose;
+
+    if (!mobileOpen || drawerPhase === "closed") {
+      const callback = drawerAfterClose.current;
+      drawerAfterClose.current = null;
+      if (callback) globalThis.setTimeout(callback, 0);
+      return;
+    }
+
+    if (drawerPhase === "closing" || drawerExitTimer.current) return;
+
     setDrawerPhase("closing");
     drawerExitTimer.current = globalThis.setTimeout(
       finalizeMobileClose,
@@ -268,6 +293,38 @@ export default function DynamicMenu(
     setDrawerPhase("opening");
     requestAnimationFrame(() => setDrawerPhase("open"));
   };
+
+  useEffect(() => {
+    const onNavigationRequest = (event: Event) => {
+      const detail = (
+        event as CustomEvent<Partial<MenuNavigationRequestDetail>>
+      ).detail;
+      const navigate = detail?.navigate;
+      if (typeof navigate !== "function") return;
+
+      if (mobileOpen && drawerPhase !== "closed") {
+        requestMobileClose(navigate);
+        return;
+      }
+
+      if (desktopOpen && megaPhase !== "closed") {
+        requestDesktopClose(navigate);
+        return;
+      }
+
+      navigate();
+    };
+
+    document.addEventListener(
+      MENU_NAVIGATION_REQUEST_EVENT,
+      onNavigationRequest,
+    );
+    return () =>
+      document.removeEventListener(
+        MENU_NAVIGATION_REQUEST_EVENT,
+        onNavigationRequest,
+      );
+  }, [desktopOpen, megaPhase, mobileOpen, drawerPhase]);
 
   useEffect(() => {
     onMegaChange?.(megaMounted);
