@@ -842,17 +842,27 @@ html:root {
   height: 16px;
   padding: 0 4px;
   border-radius: 999px;
-  background: currentColor;
+  background: var(--ink);
   color: var(--bg);
   font-size: 8px;
   font-weight: 500;
   line-height: 1;
   letter-spacing: 0;
+  transition:
+    background-color 160ms var(--ease-out),
+    color 160ms var(--ease-out);
 }
 
 .esv-header[data-header-surface="hero"] .esv-wishlist-header-link sup {
-  color: var(--ink);
   background: #f3f0e8;
+  color: var(--ink);
+}
+
+.esv-header[data-header-surface="solid"] .esv-wishlist-header-link sup,
+.esv-header[data-header-surface="mega"] .esv-wishlist-header-link sup,
+.esv-header.is-mega-open .esv-wishlist-header-link sup {
+  background: var(--ink);
+  color: #f3f0e8;
 }
 
 @media (hover: hover) and (pointer: fine) {
