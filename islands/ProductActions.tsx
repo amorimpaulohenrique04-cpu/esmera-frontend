@@ -121,7 +121,7 @@ export default function ProductActions(
       <button
         class="esv-product-modal-trigger esv-product-modal-trigger-media"
         type="button"
-        aria-label={`Conhecer a peça ${productTitle}`}
+        aria-label={`Ver detalhes de ${productTitle}`}
         {...commonWarmup}
         onClick={(event) =>
           void dispatch("esmera:open-product", event.currentTarget)}
@@ -134,7 +134,7 @@ export default function ProductActions(
       <button
         class="esv-product-modal-trigger esv-product-modal-trigger-title"
         type="button"
-        aria-label={`Conhecer a peça ${productTitle}`}
+        aria-label={`Ver detalhes de ${productTitle}`}
         {...commonWarmup}
         onClick={(event) =>
           void dispatch("esmera:open-product", event.currentTarget)}
@@ -153,12 +153,12 @@ export default function ProductActions(
       >
         <button
           type="button"
-          aria-label={`Conhecer a peça ${productTitle}`}
+          aria-label={`Ver detalhes de ${productTitle}`}
           {...commonWarmup}
           onClick={(event) =>
             void dispatch("esmera:open-product", event.currentTarget)}
         >
-          Conhecer a peça <Arrow size={14} />
+          Ver detalhes <Arrow size={14} />
         </button>
       </div>
     );
@@ -168,12 +168,12 @@ export default function ProductActions(
     <div class="esv-product-actions">
       <button
         type="button"
-        aria-label={`Conhecer a peça ${productTitle}`}
+        aria-label={`Ver detalhes de ${productTitle}`}
         {...commonWarmup}
         onClick={(event) =>
           void dispatch("esmera:open-product", event.currentTarget)}
       >
-        Conhecer a peça <Arrow size={13} />
+        Ver detalhes <Arrow size={13} />
       </button>
       <button
         type="button"
