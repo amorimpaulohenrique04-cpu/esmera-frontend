@@ -135,6 +135,27 @@
   .esv-selected .esv-product-shelf {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
+
+  .esv-selected .esv-product-shelf > .esv-product-card:nth-child(n + 4) {
+    display: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .esv-selected .esv-product-shelf > .esv-product-card:nth-child(n + 4) {
+    display: none;
+  }
+}
+
+/* Tablet intentionally keeps four curated objects in a balanced 2 × 2 grid. */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .esv-selected .esv-product-shelf {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .esv-selected .esv-product-shelf > .esv-product-card:nth-child(n + 4) {
+    display: flex;
+  }
 }
 
 .esv-selected .esv-product-card .esv-product-media-wrap,
