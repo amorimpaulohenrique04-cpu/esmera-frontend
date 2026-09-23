@@ -12,6 +12,7 @@ import {
 } from "../lib/esmera/gallery.ts";
 import { buildInstallmentFromPriceCents } from "../lib/esmera/productCard.ts";
 import { ensureProductModalStyles } from "../lib/esmera/productModalStyles.ts";
+import { useProductModalLinkSync } from "../lib/esmera/useProductModalLinkSync.ts";
 import type { EsmeraObject, EsmeraVariant } from "../lib/payload/types.ts";
 
 interface ProductModalImage {
@@ -313,6 +314,7 @@ function GalleryFrame({
 }
 
 export default function ProductModal() {
+  useProductModalLinkSync();
   const [product, setProduct] = useState<EsmeraObject | null>(null);
   const [phase, setPhase] = useState<ModalPhase>("unmounted");
   const [recommendations, setRecommendations] = useState<EsmeraObject[]>([]);
