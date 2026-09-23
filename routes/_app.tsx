@@ -15,6 +15,7 @@ export default defineApp(async (_req, ctx) => {
   const homeArtDirectionRevision = "2026-09-22-home-art-direction-v2";
   const homeLengthRevision = "2026-09-22-home-length-refinement-v3";
   const mobileRecoveryRevision = "2026-09-22-mobile-recovery-v4";
+  const mobileSignatureFixRevision = "2026-09-22-mobile-signature-fix-v5";
   return (
     <>
       <Theme colorScheme="any" />
@@ -113,6 +114,12 @@ export default defineApp(async (_req, ctx) => {
           rel="stylesheet"
           href={asset(
             `/esmera-mobile-recovery-v4.css?v=${mobileRecoveryRevision}`,
+          )}
+        />
+        <link
+          rel="stylesheet"
+          href={asset(
+            `/esmera-mobile-signature-fix-v5.css?v=${mobileSignatureFixRevision}`,
           )}
         />
 
