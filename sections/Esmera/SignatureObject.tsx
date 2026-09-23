@@ -34,9 +34,9 @@ function toDomToken(value: string): string {
 
 function SignatureObjectView({
   product,
-  eyebrow = "05 — Peça assinatura",
+  eyebrow = "05 — Peça em destaque",
   editorialText =
-    "Uma peça recebe tempo editorial para que forma, matéria e construção possam ser percebidas antes da decisão de aquisição.",
+    "Veja os detalhes de material, acabamento e dimensões desta peça.",
   dimensions = "",
   showFullDetails = false,
   headingLevel = "h2",
@@ -45,10 +45,10 @@ function SignatureObjectView({
   if (!product) return null;
   const availability = getAvailabilityMeta(product.availability);
   const facts = [
-    product.material ? { label: "Matéria", value: product.material } : null,
-    dimensions ? { label: "Escala", value: dimensions } : null,
+    product.material ? { label: "Material", value: product.material } : null,
+    dimensions ? { label: "Dimensões", value: dimensions } : null,
     product.edition ? { label: "Edição", value: product.edition } : null,
-    { label: "Estado", value: availability.label },
+    { label: "Disponibilidade", value: availability.label },
   ].filter((item): item is { label: string; value: string } => Boolean(item));
   const editorialCover = product.gallery.find((item) => item.role === "cover");
   const primaryImage = editorialCover?.url || product.image;
