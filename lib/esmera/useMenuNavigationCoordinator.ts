@@ -55,7 +55,9 @@ export function useMenuNavigationCoordinator(): void {
 
       if (url.origin !== globalThis.location.origin) return;
       if (url.protocol !== "http:" && url.protocol !== "https:") return;
-      if (isSameDocumentHash(url) || url.href === globalThis.location.href) return;
+      if (isSameDocumentHash(url) || url.href === globalThis.location.href) {
+        return;
+      }
       if (!hasActiveMenuSurface() || prefersReducedMotion()) return;
 
       event.preventDefault();
