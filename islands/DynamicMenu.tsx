@@ -20,7 +20,8 @@ const FOCUSABLE = [
 ].join(",");
 
 const MEGA_EXIT_FALLBACK_MS = 180;
-const DESKTOP_CLOSE_GRACE_MS = 420;
+const DESKTOP_OPEN_INTENT_MS = 320;
+const DESKTOP_CLOSE_GRACE_MS = 450;
 const DRAWER_EXIT_FALLBACK_MS = 180;
 
 function Chevron({ direction = "right" }: { direction?: "left" | "right" }) {
@@ -223,7 +224,7 @@ export default function DynamicMenu(
     openTimer.current = globalThis.setTimeout(() => {
       openDesktop(id);
       openTimer.current = null;
-    }, 80);
+    }, DESKTOP_OPEN_INTENT_MS);
   };
 
   const scheduleDesktopClose = () => {
