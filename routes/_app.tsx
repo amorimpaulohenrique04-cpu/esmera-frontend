@@ -9,7 +9,7 @@ export default defineApp(async (_req, ctx) => {
   // only the layers that own new visual behavior.
   const storefrontStyleRevision = "2026-08-14-about-page-v33";
   const productCardStyleRevision = "2026-09-22-card-installments-v2";
-  const aboutStyleRevision = "2026-09-22-about-type-v1";
+  const aboutStyleRevision = "2026-09-23-privacy-editorial-v2";
   const homeStyleRevision = "2026-08-14-motion-system-v34";
   const footerStyleRevision = "2026-08-15-footer-whatsapp-form-v3";
   const homeArtDirectionRevision = "2026-09-23-home-art-direction-v4";
