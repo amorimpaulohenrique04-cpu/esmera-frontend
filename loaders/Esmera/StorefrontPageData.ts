@@ -1,5 +1,3 @@
-import { getHome } from "../../lib/payload/loaders.ts";
-import { getPageChrome } from "../../lib/payload/pageData.ts";
 import { payloadGet } from "../../lib/payload/client.ts";
 import type { StorefrontCategory } from "../../lib/payload/navigation.ts";
 import type {
@@ -115,46 +113,18 @@ function flattenNavigation(
   });
 }
 
-async function fetchLegacyPageData(): Promise<PageData> {
-  const [home, chrome] = await Promise.allSettled([
-    getHome(),
-    getPageChrome(),
-  ]);
-  const resolvedChrome = chrome.status === "fulfilled" ? chrome.value : {
-    navigation: null,
-    settings: null,
-    categories: [],
-    unavailable: ["shell"],
-  };
-
-  return {
-    home: home.status === "fulfilled" ? home.value : null,
-    navigation: null,
-    siteSettings: resolvedChrome.settings,
-    categories: resolvedChrome.categories,
-    unavailable: [
-      home.status === "rejected" ? "home" : null,
-      ...resolvedChrome.unavailable,
-    ].filter((value): value is string => Boolean(value)),
-  };
-}
-
 async function fetchPageData(): Promise<PageData> {
-  try {
-    const bootstrap = await payloadGet<StorefrontBootstrap>(
-      "storefront/bootstrap",
-      { timeoutMs: 4_000 },
-    );
-    return {
-      home: bootstrap.home,
-      navigation: null,
-      siteSettings: bootstrap.siteSettings,
-      categories: flattenNavigation(bootstrap.navigation?.roots ?? []),
-      unavailable: [],
-    };
-  } catch {
-    return await fetchLegacyPageData();
-  }
+  const bootstrap = await payloadGet<StorefrontBootstrap>(
+    "storefront/bootstrap",
+    { timeoutMs: 1_800 },
+  );
+  return {
+    home: bootstrap.home,
+    navigation: null,
+    siteSettings: bootstrap.siteSettings,
+    categories: flattenNavigation(bootstrap.navigation?.roots ?? []),
+    unavailable: [],
+  };
 }
 
 async function refreshPageData(): Promise<PageData> {
