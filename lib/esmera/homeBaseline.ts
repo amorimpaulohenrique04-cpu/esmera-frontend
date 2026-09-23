@@ -181,7 +181,7 @@ export const defaultHome: HomeBaseline = {
     privacyLabel: "Privacidade",
     privacyHref: "/politica-de-privacidade",
     termsLabel: "Termos",
-    termsHref: "#contact",
+    termsHref: "/termos",
     location: "Brasil",
     whatsappLabel: "WhatsApp",
     whatsappHref: defaultWhatsAppHref,
