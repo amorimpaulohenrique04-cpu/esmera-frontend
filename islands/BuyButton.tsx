@@ -18,7 +18,7 @@ export default function BuyButton(
     <button
       type="button"
       class="esv-card-cta"
-      aria-label={`Adquirir ${productTitle}`}
+      aria-label={`Adicionar ${productTitle} ao carrinho`}
       onClick={(event) =>
         globalThis.dispatchEvent(
           new CustomEvent("esmera:add-to-enquiry", {
@@ -31,7 +31,7 @@ export default function BuyButton(
           }),
         )}
     >
-      <span>Adquirir</span>
+      <span>Adicionar ao carrinho</span>
       <svg viewBox="0 0 18 18" width="18" height="18" aria-hidden="true">
         <path d="M3.75 9h10.5M10 4.75 14.25 9 10 13.25" />
       </svg>
