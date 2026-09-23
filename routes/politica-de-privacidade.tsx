@@ -1,4 +1,5 @@
 import type { Handlers, PageProps } from "$fresh/server.ts";
+import type { ComponentChildren } from "preact";
 import StorefrontLayout from "../components/esmera/StorefrontLayout.tsx";
 import { getPageChrome } from "../lib/payload/pageData.ts";
 
@@ -11,7 +12,7 @@ interface PolicySectionProps {
   number: string;
   id: string;
   title: string;
-  children: preact.ComponentChildren;
+  children: ComponentChildren;
 }
 
 function PolicySection({ number, id, title, children }: PolicySectionProps) {
