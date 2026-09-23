@@ -509,20 +509,20 @@ img {
   grid-template-columns: repeat(12, minmax(0, 1fr));
   gap: var(--grid-gap);
   width: 100%;
-  padding-bottom: clamp(56px, 7vw, 104px);
+  padding-bottom: clamp(64px, 7.5vw, 116px);
 }
 
 .esv-hero-statement,
 .esv-hero-cta {
-  grid-column: 1 / span 6;
+  grid-column: 1 / span 7;
 }
 
 .esv-hero-statement {
-  max-width: 9ch;
+  max-width: 10ch;
   margin: 0;
-  font-size: clamp(46px, 5vw, 76px);
+  font-size: clamp(50px, 5.55vw, 84px);
   font-weight: 300;
-  line-height: .96;
+  line-height: .94;
   letter-spacing: -.045em;
   white-space: pre-line;
 }
@@ -530,8 +530,9 @@ img {
 .esv-hero-cta {
   justify-self: start;
   width: fit-content;
-  margin-top: var(--space-6);
+  margin-top: var(--space-8);
   color: var(--ink-inverse);
+  font-size: 13px;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -551,14 +552,14 @@ img {
 }
 
 .esv-maison-copy {
-  grid-column: 1 / span 4;
+  grid-column: 1 / span 5;
   align-self: center;
 }
 
 .esv-maison-copy h2 {
-  max-width: 8.5ch;
+  max-width: 9.5ch;
   margin: var(--space-6) 0 0;
-  font-size: clamp(34px, 3.4vw, 54px);
+  font-size: clamp(40px, 3.75vw, 60px);
   font-weight: 300;
   line-height: .99;
   letter-spacing: -.04em;
@@ -578,8 +579,8 @@ img {
 
 .esv-maison-media {
   position: relative;
-  grid-column: 7 / span 5;
-  min-height: clamp(560px, 50vw, 760px);
+  grid-column: 6 / -1;
+  min-height: clamp(580px, 48vw, 780px);
 }
 
 .esv-maison-main {
@@ -634,10 +635,10 @@ img {
 
 .esv-selected-head h2,
 .esv-shelf-head h2 {
-  grid-column: 8 / -1;
-  max-width: 8ch;
+  grid-column: 6 / -1;
+  max-width: 10ch;
   margin: 0;
-  font-size: clamp(34px, 3.4vw, 54px);
+  font-size: clamp(40px, 3.9vw, 62px);
   font-weight: 300;
   line-height: .98;
   letter-spacing: -.04em;
@@ -657,8 +658,8 @@ img {
 .esv-product-shelf {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--grid-gap);
-  margin-top: var(--space-24);
+  gap: clamp(16px, 1.55vw, 24px);
+  margin-top: var(--space-16);
 }
 
 .esv-collection-end {
@@ -677,7 +678,7 @@ img {
 .esv-territory-track {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  height: clamp(620px, 60vw, 780px);
+  height: clamp(620px, 53vw, 760px);
 }
 
 .esv-territory-panel {
@@ -707,7 +708,7 @@ img {
 }
 
 .esv-territory-shade {
-  background: linear-gradient(180deg, rgba(17,18,16,.02) 24%, rgba(17,18,16,.12) 55%, rgba(17,18,16,.72) 100%);
+  background: linear-gradient(180deg, rgba(17,18,16,.04) 20%, rgba(17,18,16,.16) 54%, rgba(17,18,16,.82) 100%);
 }
 
 .esv-territory-copy {
@@ -727,7 +728,7 @@ img {
 }
 
 .esv-territory-copy h2 {
-  max-width: 8ch;
+  max-width: 10ch;
   margin: var(--space-4) 0 0;
   font-size: clamp(34px, 3.4vw, 54px);
   font-weight: 300;
@@ -864,7 +865,7 @@ img {
 .esv-matter-interlude {
   position: relative;
   display: grid;
-  min-height: clamp(640px, 90svh, 980px);
+  min-height: clamp(600px, 78svh, 840px);
   overflow: hidden;
   isolation: isolate;
   background: var(--black);
@@ -1167,7 +1168,7 @@ img {
 /* -------------------------------------------------------------------------- */
 
 .esv-private {
-  min-height: 68svh;
+  min-height: clamp(680px, 76svh, 900px);
   display: grid;
   background: var(--black);
   color: var(--ink-inverse);
@@ -1179,7 +1180,7 @@ img {
   gap: var(--grid-gap);
   align-items: start;
   align-self: center;
-  padding-block: var(--space-32);
+  padding-block: clamp(112px, 10vw, 176px);
 }
 
 .esv-private-grid > .esv-kicker {
@@ -1187,11 +1188,11 @@ img {
 }
 
 .esv-private-copy {
-  grid-column: 5 / span 6;
+  grid-column: 6 / span 6;
 }
 
 .esv-private-copy h2 {
-  max-width: 10ch;
+  max-width: 11ch;
   margin: 0;
   font-size: clamp(38px, 4.1vw, 62px);
   font-weight: 300;
@@ -1208,8 +1209,9 @@ img {
 }
 
 .esv-private-cta {
-  margin-top: var(--space-6);
+  margin-top: var(--space-8);
   color: var(--ink-inverse);
+  font-size: 13px;
 }
 
 /* -------------------------------------------------------------------------- */

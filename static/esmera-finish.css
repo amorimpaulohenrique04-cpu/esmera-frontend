@@ -11,8 +11,9 @@
 /* -------------------------------------------------------------------------- */
 
 .esv-hero-statement {
-  font-size: clamp(44px, 4.35vw, 56px);
-  line-height: .97;
+  max-width: 10ch;
+  font-size: clamp(50px, 5.55vw, 84px);
+  line-height: .94;
 }
 
 .esv-maison-copy h2,
@@ -20,7 +21,7 @@
 .esv-shelf-head h2,
 .esv-provenance-intro-copy h2,
 .esv-experience-intro h2 {
-  font-size: clamp(38px, 3.15vw, 50px);
+  font-size: clamp(40px, 3.75vw, 60px);
 }
 
 .esv-signature-copy h2,
@@ -84,7 +85,117 @@
 }
 
 .esv-product-shelf {
-  margin-top: var(--space-16);
+  gap: clamp(16px, 1.55vw, 24px);
+  margin-top: clamp(44px, 4vw, 64px);
+}
+
+.esv-selected-head h2 {
+  grid-column: 6 / -1;
+  max-width: 10ch;
+  font-size: clamp(42px, 4.1vw, 64px);
+}
+
+.esv-selected-collection-link {
+  margin-top: var(--space-6);
+}
+
+.esv-selected-collection-link .esv-text-link {
+  font-size: 13px;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 04 — Territories: full-panel destinations with a clearer editorial cue    */
+/* -------------------------------------------------------------------------- */
+
+.esv-territory-link::after {
+  content: "\2192";
+  margin-left: 4px;
+  transition: transform 200ms var(--ease-esmera);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .esv-territory-panel:hover .esv-territory-link::after {
+    transform: translateX(4px);
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* 06–07 — Matter + Provenance: impact followed by a scannable sequence       */
+/* -------------------------------------------------------------------------- */
+
+.esv-matter-interlude {
+  min-height: clamp(600px, 78svh, 840px);
+}
+
+@media (min-width: 1024px) {
+  .esv-provenance-stages {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(20px, 2vw, 32px);
+    margin-top: clamp(64px, 6vw, 96px);
+  }
+
+  .esv-provenance-stage,
+  .esv-provenance-stage + .esv-provenance-stage {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    margin-top: 0;
+    padding-top: var(--space-4);
+  }
+
+  .esv-provenance-stage-origin .esv-provenance-stage-media,
+  .esv-provenance-stage-transform .esv-provenance-stage-media,
+  .esv-provenance-stage-register .esv-provenance-stage-media {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+  }
+
+  .esv-provenance-stage-copy {
+    display: grid;
+    grid-template-columns: 36px minmax(0, 1fr);
+    column-gap: var(--space-4);
+    align-items: baseline;
+    margin-top: var(--space-6);
+  }
+
+  .esv-provenance-stage-copy h3,
+  .esv-provenance-stage-copy p,
+  .esv-provenance-stage-copy .esv-text-link {
+    grid-column: 2;
+  }
+
+  .esv-provenance-stage-copy h3 {
+    margin-top: 0;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* 09 — Private invitation: premium commercial close                         */
+/* -------------------------------------------------------------------------- */
+
+.esv-private-grid > .esv-kicker {
+  grid-column: 1 / span 3;
+}
+
+.esv-private-copy {
+  grid-column: 6 / span 6;
+}
+
+.esv-private-copy h2 {
+  max-width: 11ch;
+  font-size: clamp(44px, 4.35vw, 62px);
+  line-height: .94;
+}
+
+.esv-private-copy p {
+  max-width: 44ch;
+}
+
+.esv-private-cta {
+  margin-top: var(--space-8);
+  font-size: 13px;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -105,6 +216,18 @@
 
 .esv-provenance-stage-copy p {
   max-width: 38ch;
+}
+
+@media (min-width: 1024px) {
+  .esv-provenance-stages {
+    margin-top: clamp(64px, 6vw, 96px);
+  }
+
+  .esv-provenance-stage,
+  .esv-provenance-stage + .esv-provenance-stage {
+    margin-top: 0;
+    padding-top: var(--space-4);
+  }
 }
 
 /* -------------------------------------------------------------------------- */
@@ -220,6 +343,25 @@
     margin-top: var(--space-12);
   }
 
+  .esv-provenance-stages {
+    margin-top: var(--space-16);
+  }
+
+  .esv-provenance-stage-origin .esv-provenance-stage-media,
+  .esv-provenance-stage-transform .esv-provenance-stage-media,
+  .esv-provenance-stage-register .esv-provenance-stage-media {
+    height: auto;
+    aspect-ratio: 4 / 3;
+  }
+
+  .esv-private-grid > .esv-kicker {
+    grid-column: 1 / span 2;
+  }
+
+  .esv-private-copy {
+    grid-column: 3 / -1;
+  }
+
   .esv-experience-head {
     max-width: min(560px, 100%);
   }
@@ -259,8 +401,8 @@
   }
 
   .esv-hero-statement {
-    max-width: 8.5ch;
-    font-size: clamp(38px, 9vw, 48px);
+    max-width: 9.5ch;
+    font-size: clamp(40px, 10.8vw, 54px);
   }
 
   .esv-hero-content {
@@ -271,7 +413,7 @@
   .esv-selected-head h2,
   .esv-provenance-intro-copy h2,
   .esv-experience-intro h2 {
-    font-size: clamp(34px, 9.8vw, 44px);
+    font-size: clamp(34px, 9.8vw, 46px);
   }
 
   .esv-maison-media {
@@ -295,11 +437,11 @@
   }
 
   .esv-selected-head h2 {
-    margin-top: var(--space-8);
+    margin-top: var(--space-6);
   }
 
   .esv-product-shelf {
-    margin-top: var(--space-12);
+    margin-top: var(--space-8);
     gap: var(--space-8);
   }
 
@@ -313,7 +455,7 @@
   }
 
   .esv-matter-interlude {
-    min-height: min(80svh, 760px);
+    min-height: min(72svh, 680px);
   }
 
   .esv-provenance-stages {
@@ -394,7 +536,24 @@
   }
 
   .esv-private {
-    min-height: min(70svh, 680px);
+    min-height: auto;
+  }
+
+  .esv-private-grid {
+    padding-block: clamp(88px, 22vw, 120px);
+  }
+
+  .esv-private-grid > .esv-kicker,
+  .esv-private-copy {
+    grid-column: 1 / -1;
+  }
+
+  .esv-private-copy {
+    margin-top: var(--space-12);
+  }
+
+  .esv-private-copy h2 {
+    font-size: clamp(40px, 10.8vw, 52px);
   }
 
   .esv-footer {
@@ -472,7 +631,7 @@
 
 
   .esv-hero-statement {
-    font-size: clamp(32px, 9.8vw, 42px);
+    font-size: clamp(36px, 10.4vw, 44px);
   }
 
   .esv-hero-content {
@@ -499,7 +658,7 @@
   }
 
   .esv-product-shelf {
-    gap: var(--space-6);
+    gap: var(--space-8);
   }
 
   .esv-territory-panel {

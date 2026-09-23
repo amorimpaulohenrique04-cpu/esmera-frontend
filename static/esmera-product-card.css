@@ -115,9 +115,9 @@
   border: 0;
   background: transparent;
   color: var(--product-card-muted);
-  font-size: 9px;
-  font-weight: 400;
-  letter-spacing: 0.12em;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
   line-height: 1.4;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -131,8 +131,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
   padding: 0;
   border: 0;
   border-radius: 50%;
@@ -191,9 +191,9 @@
   margin: 0 0 0.32rem;
   overflow: hidden;
   color: var(--product-card-muted);
-  font-size: 9px;
-  font-weight: 300;
-  letter-spacing: 0.16em;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
   line-height: 1.5;
   text-overflow: ellipsis;
   text-transform: uppercase;
@@ -238,8 +238,8 @@
 .esv-card-installment {
   display: block;
   color: var(--product-card-muted);
-  font-size: 0.72rem;
-  font-weight: 300;
+  font-size: 0.75rem;
+  font-weight: 400;
   letter-spacing: 0.005em;
   line-height: 1.4;
   white-space: nowrap;
@@ -254,7 +254,7 @@
   position: relative;
   z-index: 4;
   margin-top: auto;
-  padding-top: 10px;
+  padding-top: 8px;
   pointer-events: auto;
   transition: opacity 160ms ease, transform 180ms ease;
 }
@@ -271,16 +271,16 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  min-height: 34px;
+  min-height: 44px;
   margin-top: 0;
   padding: 0 1px;
   border: 0;
   border-radius: 0;
   background: transparent;
   color: var(--product-card-muted);
-  font-size: 9.5px;
-  font-weight: 400;
-  letter-spacing: 0.16em;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   cursor: pointer;
   transition: color 160ms ease;
@@ -320,13 +320,13 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  min-height: 34px;
+  min-height: 44px;
   padding: 0 1px;
   border: 0;
   background: transparent;
   color: var(--product-card-muted);
-  font-size: 9.5px;
-  font-weight: 400;
+  font-size: 11px;
+  font-weight: 500;
   letter-spacing: 0.12em;
   line-height: 1.2;
   text-transform: uppercase;
@@ -339,9 +339,9 @@
 
 @media (hover: hover) and (pointer: fine) {
   .esv-card-action-slot {
-    opacity: 0;
-    pointer-events: none;
-    transform: translateY(3px);
+    opacity: .78;
+    pointer-events: auto;
+    transform: none;
   }
 
   .esv-product-card:hover .esv-card-action-slot,
