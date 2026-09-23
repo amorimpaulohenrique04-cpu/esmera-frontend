@@ -95,7 +95,7 @@ export default function PrivacyPage({ data }: PageProps<Data>) {
               <p>Nesta política</p>
               <ol>
                 {policyNavigation.map(([number, label, id]) => (
-                  <li>
+                  <li key={id}>
                     <a href={`#${id}`}>
                       <span>{number}</span>
                       {label}
