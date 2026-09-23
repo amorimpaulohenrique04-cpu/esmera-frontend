@@ -13,7 +13,7 @@ export default defineApp(async (_req, ctx) => {
   const homeStyleRevision = "2026-08-14-motion-system-v34";
   const footerStyleRevision = "2026-08-15-footer-whatsapp-form-v3";
   const homeArtDirectionRevision = "2026-09-23-home-art-direction-v4";
-  const homeLengthRevision = "2026-09-22-home-length-refinement-v3";
+  const homeLengthRevision = "2026-09-23-home-length-refinement-v4-tablet";
   const mobileRecoveryRevision = "2026-09-23-mobile-recovery-v5";
   const shellCroRevision = "2026-09-23-shell-cro-v2";
   return (
