@@ -3,6 +3,7 @@ import { toEsmeraObject } from "../../lib/payload/adapters.ts";
 import { payloadGet } from "../../lib/payload/client.ts";
 import { whereEquals, whereOr } from "../../lib/payload/query.ts";
 import type {
+  EsmeraObject,
   PayloadPaginated,
   PayloadProduct,
 } from "../../lib/payload/types.ts";
@@ -39,13 +40,13 @@ export const handler: Handlers = {
       const byId = new Map(
         response.docs
           .map((product) => toEsmeraObject(product))
-          .filter((item): item is NonNullable<typeof item> => Boolean(item))
+          .filter((item): item is EsmeraObject => Boolean(item))
           .map((item) => [item.id, item]),
       );
 
       const items = ids
         .map((id) => byId.get(String(id)))
-        .filter((item): item is NonNullable<typeof item> => Boolean(item));
+        .filter((item): item is EsmeraObject => Boolean(item));
 
       return Response.json({ items }, {
         headers: { "cache-control": "no-store" },
