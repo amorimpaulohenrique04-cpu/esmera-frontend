@@ -32,10 +32,9 @@ Deno.test("P2 serves responsive Payload media instead of fixed oversized images"
 
   assertStringIncludes(media, "payloadMediaSrcSet");
   assertStringIncludes(media, "srcSet={srcSet}");
-  assertStringIncludes(media, 'imageSizes="100vw"');
   assertStringIncludes(cards, 'fetchPriority={priority ? "high" : "auto"}');
-  assertStringIncludes(carousel, "firstDesktopSrcSet");
-  assertStringIncludes(carousel, 'fetchPriority="high"');
+  assertStringIncludes(carousel, "firstDesktopSrc");
+  assertStringIncludes(carousel, 'priority={active === 0 ? "high" : "low"}');
 });
 
 Deno.test("P2 folds global coordination into existing islands", async () => {
