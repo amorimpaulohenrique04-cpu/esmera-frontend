@@ -1,6 +1,7 @@
 /* ESMÉRA — Mobile recovery v4
- * Restores mobile breathing room after the length-compression pass without undoing desktop gains.
- * Also adds a simple transparent ↔ solid header transition.
+ * Authoritative mobile rhythm layer after the home length-compression pass.
+ * Restores breathing room, fixes section 04 → 05 document flow and keeps the
+ * transparent ↔ solid header transition simple and reversible.
  */
 
 /* -------------------------------------------------------------------------- */
@@ -108,10 +109,32 @@
     margin-top: 28px !important;
   }
 
+  /* Section 04 — Territories
+   * The length-refinement layer has a fixed track height for tablet. On mobile
+   * the panels stack, so the track MUST return to normal document flow.
+   * Without this reset, panels 2/3 overflow the track and section 05 begins too
+   * early; clipping only hides the symptom. */
+  .esv-territory {
+    position: relative;
+    overflow: visible;
+  }
+
+  .esv-territory-track {
+    display: block !important;
+    width: 100%;
+    height: auto !important;
+    min-height: 0;
+    overflow: visible;
+  }
+
   .esv-territory-panel,
   .esv-territory-panel + .esv-territory-panel {
+    position: relative;
+    display: block;
+    width: 100%;
     height: 64svh;
     min-height: 465px;
+    overflow: hidden;
   }
 
   .esv-territory-copy {
@@ -125,12 +148,37 @@
     font-size: clamp(36px, 9.9vw, 44px);
   }
 
+  /* Section 05 — Signature Object
+   * Starts only after the full Territory track. Mobile keeps the editorial
+   * content-first order from the approved reference, but no z-index/clipping
+   * hack is used: normal document flow owns the boundary. */
   .esv-signature {
+    position: relative;
+    z-index: auto;
+    overflow: visible;
     padding-block: 82px 90px;
   }
 
+  .esv-signature-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
   .esv-signature-copy {
-    margin-top: 32px;
+    order: 1;
+    width: 100%;
+    margin-top: 0;
+  }
+
+  .esv-signature-media {
+    order: 2;
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    aspect-ratio: 4 / 3;
+    margin: 32px 0 0;
+    overflow: hidden;
   }
 
   .esv-signature-copy h2 {
@@ -231,6 +279,10 @@
   .esv-territory-panel,
   .esv-territory-panel + .esv-territory-panel {
     min-height: 445px;
+  }
+
+  .esv-signature-media {
+    margin-top: 30px;
   }
 }
 
