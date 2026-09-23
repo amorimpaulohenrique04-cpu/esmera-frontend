@@ -6,7 +6,7 @@ import type {
 } from "../../lib/payload/types.ts";
 
 export const cache = { maxAge: 300 };
-export const cacheKey = () => "storefront-page-data";
+export const cacheKey = () => "storefront-page-data-v3";
 
 type PublicMedia = {
   url?: string | null;
