@@ -6,6 +6,7 @@ import * as $_404 from "./routes/_404.tsx";
 import * as $_500 from "./routes/_500.tsx";
 import * as $_app from "./routes/_app.tsx";
 import * as $api_esmera_collection from "./routes/api/esmera-collection.ts";
+import * as $api_esmera_favorites from "./routes/api/esmera-favorites.ts";
 import * as $api_esmera_lead from "./routes/api/esmera-lead.ts";
 import * as $api_esmera_product_detail from "./routes/api/esmera-product-detail.ts";
 import * as $api_esmera_recommendations from "./routes/api/esmera-recommendations.ts";
@@ -15,6 +16,7 @@ import * as $api_esmera_search from "./routes/api/esmera-search.ts";
 import * as $colecao_slug_ from "./routes/colecao/[slug].tsx";
 import * as $colecao_index from "./routes/colecao/index.tsx";
 import * as $contato from "./routes/contato.tsx";
+import * as $favoritos from "./routes/favoritos.tsx";
 import * as $pagina_slug_ from "./routes/pagina/[slug].tsx";
 import * as $pagina_a_esmera from "./routes/pagina/a-esmera.tsx";
 import * as $politica_de_privacidade from "./routes/politica-de-privacidade.tsx";
@@ -29,6 +31,7 @@ import * as $CollectionExplorer from "./islands/CollectionExplorer.tsx";
 import * as $DynamicMenu from "./islands/DynamicMenu.tsx";
 import * as $EsmeraHeader from "./islands/EsmeraHeader.tsx";
 import * as $EsmeraMotion from "./islands/EsmeraMotion.tsx";
+import * as $FavoritesPage from "./islands/FavoritesPage.tsx";
 import * as $FooterLeadForm from "./islands/FooterLeadForm.tsx";
 import * as $HeroCarousel from "./islands/HeroCarousel.tsx";
 import * as $MenuNavigationCoordinator from "./islands/MenuNavigationCoordinator.tsx";
@@ -45,6 +48,7 @@ const manifest = {
     "./routes/_500.tsx": $_500,
     "./routes/_app.tsx": $_app,
     "./routes/api/esmera-collection.ts": $api_esmera_collection,
+    "./routes/api/esmera-favorites.ts": $api_esmera_favorites,
     "./routes/api/esmera-lead.ts": $api_esmera_lead,
     "./routes/api/esmera-product-detail.ts": $api_esmera_product_detail,
     "./routes/api/esmera-recommendations.ts": $api_esmera_recommendations,
@@ -54,6 +58,7 @@ const manifest = {
     "./routes/colecao/[slug].tsx": $colecao_slug_,
     "./routes/colecao/index.tsx": $colecao_index,
     "./routes/contato.tsx": $contato,
+    "./routes/favoritos.tsx": $favoritos,
     "./routes/pagina/[slug].tsx": $pagina_slug_,
     "./routes/pagina/a-esmera.tsx": $pagina_a_esmera,
     "./routes/politica-de-privacidade.tsx": $politica_de_privacidade,
@@ -70,6 +75,7 @@ const manifest = {
     "./islands/DynamicMenu.tsx": $DynamicMenu,
     "./islands/EsmeraHeader.tsx": $EsmeraHeader,
     "./islands/EsmeraMotion.tsx": $EsmeraMotion,
+    "./islands/FavoritesPage.tsx": $FavoritesPage,
     "./islands/FooterLeadForm.tsx": $FooterLeadForm,
     "./islands/HeroCarousel.tsx": $HeroCarousel,
     "./islands/MenuNavigationCoordinator.tsx": $MenuNavigationCoordinator,
