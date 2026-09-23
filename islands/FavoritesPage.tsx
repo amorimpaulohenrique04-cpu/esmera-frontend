@@ -141,6 +141,14 @@ export default function FavoritesPage() {
     if (profile) void syncRemoval(profile, product.id);
   };
 
+  const openProduct = (product: EsmeraObject, trigger: HTMLElement) => {
+    globalThis.dispatchEvent(
+      new CustomEvent("esmera:open-product", {
+        detail: { product, trigger },
+      }),
+    );
+  };
+
   const addToCart = (product: EsmeraObject) => {
     globalThis.dispatchEvent(
       new CustomEvent("esmera:add-to-enquiry", {
@@ -199,10 +207,11 @@ export default function FavoritesPage() {
       <div class="esv-favorites-grid">
         {orderedItems.map((product) => (
           <article class="esv-favorite-item" key={product.id}>
-            <a
+            <button
               class="esv-favorite-media"
-              href={`/produto/${product.slug}`}
-              aria-label={`Ver ${product.title}`}
+              type="button"
+              aria-label={`Ver detalhes de ${product.title}`}
+              onClick={(event) => openProduct(product, event.currentTarget)}
             >
               <img
                 src={product.image}
@@ -212,7 +221,7 @@ export default function FavoritesPage() {
                 loading="lazy"
                 decoding="async"
               />
-            </a>
+            </button>
 
             <div class="esv-favorite-copy">
               <div>
@@ -220,7 +229,12 @@ export default function FavoritesPage() {
                   {[product.category, product.material].filter(Boolean).join(" · ")}
                 </p>
                 <h2>
-                  <a href={`/produto/${product.slug}`}>{product.title}</a>
+                  <button
+                    type="button"
+                    onClick={(event) => openProduct(product, event.currentTarget)}
+                  >
+                    {product.title}
+                  </button>
                 </h2>
                 <p class="esv-favorite-availability">
                   {availabilityLabel(product.availability)}
@@ -234,7 +248,12 @@ export default function FavoritesPage() {
               </div>
 
               <div class="esv-favorite-actions">
-                <a href={`/produto/${product.slug}`}>Ver detalhes</a>
+                <button
+                  type="button"
+                  onClick={(event) => openProduct(product, event.currentTarget)}
+                >
+                  Ver detalhes
+                </button>
                 {!product.isInquiry && product.availability !== "archive" && (
                   <button
                     type="button"
