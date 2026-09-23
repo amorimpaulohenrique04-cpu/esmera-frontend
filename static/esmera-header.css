@@ -822,3 +822,61 @@ html:root {
     opacity: 1;
   }
 }
+
+/* Header favorites --------------------------------------------------------- */
+
+.esv-header .esv-wishlist-header-link {
+  position: relative;
+  color: inherit;
+  text-decoration: none;
+}
+
+.esv-header .esv-wishlist-header-link sup {
+  position: absolute;
+  top: 4px;
+  right: 1px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: currentColor;
+  color: var(--bg);
+  font-size: 8px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.esv-header[data-header-surface="hero"] .esv-wishlist-header-link sup {
+  color: var(--ink);
+  background: #f3f0e8;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .esv-header .esv-wishlist-header-link:hover::before {
+    opacity: .07;
+    transform: scale(1);
+  }
+
+  .esv-header .esv-wishlist-header-link:hover svg path {
+    stroke-width: 1.6;
+  }
+}
+
+@media (max-width: 767px) {
+  .esv-header .esv-wishlist-header-link {
+    width: 40px;
+  }
+
+  .esv-header .esv-wishlist-header-link sup {
+    top: 5px;
+    right: 0;
+    min-width: 15px;
+    height: 15px;
+    font-size: 7.5px;
+  }
+}
+
