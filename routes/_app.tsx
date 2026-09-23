@@ -15,6 +15,7 @@ export default defineApp(async (_req, ctx) => {
   const homeArtDirectionRevision = "2026-09-22-home-art-direction-v2";
   const homeLengthRevision = "2026-09-22-home-length-refinement-v3";
   const mobileRecoveryRevision = "2026-09-22-mobile-recovery-v4-rootflow";
+  const shellCroRevision = "2026-09-23-shell-cro-v1";
   return (
     <>
       <Theme colorScheme="any" />
@@ -74,6 +75,10 @@ export default defineApp(async (_req, ctx) => {
         <link
           rel="stylesheet"
           href={asset(`/esmera-header.css?v=${storefrontStyleRevision}`)}
+        />
+        <link
+          rel="stylesheet"
+          href={asset(`/esmera-shell-cro-v1.css?v=${shellCroRevision}`)}
         />
         <link
           rel="stylesheet"
