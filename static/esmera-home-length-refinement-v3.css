@@ -1,0 +1,457 @@
+/* ESMÉRA — Home length refinement v3
+ * Gentle vertical compression layered after home art direction v2.
+ * No sections removed; identity, Inter, logo and product media contracts stay untouched.
+ */
+
+/* -------------------------------------------------------------------------- */
+/* Desktop rhythm — reduce overall page length without flattening hierarchy   */
+/* -------------------------------------------------------------------------- */
+
+.esv-hero {
+  min-height: max(720px, 90svh);
+}
+
+.esv-hero-content {
+  padding-bottom: clamp(64px, 7vw, 108px);
+}
+
+.esv-hero-statement {
+  font-size: clamp(52px, 5.35vw, 80px);
+  line-height: .94;
+}
+
+.esv-maison {
+  padding-block: clamp(108px, 8.5vw, 148px);
+}
+
+.esv-maison-copy h2 {
+  font-size: clamp(42px, 3.7vw, 58px);
+  line-height: .96;
+}
+
+.esv-maison-media {
+  min-height: clamp(540px, 43vw, 720px);
+}
+
+.esv-selected {
+  padding-block: clamp(96px, 7.5vw, 132px) !important;
+}
+
+.esv-selected-head h2 {
+  margin-top: clamp(20px, 1.8vw, 28px);
+  font-size: clamp(44px, 4vw, 60px);
+  line-height: .96;
+}
+
+.esv-selected .esv-product-shelf {
+  margin-top: clamp(48px, 4.4vw, 68px);
+}
+
+.esv-selected .esv-product-card-copy {
+  min-height: 154px;
+  padding-top: 13px;
+}
+
+.esv-selected .esv-card-action-slot {
+  margin-top: 10px;
+}
+
+.esv-selected-collection-link {
+  margin-top: clamp(28px, 2.7vw, 42px) !important;
+}
+
+.esv-territory-track {
+  height: clamp(590px, 49vw, 740px);
+}
+
+.esv-territory-copy {
+  bottom: clamp(30px, 3.4vw, 52px);
+}
+
+.esv-territory-copy h2 {
+  font-size: clamp(34px, 3.15vw, 50px);
+  line-height: .96;
+}
+
+.esv-signature {
+  padding-block: clamp(100px, 7.5vw, 138px);
+}
+
+.esv-signature-copy h2 {
+  font-size: clamp(32px, 2.85vw, 44px);
+  line-height: .98;
+}
+
+.esv-signature-text {
+  margin-top: 18px;
+}
+
+.esv-signature-facts {
+  margin-top: 22px;
+}
+
+.esv-signature-facts > div {
+  padding: 9px 0;
+}
+
+.esv-signature-value {
+  margin-top: 18px;
+}
+
+.esv-signature .esv-product-actions {
+  margin-top: 16px;
+}
+
+.esv-matter-interlude {
+  min-height: clamp(560px, 68svh, 780px);
+}
+
+.esv-matter-interlude-content {
+  padding-bottom: clamp(52px, 6.5vw, 92px);
+}
+
+.esv-matter-interlude-title {
+  font-size: clamp(40px, 4vw, 60px);
+  line-height: .96;
+}
+
+.esv-provenance {
+  padding-block: clamp(100px, 7.5vw, 136px);
+}
+
+.esv-provenance-intro-copy h2 {
+  font-size: clamp(40px, 3.55vw, 56px);
+  line-height: .96;
+}
+
+@media (min-width: 1024px) {
+  .esv-provenance-stages {
+    gap: clamp(20px, 1.8vw, 30px);
+    margin-top: clamp(54px, 4.8vw, 76px);
+  }
+
+  .esv-provenance-stage,
+  .esv-provenance-stage + .esv-provenance-stage {
+    padding-top: 11px;
+  }
+
+  .esv-provenance-stage-copy {
+    margin-top: 18px;
+  }
+
+  .esv-provenance-stage-copy h3 {
+    font-size: clamp(23px, 1.8vw, 29px);
+  }
+
+  .esv-provenance-stage-copy p {
+    margin-top: 9px;
+  }
+}
+
+.esv-private {
+  min-height: clamp(590px, 64svh, 750px);
+}
+
+.esv-private-grid {
+  padding-block: clamp(92px, 8vw, 136px);
+}
+
+.esv-private-copy h2 {
+  max-width: 10.5ch;
+  font-size: clamp(42px, 4vw, 60px);
+  line-height: .95;
+}
+
+.esv-private-copy p {
+  margin-top: 22px;
+  line-height: 1.6;
+}
+
+.esv-private-cta {
+  margin-top: 24px;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Tablet                                                                     */
+/* -------------------------------------------------------------------------- */
+
+@media (max-width: 1023px) {
+  :root {
+    --section-y: clamp(84px, 10vw, 112px);
+  }
+
+  .esv-hero {
+    min-height: max(660px, 86svh);
+  }
+
+  .esv-hero-statement {
+    font-size: clamp(43px, 7vw, 58px);
+  }
+
+  .esv-maison {
+    padding-block: clamp(90px, 10vw, 118px);
+  }
+
+  .esv-maison-media {
+    min-height: 500px;
+  }
+
+  .esv-selected {
+    padding-block: clamp(84px, 10vw, 112px) !important;
+  }
+
+  .esv-selected .esv-product-shelf {
+    margin-top: 42px;
+  }
+
+  .esv-territory-track {
+    height: clamp(500px, 62vw, 640px);
+  }
+
+  .esv-signature {
+    padding-block: clamp(88px, 10vw, 118px);
+  }
+
+  .esv-matter-interlude {
+    min-height: min(68svh, 680px);
+  }
+
+  .esv-provenance {
+    padding-block: clamp(88px, 10vw, 118px);
+  }
+
+  .esv-private {
+    min-height: clamp(560px, 62svh, 700px);
+  }
+
+  .esv-private-grid {
+    padding-block: clamp(84px, 10vw, 116px);
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Mobile — preserve editorial pauses while removing redundant scroll         */
+/* -------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  :root {
+    --section-y: clamp(64px, 16vw, 82px);
+  }
+
+  .esv-hero {
+    min-height: 82svh;
+  }
+
+  .esv-hero-content {
+    padding-bottom: clamp(42px, 11vw, 56px);
+  }
+
+  .esv-hero-statement {
+    max-width: 9ch;
+    font-size: clamp(36px, 10.5vw, 46px);
+    line-height: .95;
+  }
+
+  .esv-hero-cta {
+    margin-top: 18px;
+  }
+
+  .esv-maison {
+    padding-block: 70px 78px;
+  }
+
+  .esv-maison-copy h2 {
+    max-width: 8.8ch;
+    font-size: clamp(34px, 9.2vw, 42px);
+    line-height: .98;
+  }
+
+  .esv-maison-media {
+    min-height: min(116vw, 500px);
+    margin-top: 38px;
+  }
+
+  .esv-selected {
+    padding-block: 70px 80px !important;
+  }
+
+  .esv-selected-head h2 {
+    margin-top: 20px;
+    max-width: 9.2ch;
+    font-size: clamp(34px, 9.4vw, 42px);
+    line-height: .98;
+  }
+
+  .esv-selected-head > p {
+    margin-top: 14px;
+  }
+
+  .esv-selected .esv-product-shelf {
+    gap: 34px;
+    margin-top: 36px;
+  }
+
+  .esv-selected .esv-product-card-copy {
+    min-height: 140px;
+    padding-top: 12px;
+  }
+
+  .esv-selected .esv-card-title {
+    font-size: 18px;
+  }
+
+  .esv-selected .esv-card-action-slot {
+    margin-top: 9px;
+  }
+
+  .esv-selected-collection-link {
+    margin-top: 24px !important;
+  }
+
+  .esv-territory-panel,
+  .esv-territory-panel + .esv-territory-panel {
+    height: 58svh;
+    min-height: 430px;
+  }
+
+  .esv-territory-copy {
+    right: 20px;
+    bottom: 28px;
+    left: 20px;
+  }
+
+  .esv-territory-copy h2 {
+    max-width: 9ch;
+    font-size: clamp(34px, 9.4vw, 42px);
+    line-height: .98;
+  }
+
+  .esv-signature {
+    padding-block: 74px 82px;
+  }
+
+  .esv-signature-copy {
+    margin-top: 28px;
+  }
+
+  .esv-signature-copy h2 {
+    max-width: 10ch;
+    font-size: clamp(32px, 8.8vw, 40px);
+    line-height: .98;
+  }
+
+  .esv-signature-text {
+    margin-top: 16px;
+  }
+
+  .esv-signature-facts {
+    margin-top: 20px;
+  }
+
+  .esv-signature .esv-product-actions {
+    margin-top: 14px;
+  }
+
+  .esv-matter-interlude {
+    min-height: 62svh;
+  }
+
+  .esv-matter-interlude-content {
+    padding-bottom: 46px;
+  }
+
+  .esv-matter-interlude-title {
+    max-width: 8.8ch;
+    font-size: clamp(36px, 9.8vw, 44px);
+    line-height: .98;
+  }
+
+  .esv-provenance {
+    padding-block: 74px 82px;
+  }
+
+  .esv-provenance-intro-copy {
+    margin-top: 18px;
+  }
+
+  .esv-provenance-intro-copy h2 {
+    max-width: 8.8ch;
+    font-size: clamp(34px, 9.4vw, 42px);
+    line-height: .98;
+  }
+
+  .esv-provenance-stages {
+    margin-top: 36px;
+  }
+
+  .esv-provenance-stage,
+  .esv-provenance-stage + .esv-provenance-stage {
+    padding: 22px 0 28px;
+  }
+
+  .esv-provenance-stage-copy {
+    margin-top: 16px;
+  }
+
+  .esv-provenance-stage-copy h3 {
+    margin-top: 8px;
+    font-size: 25px;
+  }
+
+  .esv-provenance-stage-copy p {
+    margin-top: 8px;
+  }
+
+  .esv-private-grid {
+    padding-block: 74px 82px;
+  }
+
+  .esv-private-copy {
+    margin-top: 30px;
+  }
+
+  .esv-private-copy h2 {
+    max-width: 9.5ch;
+    font-size: clamp(36px, 9.8vw, 44px);
+    line-height: .97;
+  }
+
+  .esv-private-copy p {
+    margin-top: 20px;
+  }
+
+  .esv-private-cta {
+    margin-top: 22px;
+  }
+
+  .esv-footer.esv-footer-premium .esv-footer-grid {
+    padding-block: 34px 22px;
+  }
+
+  .esv-footer.esv-footer-premium .esv-footer-brand {
+    padding-bottom: 26px;
+  }
+
+  .esv-footer.esv-footer-premium .esv-footer-column {
+    padding-block: 20px;
+  }
+
+  .esv-footer.esv-footer-premium .esv-footer-relationship {
+    padding-top: 22px;
+  }
+}
+
+@media (max-width: 429px) {
+  .esv-hero {
+    min-height: 80svh;
+  }
+
+  .esv-maison-media {
+    min-height: min(112vw, 470px);
+  }
+
+  .esv-territory-panel,
+  .esv-territory-panel + .esv-territory-panel {
+    min-height: 410px;
+  }
+}
