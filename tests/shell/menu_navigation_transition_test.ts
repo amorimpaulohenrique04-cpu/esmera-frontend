@@ -21,11 +21,11 @@ Deno.test("menu navigation waits for the owned exit lifecycle before routing", a
 
   assertStringIncludes(
     menu,
-    'from "../lib/esmera/navigationMotion.ts"',
+    'from "./navigationMotion.ts"',
   );
   assertStringIncludes(
     coordinator,
-    'from "../lib/esmera/navigationMotion.ts"',
+    'from "./navigationMotion.ts"',
   );
   assertStringIncludes(menu, "megaAfterClose");
   assertStringIncludes(menu, "drawerAfterClose");
