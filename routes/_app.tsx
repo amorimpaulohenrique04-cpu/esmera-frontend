@@ -52,6 +52,13 @@ export default defineApp(async (_req, ctx) => {
           rel="stylesheet"
           href={asset("/esmera-commerce-refine.css")}
         />
+        <link
+          rel="preload"
+          as="style"
+          href={asset(
+            `/esmera-product-modal.css?v=${storefrontStyleRevision}`,
+          )}
+        />
         <meta
           name="esmera-product-modal-css"
           content={asset(
