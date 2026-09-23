@@ -16,6 +16,7 @@ let nextFetcherID = 1;
 
 export interface PayloadRequestOptions extends QueryOptions {
   timeoutMs?: number;
+  maxRetries?: number;
   fetcher?: typeof fetch;
   cache?: RequestCache;
   dedupe?: boolean;
@@ -28,6 +29,7 @@ export interface PayloadClientOptions extends PayloadRequestOptions {
 export interface PayloadClientConfig {
   baseURL?: string;
   timeoutMs?: number;
+  maxRetries?: number;
   fetcher?: typeof fetch;
   cache?: RequestCache;
   dedupe?: boolean;
@@ -105,6 +107,7 @@ function requestKey(
     url.href,
     `cache=${options.cache ?? "default"}`,
     `timeout=${options.timeoutMs ?? DEFAULT_TIMEOUT_MS}`,
+    `retries=${options.maxRetries ?? MAX_TRANSIENT_RETRIES}`,
     `contract=${STOREFRONT_CONTRACT_VERSION}`,
     `fetcher=${getFetcherID(fetcher)}`,
   ].join("|");
@@ -142,6 +145,7 @@ async function executePayloadGet<T>(
   fetcher: typeof fetch,
 ): Promise<T> {
   const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
+  const maxRetries = options.maxRetries ?? MAX_TRANSIENT_RETRIES;
   if (!Number.isFinite(timeoutMs) || timeoutMs <= 0) {
     throw new PayloadAPIError(
       "configuration",
@@ -151,7 +155,16 @@ async function executePayloadGet<T>(
     );
   }
 
-  for (let attempt = 0; attempt <= MAX_TRANSIENT_RETRIES; attempt += 1) {
+  if (!Number.isInteger(maxRetries) || maxRetries < 0 || maxRetries > 3) {
+    throw new PayloadAPIError(
+      "configuration",
+      `A quantidade de retries do cliente Payload é inválida para ${endpoint}.`,
+      undefined,
+      endpoint,
+    );
+  }
+
+  for (let attempt = 0; attempt <= maxRetries; attempt += 1) {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), timeoutMs);
     let response: Response;
@@ -169,7 +182,7 @@ async function executePayloadGet<T>(
     } catch {
       const timedOut = controller.signal.aborted;
       clearTimeout(timeout);
-      if (attempt < MAX_TRANSIENT_RETRIES) {
+      if (attempt < maxRetries) {
         logRetry(endpoint, attempt, timedOut ? "timeout" : "network");
         await retryDelay(attempt);
         continue;
@@ -186,7 +199,7 @@ async function executePayloadGet<T>(
 
     clearTimeout(timeout);
     if (!response.ok) {
-      if (attempt < MAX_TRANSIENT_RETRIES && transientStatus(response.status)) {
+      if (attempt < maxRetries && transientStatus(response.status)) {
         logRetry(endpoint, attempt, "http", response.status);
         await retryDelay(attempt);
         continue;
@@ -290,6 +303,7 @@ export function createPayloadClient(
       return payloadGet<T>(path, {
         baseURL,
         timeoutMs: options.timeoutMs ?? config.timeoutMs,
+        maxRetries: options.maxRetries ?? config.maxRetries,
         fetcher: options.fetcher ?? config.fetcher,
         cache: options.cache ?? config.cache,
         dedupe: options.dedupe ?? config.dedupe,

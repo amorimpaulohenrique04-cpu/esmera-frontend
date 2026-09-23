@@ -182,6 +182,27 @@ Deno.test("allows in-flight deduplication to be disabled", async () => {
   assertEquals(calls, 2);
 });
 
+
+Deno.test("can disable transient retries for latency-sensitive requests", async () => {
+  let calls = 0;
+  const error = await assertRejects(
+    () =>
+      payloadGet("storefront/bootstrap", {
+        baseURL: "https://cms.example.com",
+        maxRetries: 0,
+        fetcher: () => {
+          calls++;
+          return Promise.resolve(new Response("unavailable", { status: 503 }));
+        },
+      }),
+    PayloadAPIError,
+    "HTTP 503",
+  ) as PayloadAPIError;
+
+  assertEquals(calls, 1);
+  assertEquals(error.status, 503);
+});
+
 Deno.test("aborts slow requests", async () => {
   const error = await assertRejects(
     () =>
