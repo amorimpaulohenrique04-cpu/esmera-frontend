@@ -13,6 +13,7 @@ export default defineApp(async (_req, ctx) => {
   const homeStyleRevision = "2026-08-14-motion-system-v34";
   const footerStyleRevision = "2026-08-15-footer-whatsapp-form-v3";
   const homeArtDirectionRevision = "2026-09-22-home-art-direction-v2";
+  const homeLengthRevision = "2026-09-22-home-length-refinement-v3";
   return (
     <>
       <Theme colorScheme="any" />
@@ -99,6 +100,12 @@ export default defineApp(async (_req, ctx) => {
           rel="stylesheet"
           href={asset(
             `/esmera-home-art-direction-v2.css?v=${homeArtDirectionRevision}`,
+          )}
+        />
+        <link
+          rel="stylesheet"
+          href={asset(
+            `/esmera-home-length-refinement-v3.css?v=${homeLengthRevision}`,
           )}
         />
 
