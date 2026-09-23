@@ -427,12 +427,12 @@
 
   /* Matter — full-width pause, but proportioned to a tablet viewport. */
   .esv-matter-interlude {
-    min-height: clamp(500px, 60svh, 620px);
+    min-height: clamp(430px, 52svh, 540px);
   }
 
   .esv-matter-interlude-content {
     grid-template-columns: repeat(8, minmax(0, 1fr));
-    padding-bottom: clamp(54px, 7vw, 74px);
+    padding-bottom: clamp(42px, 5.5vw, 58px);
   }
 
   .esv-matter-interlude-meta,
