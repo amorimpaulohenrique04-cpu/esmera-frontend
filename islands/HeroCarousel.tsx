@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "preact/hooks";
 import type { HeroSlide } from "../sections/Esmera/Hero.tsx";
+import { optimizePayloadMediaURL } from "../components/esmera/ResponsiveMedia.tsx";
 
 export interface Props {
   slides: HeroSlide[];
@@ -21,7 +22,10 @@ function prefersReducedMotion(): boolean {
 
 function preferredSlideSource(slide: HeroSlide): string {
   const compact = globalThis.matchMedia?.("(max-width: 767px)").matches;
-  return compact && slide.mobileImage ? slide.mobileImage : slide.desktopImage;
+  const source = compact && slide.mobileImage
+    ? slide.mobileImage
+    : slide.desktopImage;
+  return optimizePayloadMediaURL(source, compact ? 900 : 1800);
 }
 
 async function decodeSlide(slide: HeroSlide): Promise<void> {
@@ -60,11 +64,14 @@ function SlidePicture(
       onTransitionEnd={onTransitionEnd}
     >
       {slide.mobileImage && (
-        <source media="(max-width: 767px)" srcset={slide.mobileImage} />
+        <source
+          media="(max-width: 767px)"
+          srcset={optimizePayloadMediaURL(slide.mobileImage, 900)}
+        />
       )}
       <img
         {...{ fetchPriority: priority }}
-        src={slide.desktopImage}
+        src={optimizePayloadMediaURL(slide.desktopImage, 1800)}
         alt={slide.alt}
         loading={priority === "high" ? "eager" : "lazy"}
         decoding="async"
