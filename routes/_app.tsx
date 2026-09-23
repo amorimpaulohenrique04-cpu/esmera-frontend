@@ -7,8 +7,8 @@ export default defineApp(async (_req, ctx) => {
   const revision = await Context.active().release?.revision();
   // Preserve the stable storefront token for unchanged CSS contracts and bump
   // only the layers that own new visual behavior.
-  const storefrontStyleRevision = "2026-08-14-about-page-v33";
-  const productCardStyleRevision = "2026-09-23-wishlist-lead-v1";
+  const storefrontStyleRevision = "2026-09-23-header-favorites-v34";
+  const productCardStyleRevision = "2026-09-23-favorites-workspace-v2";
   const aboutStyleRevision = "2026-09-23-privacy-editorial-v2";
   const homeStyleRevision = "2026-08-14-motion-system-v34";
   const footerStyleRevision = "2026-08-15-footer-whatsapp-form-v3";
