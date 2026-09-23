@@ -1,8 +1,4 @@
-import {
-  assert,
-  assertFalse,
-  assertStringIncludes,
-} from "@std/assert";
+import { assert, assertFalse, assertStringIncludes } from "@std/assert";
 
 async function exists(path: string): Promise<boolean> {
   try {
@@ -26,7 +22,9 @@ Deno.test("P2 keeps dead/override layers removed", async () => {
 });
 
 Deno.test("P2 serves responsive Payload media instead of fixed oversized images", async () => {
-  const media = await Deno.readTextFile("components/esmera/ResponsiveMedia.tsx");
+  const media = await Deno.readTextFile(
+    "components/esmera/ResponsiveMedia.tsx",
+  );
   const cards = await Deno.readTextFile("components/esmera/ObjectCard.tsx");
   const carousel = await Deno.readTextFile("islands/HeroCarousel.tsx");
 
@@ -38,7 +36,9 @@ Deno.test("P2 serves responsive Payload media instead of fixed oversized images"
 });
 
 Deno.test("P2 folds global coordination into existing islands", async () => {
-  const layout = await Deno.readTextFile("components/esmera/StorefrontLayout.tsx");
+  const layout = await Deno.readTextFile(
+    "components/esmera/StorefrontLayout.tsx",
+  );
   const header = await Deno.readTextFile("islands/EsmeraHeader.tsx");
   const modal = await Deno.readTextFile("islands/ProductModal.tsx");
 
