@@ -252,7 +252,9 @@ export default function EsmeraHeader({
       try {
         const raw = globalThis.localStorage?.getItem("esmera:wishlist");
         const parsed = raw ? JSON.parse(raw) : [];
-        setWishlistCount(Array.isArray(parsed) ? new Set(parsed.map(String)).size : 0);
+        setWishlistCount(
+          Array.isArray(parsed) ? new Set(parsed.map(String)).size : 0,
+        );
       } catch {
         setWishlistCount(0);
       }
@@ -262,7 +264,10 @@ export default function EsmeraHeader({
     globalThis.addEventListener("esmera:wishlist-sync", updateWishlistCount);
     globalThis.addEventListener("storage", updateWishlistCount);
     return () => {
-      globalThis.removeEventListener("esmera:wishlist-sync", updateWishlistCount);
+      globalThis.removeEventListener(
+        "esmera:wishlist-sync",
+        updateWishlistCount,
+      );
       globalThis.removeEventListener("storage", updateWishlistCount);
     };
   }, []);
@@ -578,7 +583,9 @@ export default function EsmeraHeader({
             class="esv-header-icon esv-wishlist-header-link"
             href="/favoritos"
             aria-label={wishlistCount > 0
-              ? `Meus favoritos, ${wishlistCount} ${wishlistCount === 1 ? "peça" : "peças"}`
+              ? `Meus favoritos, ${wishlistCount} ${
+                wishlistCount === 1 ? "peça" : "peças"
+              }`
               : "Meus favoritos"}
             title="Meus favoritos"
           >
