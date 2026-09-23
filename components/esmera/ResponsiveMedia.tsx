@@ -5,7 +5,16 @@ import { Picture, Source } from "apps/website/components/Picture.tsx";
 const PAYLOAD_MEDIA_PATH_PREFIX = "/api/media/file/";
 const GOOGLE_DRIVE_THUMBNAIL_HOST = "drive.google.com";
 const GOOGLE_DRIVE_THUMBNAIL_PATH = "/thumbnail";
-const NEXT_IMAGE_WIDTHS = [640, 750, 828, 1080, 1200, 1920, 2048, 3840] as const;
+const NEXT_IMAGE_WIDTHS = [
+  640,
+  750,
+  828,
+  1080,
+  1200,
+  1920,
+  2048,
+  3840,
+] as const;
 
 function nextImageWidth(requested: number): number {
   return NEXT_IMAGE_WIDTHS.find((width) => width >= requested) ??
@@ -14,7 +23,9 @@ function nextImageWidth(requested: number): number {
 
 function responsiveImageWidths(maxWidth: number): number[] {
   const normalizedMax = nextImageWidth(maxWidth);
-  const candidates = NEXT_IMAGE_WIDTHS.filter((width) => width <= normalizedMax);
+  const candidates = NEXT_IMAGE_WIDTHS.filter((width) =>
+    width <= normalizedMax
+  );
   return candidates.length > 0 ? [...candidates] : [normalizedMax];
 }
 
@@ -101,9 +112,7 @@ export function EsmeraImage(
 ) {
   if (isDirectMediaURL(src)) {
     const payloadMedia = isPayloadMediaURL(src);
-    const directSrc = payloadMedia
-      ? optimizePayloadMediaURL(src, width)
-      : src;
+    const directSrc = payloadMedia ? optimizePayloadMediaURL(src, width) : src;
     const srcSet = payloadMedia ? payloadMediaSrcSet(src, width) : undefined;
     return (
       <img
