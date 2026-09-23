@@ -697,8 +697,8 @@ html:root {
 
   .esv-header.esv-header {
     display: grid;
-    grid-template-columns:
-      minmax(88px, auto) minmax(0, 1fr) minmax(88px, auto);
+    grid-template-columns: 44px 44px minmax(0, 1fr) 44px 44px;
+    column-gap: 0;
     align-items: center;
     padding-inline: var(--page-x);
   }
@@ -707,28 +707,39 @@ html:root {
   .esv-header .esv-nav-v2-root {
     display: grid;
     grid-column: 1;
-    place-items: center start;
+    grid-row: 1;
+    place-items: center;
     align-self: stretch;
-    width: 100%;
+    width: 44px;
     height: 100%;
     margin: 0;
   }
-  .esv-header .esv-wordmark {
+  .esv-header .esv-header-actions {
+    display: contents;
+  }
+  .esv-header .esv-search-trigger {
     grid-column: 2;
+    grid-row: 1;
+    justify-self: center;
+  }
+  .esv-header .esv-wordmark {
+    grid-column: 3;
     grid-row: 1;
     justify-self: center;
     align-self: stretch;
     width: auto;
     height: 100%;
   }
-  .esv-header .esv-header-actions {
-    grid-column: 3;
+  .esv-header .esv-wishlist-header-link {
+    grid-column: 4;
     grid-row: 1;
-    justify-self: end;
-    align-self: stretch;
-    width: 88px;
-    height: 100%;
-    gap: 0;
+    justify-self: center;
+    width: 44px;
+  }
+  .esv-header .esv-cart-link {
+    grid-column: 5;
+    grid-row: 1;
+    justify-self: center;
   }
   .esv-header .esv-cart-label {
     display: none;
@@ -877,10 +888,6 @@ html:root {
 }
 
 @media (max-width: 767px) {
-  .esv-header .esv-wishlist-header-link {
-    width: 40px;
-  }
-
   .esv-header .esv-wishlist-header-link sup {
     top: 5px;
     right: 0;

@@ -215,8 +215,19 @@ Deno.test("unified header stylesheet owns shell layers without trapping fixed me
   assertStringIncludes(headerCss, "--esv-header-group-gap:");
   assertStringIncludes(
     headerCss,
-    "minmax(88px, auto) minmax(0, 1fr) minmax(88px, auto)",
+    "grid-template-columns: 44px 44px minmax(0, 1fr) 44px 44px",
   );
+  assertStringIncludes(headerCss, ".esv-header .esv-header-actions {\n    display: contents;");
+  assertStringIncludes(headerCss, ".esv-header .esv-search-trigger {\n    grid-column: 2;");
+  assertStringIncludes(headerCss, ".esv-header .esv-wordmark {\n    grid-column: 3;");
+  assertStringIncludes(headerCss, ".esv-header .esv-wishlist-header-link {\n    grid-column: 4;");
+  assertStringIncludes(headerCss, ".esv-header .esv-cart-link {\n    grid-column: 5;");
+  assertFalse(
+    headerCss.includes(
+      "minmax(88px, auto) minmax(0, 1fr) minmax(88px, auto)",
+    ),
+  );
+  assertFalse(headerCss.includes("width: 40px;"));
   assertStringIncludes(headerCss, ".esv-header .esv-cart-label");
   assertStringIncludes(headerCss, ".esv-header .esv-cart-icon");
   assertStringIncludes(headerCss, "--esv-header-logo-h: 44px");
