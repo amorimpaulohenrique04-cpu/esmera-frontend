@@ -57,7 +57,10 @@ export default defineApp(async (_req, ctx) => {
         <link rel="stylesheet" href={asset("/esmera-finish.css")} />
         {hasCommerceUI && (
           <>
-            <link rel="stylesheet" href={asset("/esmera-commerce-refine.css")} />
+            <link
+              rel="stylesheet"
+              href={asset("/esmera-commerce-refine.css")}
+            />
             <link
               rel="stylesheet"
               href={asset(
