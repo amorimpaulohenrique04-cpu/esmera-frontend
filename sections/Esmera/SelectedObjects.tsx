@@ -68,7 +68,7 @@ export default function SelectedObjects(
     eyebrow = "03 — Seleção",
     title = "Objetos de\npresença singular.",
     text =
-      "Uma seleção curta de obras disponíveis, reunidas por matéria, presença e permanência.",
+      "Uma seleção de peças disponíveis em pedra natural, escolhidas pelo design, acabamento e presença no ambiente.",
     collectionLabel = "Ver coleção",
     collectionHref = "/colecao",
   } = source;
