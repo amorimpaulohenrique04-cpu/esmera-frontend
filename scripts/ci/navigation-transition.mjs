@@ -7,6 +7,20 @@ const BASE_URL = (process.env.BASE_URL || "http://127.0.0.1:8000").replace(
 );
 const ARTIFACT_DIR = "navigation-transition-artifacts";
 
+const ROUTE_MATRIX = [
+  ["/", "/colecao"],
+  ["/colecao", "/sobre"],
+  ["/", "/favoritos"],
+  ["/favoritos", "/colecao"],
+  ["/sobre", "/termos"],
+];
+
+const VIEWPORT_MATRIX = [
+  { name: "desktop", width: 1440, height: 900, hasTouch: false },
+  { name: "tablet", width: 1024, height: 768, hasTouch: true },
+  { name: "mobile", width: 390, height: 844, hasTouch: true },
+];
+
 await mkdir(ARTIFACT_DIR, { recursive: true });
 
 function invariant(condition, message) {
@@ -19,6 +33,107 @@ function sameTarget(requestUrl, targetUrl) {
   return request.origin === target.origin &&
     request.pathname === target.pathname &&
     request.search === target.search;
+}
+
+async function installTransitionSampler(context) {
+  await context.addInitScript(() => {
+    globalThis.__esmeraTransitionSamples = [];
+    const startedAt = performance.now();
+
+    const sample = () => {
+      if (!document.documentElement) {
+        requestAnimationFrame(sample);
+        return;
+      }
+
+      try {
+        const oldStyle = getComputedStyle(
+          document.documentElement,
+          "::view-transition-old(root)",
+        );
+        const newStyle = getComputedStyle(
+          document.documentElement,
+          "::view-transition-new(root)",
+        );
+
+        globalThis.__esmeraTransitionSamples.push({
+          t: performance.now() - startedAt,
+          oldName: oldStyle.animationName,
+          newName: newStyle.animationName,
+          oldOpacity: Number(oldStyle.opacity),
+          newOpacity: Number(newStyle.opacity),
+          newDelay: newStyle.animationDelay,
+          oldDuration: oldStyle.animationDuration,
+          newDuration: newStyle.animationDuration,
+        });
+      } catch {
+        // Unsupported pseudo-element inspection is handled by static contracts.
+      }
+
+      if (performance.now() - startedAt < 600) {
+        requestAnimationFrame(sample);
+      }
+    };
+
+    requestAnimationFrame(sample);
+  });
+}
+
+async function readTransitionEvidence(page, label) {
+  await page.waitForTimeout(320);
+
+  const result = await page.evaluate(() => {
+    const samples = globalThis.__esmeraTransitionSamples ?? [];
+    const transitionSamples = samples.filter((sample) =>
+      sample.oldName?.includes("esv-page-out") ||
+      sample.newName?.includes("esv-page-in")
+    );
+    const overlap = transitionSamples.filter((sample) =>
+      sample.oldOpacity > 0.05 && sample.newOpacity > 0.05
+    );
+
+    return {
+      sampledFrames: transitionSamples.length,
+      overlapFrames: overlap.length,
+      hasExpectedDelay: transitionSamples.some((sample) =>
+        sample.newDelay === "0.08s"
+      ),
+      shell: {
+        mainContentCount: document.querySelectorAll("#main-content").length,
+        headerCount: document.querySelectorAll(".esv-header").length,
+        menuSurfaceCount: document.querySelectorAll(
+          ".esv-mega-v2, .esv-nav-v2-backdrop",
+        ).length,
+      },
+    };
+  });
+
+  invariant(
+    result.sampledFrames > 0,
+    `${label}: no View Transition frames were sampled`,
+  );
+  invariant(
+    result.overlapFrames === 0,
+    `${label}: old/new root snapshots overlapped in ${result.overlapFrames} frames`,
+  );
+  invariant(
+    result.hasExpectedDelay,
+    `${label}: runtime new-root delay is not 80ms`,
+  );
+  invariant(
+    result.shell.mainContentCount === 1,
+    `${label}: expected one #main-content, got ${result.shell.mainContentCount}`,
+  );
+  invariant(
+    result.shell.headerCount === 1,
+    `${label}: expected one header, got ${result.shell.headerCount}`,
+  );
+  invariant(
+    result.shell.menuSurfaceCount === 0,
+    `${label}: menu surface remained mounted after route handoff`,
+  );
+
+  return result;
 }
 
 async function firstDifferentInternalHref(page, selector) {
@@ -193,48 +308,7 @@ async function validateSequentialRootHandoff(browser) {
     viewport: { width: 1440, height: 900 },
   });
 
-  await context.addInitScript(() => {
-    globalThis.__esmeraTransitionSamples = [];
-    const startedAt = performance.now();
-
-    const sample = () => {
-      if (!document.documentElement) {
-        requestAnimationFrame(sample);
-        return;
-      }
-
-      try {
-        const oldStyle = getComputedStyle(
-          document.documentElement,
-          "::view-transition-old(root)",
-        );
-        const newStyle = getComputedStyle(
-          document.documentElement,
-          "::view-transition-new(root)",
-        );
-
-        globalThis.__esmeraTransitionSamples.push({
-          t: performance.now() - startedAt,
-          oldName: oldStyle.animationName,
-          newName: newStyle.animationName,
-          oldOpacity: Number(oldStyle.opacity),
-          newOpacity: Number(newStyle.opacity),
-          newDelay: newStyle.animationDelay,
-          oldDuration: oldStyle.animationDuration,
-          newDuration: newStyle.animationDuration,
-        });
-      } catch {
-        // Browsers without the pseudo-element computed-style surface fall back
-        // to the static runtime CSS contract checked below.
-      }
-
-      if (performance.now() - startedAt < 600) {
-        requestAnimationFrame(sample);
-      }
-    };
-
-    requestAnimationFrame(sample);
-  });
+  await installTransitionSampler(context);
 
   const page = await context.newPage();
   try {
@@ -278,41 +352,63 @@ async function validateSequentialRootHandoff(browser) {
       waitUntil: "domcontentloaded",
       timeout: 15000,
     });
-    await page.waitForTimeout(320);
-
-    const samples = await page.evaluate(() =>
-      globalThis.__esmeraTransitionSamples ?? []
+    const transition = await readTransitionEvidence(
+      page,
+      "home → favoritos",
     );
-    const transitionSamples = samples.filter((sample) =>
-      sample.oldName?.includes("esv-page-out") ||
-      sample.newName?.includes("esv-page-in")
-    );
-
-    if (transitionSamples.length > 0) {
-      const overlap = transitionSamples.filter((sample) =>
-        sample.oldOpacity > 0.05 && sample.newOpacity > 0.05
-      );
-      invariant(
-        overlap.length === 0,
-        `Old/new root snapshots overlapped in ${overlap.length} sampled frames`,
-      );
-
-      invariant(
-        transitionSamples.some((sample) => sample.newDelay === "0.08s"),
-        "Runtime new-root delay is not 80ms",
-      );
-    }
 
     return {
       cssContract,
-      sampledFrames: transitionSamples.length,
-      overlapFrames: transitionSamples.filter((sample) =>
-        sample.oldOpacity > 0.05 && sample.newOpacity > 0.05
-      ).length,
+      ...transition,
     };
   } finally {
     await context.close();
   }
+}
+
+async function validateRouteMatrix(browser) {
+  const results = [];
+
+  for (const viewport of VIEWPORT_MATRIX) {
+    const context = await browser.newContext({
+      viewport: { width: viewport.width, height: viewport.height },
+      hasTouch: viewport.hasTouch,
+    });
+    await installTransitionSampler(context);
+    const page = await context.newPage();
+
+    try {
+      for (const [from, to] of ROUTE_MATRIX) {
+        await page.goto(`${BASE_URL}${from}`, {
+          waitUntil: "domcontentloaded",
+          timeout: 120000,
+        });
+        await page.waitForSelector("#main-content", { state: "attached" });
+
+        await page.evaluate((target) => {
+          globalThis.location.assign(target);
+        }, `${BASE_URL}${to}`);
+
+        await page.waitForURL(
+          (url) => url.pathname === to,
+          { waitUntil: "domcontentloaded", timeout: 15000 },
+        );
+
+        const label = `${viewport.name}: ${from} → ${to}`;
+        const evidence = await readTransitionEvidence(page, label);
+        results.push({
+          viewport: viewport.name,
+          from,
+          to,
+          ...evidence,
+        });
+      }
+    } finally {
+      await context.close();
+    }
+  }
+
+  return results;
 }
 
 async function validateReducedMotion(browser) {
@@ -368,6 +464,7 @@ const metrics = {
   desktopMenu: null,
   mobileDrawer: null,
   sequentialRoot: null,
+  routeMatrix: null,
   reducedMotion: null,
 };
 
@@ -375,6 +472,7 @@ try {
   metrics.desktopMenu = await validateDesktopMenu(browser);
   metrics.mobileDrawer = await validateMobileDrawer(browser);
   metrics.sequentialRoot = await validateSequentialRootHandoff(browser);
+  metrics.routeMatrix = await validateRouteMatrix(browser);
   metrics.reducedMotion = await validateReducedMotion(browser);
   metrics.status = "passed";
   console.log("Navigation transition validation passed");
