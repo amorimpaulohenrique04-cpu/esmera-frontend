@@ -5,6 +5,7 @@
 import * as $_404 from "./routes/_404.tsx";
 import * as $_500 from "./routes/_500.tsx";
 import * as $_app from "./routes/_app.tsx";
+import * as $_middleware from "./routes/_middleware.ts";
 import * as $api_esmera_collection from "./routes/api/esmera-collection.ts";
 import * as $api_esmera_favorites from "./routes/api/esmera-favorites.ts";
 import * as $api_esmera_lead from "./routes/api/esmera-lead.ts";
@@ -47,6 +48,7 @@ const manifest = {
     "./routes/_404.tsx": $_404,
     "./routes/_500.tsx": $_500,
     "./routes/_app.tsx": $_app,
+    "./routes/_middleware.ts": $_middleware,
     "./routes/api/esmera-collection.ts": $api_esmera_collection,
     "./routes/api/esmera-favorites.ts": $api_esmera_favorites,
     "./routes/api/esmera-lead.ts": $api_esmera_lead,
