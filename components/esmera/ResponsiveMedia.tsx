@@ -192,19 +192,13 @@ export function EsmeraPicture({
               rel="preload"
               as="image"
               href={optimizedMobile}
-              imageSrcSet={mobileSrcSet}
-              imageSizes="100vw"
               media="(max-width: 767px)"
-              {...{ fetchPriority }}
             />
             <link
               rel="preload"
               as="image"
               href={optimizedDesktop}
-              imageSrcSet={desktopSrcSet}
-              imageSizes="100vw"
               media="(min-width: 768px)"
-              {...{ fetchPriority }}
             />
           </Head>
         )}
