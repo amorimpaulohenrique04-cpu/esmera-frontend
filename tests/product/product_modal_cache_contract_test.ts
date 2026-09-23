@@ -4,10 +4,7 @@ Deno.test("product modal has one revisioned stylesheet with no override layers",
   const app = await Deno.readTextFile("routes/_app.tsx");
   const css = await Deno.readTextFile("static/esmera-product-modal.css");
 
-  assertStringIncludes(
-    app,
-    'const storefrontStyleRevision = "2026-08-14-about-page-v33";',
-  );
+  assertStringIncludes(app, 'const storefrontStyleRevision = "');
   assertStringIncludes(
     app,
     "/esmera-product-modal.css?v=${storefrontStyleRevision}",

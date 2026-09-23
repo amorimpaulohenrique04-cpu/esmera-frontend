@@ -157,7 +157,8 @@ Deno.test("unified header stylesheet owns shell layers without trapping fixed me
     menuIsland.startsWith('import { createPortal } from "preact/compat"'),
   );
   assertStringIncludes(menuIsland, 'pointerType !== "mouse"');
-  assertStringIncludes(menuIsland, "}, 80);");
+  assertStringIncludes(menuIsland, "const DESKTOP_OPEN_INTENT_MS = 320;");
+  assertStringIncludes(menuIsland, "}, DESKTOP_OPEN_INTENT_MS);");
   assertStringIncludes(
     menuIsland,
     'type MenuPhase = "closed" | "opening" | "open" | "closing";',

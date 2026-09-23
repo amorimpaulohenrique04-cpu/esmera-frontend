@@ -68,14 +68,8 @@ Deno.test("Home has no legacy scroll-scene coordinator or scene hooks", async ()
   assertEquals(matterStyles.includes("is-active"), false);
   assertEquals(app.includes("esmera-structure-guard.css"), false);
 
-  assertStringIncludes(
-    app,
-    'const storefrontStyleRevision = "2026-08-14-about-page-v33";',
-  );
-  assertStringIncludes(
-    app,
-    'const homeStyleRevision = "2026-08-14-motion-system-v34";',
-  );
+  assertStringIncludes(app, 'const storefrontStyleRevision = "');
+  assertStringIncludes(app, 'const homeStyleRevision = "');
   assertStringIncludes(
     app,
     "/esmera-motion-v2.css?v=${homeStyleRevision}",

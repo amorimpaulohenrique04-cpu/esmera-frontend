@@ -1,6 +1,12 @@
 import { useEffect } from "preact/hooks";
+import {
+  MENU_NAVIGATION_REQUEST_EVENT,
+  type MenuNavigationRequestDetail,
+} from "../lib/esmera/navigationMotion.ts";
 
 const MENU_SELECTOR = ".esv-nav-v2-desktop, .esv-mega-v2, .esv-nav-v2-drawer";
+const ACTIVE_MENU_SURFACE_SELECTOR = ".esv-mega-v2, .esv-nav-v2-backdrop";
+const MENU_NAVIGATION_FALLBACK_MS = 240;
 
 function isModifiedActivation(event: MouseEvent): boolean {
   return event.button !== 0 || event.metaKey || event.ctrlKey ||
@@ -14,25 +20,20 @@ function isSameDocumentHash(url: URL): boolean {
     url.search === current.search && Boolean(url.hash);
 }
 
-function beginMenuExit(): boolean {
-  const mega = document.querySelector<HTMLElement>(".esv-mega-v2");
-  const megaBackdrop = document.querySelector<HTMLElement>(
-    ".esv-mega-backdrop",
-  );
-  const drawerBackdrop = document.querySelector<HTMLElement>(
-    ".esv-nav-v2-backdrop",
-  );
+function hasActiveMenuSurface(): boolean {
+  return Boolean(document.querySelector(ACTIVE_MENU_SURFACE_SELECTOR));
+}
 
-  if (!mega && !drawerBackdrop) return false;
-
-  mega?.classList.add("is-closing");
-  megaBackdrop?.classList.add("is-closing");
-  drawerBackdrop?.classList.add("is-closing");
-  return true;
+function prefersReducedMotion(): boolean {
+  return globalThis.matchMedia?.("(prefers-reduced-motion: reduce)").matches ??
+    false;
 }
 
 export default function MenuNavigationCoordinator() {
   useEffect(() => {
+    let fallbackTimer: ReturnType<typeof globalThis.setTimeout> | null = null;
+    let navigationPending = false;
+
     const onClick = (event: MouseEvent) => {
       if (event.defaultPrevented || isModifiedActivation(event)) return;
       if (!(event.target instanceof Element)) return;
@@ -54,13 +55,39 @@ export default function MenuNavigationCoordinator() {
       if (isSameDocumentHash(url)) return;
       if (url.href === globalThis.location.href) return;
 
-      // Native navigation starts in this activation; motion follows the state.
-      beginMenuExit();
+      if (!hasActiveMenuSurface() || prefersReducedMotion()) return;
+
+      event.preventDefault();
+      if (navigationPending) return;
+      navigationPending = true;
+
+      let navigated = false;
+      const navigate = () => {
+        if (navigated) return;
+        navigated = true;
+        if (fallbackTimer) {
+          globalThis.clearTimeout(fallbackTimer);
+          fallbackTimer = null;
+        }
+        globalThis.location.assign(url.href);
+      };
+
+      fallbackTimer = globalThis.setTimeout(
+        navigate,
+        MENU_NAVIGATION_FALLBACK_MS,
+      );
+
+      document.dispatchEvent(
+        new CustomEvent(MENU_NAVIGATION_REQUEST_EVENT, {
+          detail: { navigate } satisfies MenuNavigationRequestDetail,
+        }),
+      );
     };
 
     document.addEventListener("click", onClick, true);
     return () => {
       document.removeEventListener("click", onClick, true);
+      if (fallbackTimer) globalThis.clearTimeout(fallbackTimer);
     };
   }, []);
 

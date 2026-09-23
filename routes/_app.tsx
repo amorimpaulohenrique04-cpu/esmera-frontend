@@ -7,13 +7,14 @@ export default defineApp(async (_req, ctx) => {
   const revision = await Context.active().release?.revision();
   // Preserve the stable storefront token for unchanged CSS contracts and bump
   // only the layers that own new visual behavior.
-  const storefrontStyleRevision = "2026-09-23-header-favorites-v35";
+  const storefrontStyleRevision = "2026-09-23-motion-ownership-v36";
   const productCardStyleRevision = "2026-09-23-favorites-modal-v4";
   const aboutStyleRevision = "2026-09-23-privacy-editorial-v2";
-  const homeStyleRevision = "2026-08-14-motion-system-v34";
+  const homeStyleRevision = "2026-09-23-motion-handoff-v38";
   const footerStyleRevision = "2026-08-15-footer-whatsapp-form-v3";
   const homeArtDirectionRevision = "2026-09-23-home-art-direction-v4";
-  const homeLengthRevision = "2026-09-23-home-length-refinement-v5-tablet-section6";
+  const homeLengthRevision =
+    "2026-09-23-home-length-refinement-v5-tablet-section6";
   const mobileRecoveryRevision = "2026-09-23-mobile-recovery-v5";
   const shellCroRevision = "2026-09-23-shell-cro-v2";
   return (

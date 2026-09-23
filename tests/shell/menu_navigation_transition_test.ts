@@ -1,26 +1,45 @@
-import { assert, assertEquals, assertStringIncludes } from "@std/assert";
+import { assertEquals, assertStringIncludes } from "@std/assert";
 
-Deno.test("menu navigation starts immediately while an open surface exits", async () => {
+Deno.test("menu navigation waits for the owned exit lifecycle before routing", async () => {
   const coordinator = await Deno.readTextFile(
     "islands/MenuNavigationCoordinator.tsx",
   );
+  const menu = await Deno.readTextFile("islands/DynamicMenu.tsx");
   const layout = await Deno.readTextFile(
     "components/esmera/StorefrontLayout.tsx",
   );
 
   assertStringIncludes(coordinator, "anchor.closest(MENU_SELECTOR)");
-  assertStringIncludes(coordinator, "beginMenuExit();");
-  assertEquals(coordinator.includes("event.preventDefault()"), false);
-  assertEquals(coordinator.includes("location.assign"), false);
-  assertEquals(coordinator.includes("MENU_EXIT_MS"), false);
-  assertStringIncludes(coordinator, 'mega?.classList.add("is-closing")');
+  assertStringIncludes(coordinator, "hasActiveMenuSurface()");
+  assertStringIncludes(coordinator, "prefersReducedMotion()");
+  assertStringIncludes(coordinator, "event.preventDefault()");
+  assertStringIncludes(coordinator, "MENU_NAVIGATION_FALLBACK_MS");
+  assertStringIncludes(coordinator, "globalThis.location.assign(url.href)");
   assertStringIncludes(
     coordinator,
-    'drawerBackdrop?.classList.add("is-closing")',
+    "new CustomEvent(MENU_NAVIGATION_REQUEST_EVENT",
+  );
+  assertEquals(coordinator.includes('.classList.add("is-closing")'), false);
+
+  assertStringIncludes(
+    menu,
+    'from "../lib/esmera/navigationMotion.ts"',
   );
   assertStringIncludes(
     coordinator,
-    'document.addEventListener("click", onClick, true)',
+    'from "../lib/esmera/navigationMotion.ts"',
+  );
+  assertStringIncludes(menu, "megaAfterClose");
+  assertStringIncludes(menu, "drawerAfterClose");
+  assertStringIncludes(menu, "requestDesktopClose(navigate)");
+  assertStringIncludes(menu, "requestMobileClose(navigate)");
+  assertStringIncludes(
+    menu,
+    'if (megaPhase === "closing" || megaExitTimer.current) return;',
+  );
+  assertStringIncludes(
+    menu,
+    'if (drawerPhase === "closing" || drawerExitTimer.current) return;',
   );
 
   assertStringIncludes(coordinator, "event.metaKey");
@@ -40,5 +59,5 @@ Deno.test("menu navigation starts immediately while an open surface exits", asyn
 
   const coordinatorIndex = layout.indexOf("<MenuNavigationCoordinator />");
   const headerIndex = layout.indexOf("<Header");
-  assert(coordinatorIndex >= 0 && headerIndex > coordinatorIndex);
+  assertEquals(coordinatorIndex >= 0 && headerIndex > coordinatorIndex, true);
 });

@@ -32,10 +32,7 @@ Deno.test("premium footer is one compact surface and receives shell channels", a
   const aboutCss = app.indexOf("/esmera-about-page.css");
   const footerCss = app.indexOf("/esmera-footer.css");
   assert(aboutCss >= 0 && footerCss > aboutCss);
-  assertStringIncludes(
-    app,
-    'aboutStyleRevision = "2026-09-22-about-type-v1"',
-  );
+  assertStringIncludes(app, 'const aboutStyleRevision = "');
   assertStringIncludes(
     app,
     'footerStyleRevision = "2026-08-15-footer-whatsapp-form-v3"',

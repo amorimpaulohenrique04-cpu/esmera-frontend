@@ -78,15 +78,38 @@ Deno.test("homepage reveal contract is explicit and product cards reveal as one 
   assertStringIncludes(matter, "data-motion-order={String(index)}");
 });
 
-Deno.test("page navigation animates only main and motion CSS owns final behavior", async () => {
+Deno.test("cross-document navigation uses one sequential root handoff", async () => {
   const app = await Deno.readTextFile("routes/_app.tsx");
   const motion = await Deno.readTextFile("static/esmera-motion-v2.css");
 
   assertStringIncludes(motion, "@view-transition");
-  assertStringIncludes(motion, "view-transition-name: esmera-main;");
+  assertStringIncludes(motion, "navigation: auto;");
+  assertEquals(motion.includes("view-transition-name"), false);
+  assertEquals(motion.includes("esmera-main"), false);
+  assertStringIncludes(motion, "--motion-page-exit: 80ms;");
+  assertStringIncludes(motion, "--motion-page-enter: 160ms;");
   assertStringIncludes(motion, "::view-transition-old(root)");
   assertStringIncludes(motion, "::view-transition-new(root)");
-  assertStringIncludes(motion, "animation: none;");
+  assertStringIncludes(
+    motion,
+    "::view-transition-old(root) {\n  opacity: 1;",
+  );
+  assertStringIncludes(
+    motion,
+    "::view-transition-new(root) {\n  opacity: 0;",
+  );
+  assertStringIncludes(
+    motion,
+    "animation: esv-page-out var(--motion-page-exit) var(--ease-standard) both;",
+  );
+  assertStringIncludes(
+    motion,
+    "var(--motion-page-exit) both;",
+  );
+  assertStringIncludes(motion, "@keyframes esv-page-out");
+  assertStringIncludes(motion, "@keyframes esv-page-in");
+  assertStringIncludes(motion, "::view-transition-group(root)");
+  assertStringIncludes(motion, "animation: none !important;");
 
   const headerCss = app.indexOf("/esmera-header.css");
   const productCardCss = app.indexOf("/esmera-product-card.css");
@@ -95,9 +118,18 @@ Deno.test("page navigation animates only main and motion CSS owns final behavior
     headerCss >= 0 && productCardCss > headerCss && motionCss > productCardCss,
   );
 
+  // Component-local motion remains owned by the canonical motion layer.
   assertStringIncludes(
     motion,
     ".esv-product-card:hover .esv-product-media-wrap",
+  );
+  assertStringIncludes(
+    motion,
+    '.esv-product-modal-backdrop[data-phase="closing"]',
+  );
+  assertStringIncludes(
+    motion,
+    ".esv-hero-carousel.is-transitioning .esv-hero-carousel-media.is-incoming",
   );
   assertStringIncludes(motion, "box-shadow: none !important;");
   assertEquals(
