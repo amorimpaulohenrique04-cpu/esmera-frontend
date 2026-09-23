@@ -74,7 +74,7 @@ export const defaultHome: HomeBaseline = {
     eyebrow: "02 — A Maison",
     title: "Rara por\nnatureza.\nEscolhida para\npermanecer.",
     text:
-      "A Esméra reúne objetos de presença singular, criados ou selecionados a partir de matérias preciosas e concebidos para atravessar o tempo.",
+      "Criamos e selecionamos objetos em pedra natural que unem design, acabamento artesanal e características únicas de cada material.",
     ctaLabel: "Descobrir a seleção",
     ctaHref: "#selection",
     mainImage:
@@ -88,7 +88,7 @@ export const defaultHome: HomeBaseline = {
     eyebrow: "03 — Seleção",
     title: "Objetos de\npresença singular.",
     text:
-      "Uma seleção curta de obras disponíveis, reunidas por matéria, presença e permanência.",
+      "Uma seleção de peças disponíveis em pedra natural, escolhidas pelo design, acabamento e presença no ambiente.",
     products: [],
     collectionLabel: "Ver coleção",
     collectionHref: "/colecao",
@@ -133,15 +133,15 @@ export const defaultHome: HomeBaseline = {
     focalPoint: "center",
   },
   provenance: {
-    eyebrow: "07 — Proveniência",
-    title: "Da origem\nao registro.",
+    eyebrow: "07 — Nosso processo",
+    title: "Da origem\nà finalização.",
     text:
-      "Proveniência não é um benefício adicionado depois da escolha. É parte da forma como a obra é apresentada, compreendida e adquirida.",
+      "Da escolha da pedra ao acabamento final, acompanhamos cada etapa para preservar as características naturais de cada material e apresentar cada peça com transparência.",
     stages: [
       {
         title: "Origem",
         text:
-          "A ficha individual declara matéria principal, características naturais e origem quando a informação é verificável.",
+          "A Esméra acompanha cada peça desde a origem, selecionando pedras em diferentes regiões do Brasil até sua transformação final.",
         image:
           "https://decoims.com/testeesmera/3c463c46-d9c4-4e2a-bea9-ceb125640b9c/b5a33f15-2fb6-48ec-a766-8bbbeddf16a4.png",
         alt: "Esmeralda bruta apresentada sobre base clara",
@@ -149,15 +149,15 @@ export const defaultHome: HomeBaseline = {
       {
         title: "Transformação",
         text:
-          "Acabamento, montagem, variações de superfície e gesto construtivo são registrados como parte da leitura da peça.",
+          "Corte, acabamento e montagem são feitos respeitando os veios, tons e variações naturais de cada pedra.",
         image:
           "https://decoims.com/testeesmera/6a6dc32a-cb81-4ba9-966a-ca95b6c19bc6/88e1fa11-803e-4e58-838d-8192dca72afd.png",
         alt: "Detalhe de quadro mineral verde em transformação",
       },
       {
-        title: "Registro",
+        title: "Finalização",
         text:
-          "Status de peça única ou edição, documentação e registro fotográfico acompanham a apresentação e a consulta.",
+          "Antes de ser disponibilizada, cada peça é fotografada e identificada com informações sobre material, medidas e disponibilidade.",
         image:
           "https://decoims.com/testeesmera/ef4ff38f-f74b-49c2-918c-cfacafb9820f/e31edf3a-ce06-4564-a8a0-84c1ec5e1602.png",
         alt: "Peça mineral concluída sobre pedestal claro",
@@ -168,7 +168,7 @@ export const defaultHome: HomeBaseline = {
     eyebrow: "08 — Atendimento Exclusivo",
     title: "Uma peça pode começar com uma ideia.",
     text:
-      "Para projetos especiais, desenvolvemos criações sob encomenda a partir da necessidade, do espaço e da matéria.\n\nDo desenho à escolha da pedra, cada detalhe pode ser pensado para criar uma peça que tenha sentido naquele lugar.",
+      "Para projetos especiais, desenvolvemos peças sob encomenda a partir do espaço, das medidas, do uso e da pedra escolhida.\n\nDo desenho à definição do material, acompanhamos cada etapa para criar uma peça pensada para o seu ambiente.",
     ctaLabel: "Converse com a Esméra sobre seu projeto.",
     ctaHref:
       `mailto:${defaultEmail}?subject=Consulta%20privada%20%E2%80%94%20Esm%C3%A9ra`,
