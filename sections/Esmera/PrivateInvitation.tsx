@@ -27,7 +27,7 @@ export default function PrivateInvitation(
     eyebrow = "08 — Atendimento Exclusivo",
     title = "Uma peça pode começar com uma ideia.",
     text =
-      "Para projetos especiais, desenvolvemos criações sob encomenda a partir da necessidade, do espaço e da matéria.\n\nDo desenho à escolha da pedra, cada detalhe pode ser pensado para criar uma peça que tenha sentido naquele lugar.",
+      "Para projetos especiais, desenvolvemos peças sob encomenda a partir do espaço, das medidas, do uso e da pedra escolhida.\n\nDo desenho à definição do material, acompanhamos cada etapa para criar uma peça pensada para o seu ambiente.",
     ctaLabel = "Converse com a Esméra sobre seu projeto.",
     ctaHref = "",
   } = source;
