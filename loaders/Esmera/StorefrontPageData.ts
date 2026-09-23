@@ -49,6 +49,7 @@ type PageData = {
   siteSettings: PayloadSiteSettings | null;
   categories: StorefrontCategory[];
   unavailable: string[];
+  stale: boolean;
 };
 
 type CacheEntry = {
@@ -124,6 +125,7 @@ async function fetchPageData(): Promise<PageData> {
     siteSettings: bootstrap.siteSettings,
     categories: flattenNavigation(bootstrap.navigation?.roots ?? []),
     unavailable: [],
+    stale: false,
   };
 }
 
@@ -151,19 +153,20 @@ export default async function StorefrontPageData(): Promise<PageData> {
   // CMS refresh while a last-known-good shell/Home snapshot is available.
   if (cached && cached.staleUntil > now) {
     void refreshPageData().catch(() => undefined);
-    return cached.value;
+    return { ...cached.value, stale: true };
   }
 
   try {
     return await refreshPageData();
   } catch {
-    if (cached) return cached.value;
+    if (cached) return { ...cached.value, stale: true };
     return {
       home: null,
       navigation: null,
       siteSettings: null,
       categories: [],
       unavailable: ["home", "shell"],
+      stale: false,
     };
   }
 }
