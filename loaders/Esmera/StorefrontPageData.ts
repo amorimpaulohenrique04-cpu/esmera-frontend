@@ -116,7 +116,7 @@ function flattenNavigation(
 async function fetchPageData(): Promise<PageData> {
   const bootstrap = await payloadGet<StorefrontBootstrap>(
     "storefront/bootstrap",
-    { timeoutMs: 1_800 },
+    { timeoutMs: 1_800, maxRetries: 0 },
   );
   return {
     home: bootstrap.home,
