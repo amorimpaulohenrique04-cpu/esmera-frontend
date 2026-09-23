@@ -80,12 +80,15 @@ export function useProductModalLinkSync(): void {
     });
 
     const initialURL = new URL(globalThis.location.href);
-    const initialSlug = initialURL.searchParams.get(PRODUCT_QUERY_PARAM)?.trim();
+    const initialSlug = initialURL.searchParams.get(PRODUCT_QUERY_PARAM)
+      ?.trim();
 
     if (initialSlug) {
       returnPath = pathWithoutProduct(initialURL) || "/colecao";
       void fetch(
-        `/api/esmera-product-detail?slug=${encodeURIComponent(initialSlug)}&full=1`,
+        `/api/esmera-product-detail?slug=${
+          encodeURIComponent(initialSlug)
+        }&full=1`,
         { headers: { accept: "application/json" } },
       )
         .then((response) => {
