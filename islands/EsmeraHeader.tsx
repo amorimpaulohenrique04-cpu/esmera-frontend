@@ -515,6 +515,14 @@ export default function EsmeraHeader({
   const isSolid = headerSurface !== "hero";
   const overlayTitle = overlay === "search" ? "Busca" : "Carrinho";
 
+  useEffect(() => {
+    const themeColor = document.querySelector<HTMLMetaElement>(
+      'meta[name="theme-color"]',
+    );
+    if (!themeColor) return;
+    themeColor.content = headerSurface === "hero" ? "#111210" : "#F3F0E8";
+  }, [headerSurface]);
+
   const openSearchProduct = (product: EsmeraObject) => {
     const trigger = document.querySelector<HTMLElement>(".esv-search-trigger");
     closeAll();

@@ -198,6 +198,18 @@ Deno.test("unified header stylesheet owns shell layers without trapping fixed me
   assertStringIncludes(headerIsland, "megaOpen || desktopMenuHovered");
   assertStringIncludes(headerIsland, 'megaOpen ? " is-mega-open" : ""');
   assertStringIncludes(headerIsland, "data-header-surface={headerSurface}");
+  assertStringIncludes(
+    app,
+    'content="width=device-width, initial-scale=1, viewport-fit=cover"',
+  );
+  assertStringIncludes(
+    headerIsland,
+    'meta[name="theme-color"]',
+  );
+  assertStringIncludes(
+    headerIsland,
+    'headerSurface === "hero" ? "#111210" : "#F3F0E8"',
+  );
   assertStringIncludes(headerIsland, 'overlayPhase === "closing"');
   assertStringIncludes(headerIsland, "return previous ? y > 8 : y > 24;");
   assertStringIncludes(headerIsland, "key={cartCount}");
