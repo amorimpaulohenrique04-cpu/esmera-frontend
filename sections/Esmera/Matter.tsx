@@ -60,19 +60,14 @@ export const loader = async (props: Props) => ({
 });
 
 function PanelContent(
-  { panel, destination, motionOrder }: {
+  { panel, destination }: {
     panel: TerritoryPanel;
     destination?: NavigationLink | null;
-    motionOrder: number;
   },
 ) {
   return (
     <>
-      <figure
-        class="esv-territory-media"
-        data-motion="media-reveal"
-        data-motion-order={String(motionOrder)}
-      >
+      <figure class="esv-territory-media">
         <EsmeraImage
           src={panel.image}
           alt={panel.alt}
@@ -84,11 +79,7 @@ function PanelContent(
         />
       </figure>
       <div class="esv-territory-shade" aria-hidden="true" />
-      <div
-        class="esv-territory-copy"
-        data-motion="reveal"
-        data-motion-order={String(motionOrder + 1)}
-      >
+      <div class="esv-territory-copy">
         <span class="esv-kicker esv-kicker-light">{panel.eyebrow}</span>
         <h2>{panel.title}</h2>
         {panel.text && <p>{panel.text}</p>}
@@ -120,7 +111,6 @@ export default function Matter(
         {panels.slice(0, 3).map((panel, index) => {
           const destination = getPanelDestination(panel);
           const key = `${panel.title}-${index}`;
-          const motionOrder = index * 2;
 
           return destination
             ? (
@@ -131,17 +121,23 @@ export default function Matter(
                 target={destination.external ? "_blank" : undefined}
                 rel={destination.external ? "noopener noreferrer" : undefined}
                 aria-label={`${destination.label}: ${panel.title}`}
+                data-motion="reveal"
+                data-motion-order={String(index)}
               >
                 <PanelContent
                   panel={panel}
                   destination={destination}
-                  motionOrder={motionOrder}
                 />
               </a>
             )
             : (
-              <article key={key} class="esv-territory-panel">
-                <PanelContent panel={panel} motionOrder={motionOrder} />
+              <article
+                key={key}
+                class="esv-territory-panel"
+                data-motion="reveal"
+                data-motion-order={String(index)}
+              >
+                <PanelContent panel={panel} />
               </article>
             );
         })}

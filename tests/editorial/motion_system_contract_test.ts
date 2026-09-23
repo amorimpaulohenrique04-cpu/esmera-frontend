@@ -73,8 +73,9 @@ Deno.test("homepage reveal contract is explicit and product cards reveal as one 
   );
 
   assertStringIncludes(manifesto, 'data-motion="media-reveal"');
-  assertStringIncludes(matter, 'data-motion="media-reveal"');
+  assertEquals(matter.includes('data-motion="media-reveal"'), false);
   assertStringIncludes(matter, 'data-motion="reveal"');
+  assertStringIncludes(matter, "data-motion-order={String(index)}");
 });
 
 Deno.test("page navigation animates only main and motion CSS owns final behavior", async () => {
