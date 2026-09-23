@@ -21,6 +21,10 @@ export default defineApp(async (_req, ctx) => {
   const isHome = pathname === "/";
   const isCatalog = pathname === "/colecao" || pathname.startsWith("/colecao/");
   const isAbout = pathname === "/sobre" || pathname === "/pagina/a-esmera";
+  const isProduct = pathname.startsWith("/produto/");
+  const isFavorites = pathname === "/favoritos";
+  const hasProductCards = isHome || isCatalog || isFavorites;
+  const hasCommerceUI = hasProductCards || isProduct;
   return (
     <>
       <Theme colorScheme="any" />
@@ -42,21 +46,32 @@ export default defineApp(async (_req, ctx) => {
           rel="stylesheet"
         />
         <link
+          rel="preconnect"
+          href="https://esmeracms-green.vercel.app"
+          crossorigin=""
+        />
+        <link
           rel="stylesheet"
           href={asset(`/esmera-master.css?v=${storefrontStyleRevision}`)}
         />
         <link rel="stylesheet" href={asset("/esmera-finish.css")} />
-        <link rel="stylesheet" href={asset("/esmera-commerce-refine.css")} />
-        <link
-          rel="stylesheet"
-          href={asset(`/esmera-product-modal.css?v=${storefrontStyleRevision}`)}
-        />
-        <link
-          rel="stylesheet"
-          href={asset(
-            `/esmera-product-modal-refine.css?v=${storefrontStyleRevision}`,
-          )}
-        />
+        {hasCommerceUI && (
+          <>
+            <link rel="stylesheet" href={asset("/esmera-commerce-refine.css")} />
+            <link
+              rel="stylesheet"
+              href={asset(
+                `/esmera-product-modal.css?v=${storefrontStyleRevision}`,
+              )}
+            />
+            <link
+              rel="stylesheet"
+              href={asset(
+                `/esmera-product-modal-refine.css?v=${storefrontStyleRevision}`,
+              )}
+            />
+          </>
+        )}
 
         {isHome && (
           <>
@@ -111,12 +126,14 @@ export default defineApp(async (_req, ctx) => {
           rel="stylesheet"
           href={asset(`/esmera-shell-cro-v1.css?v=${shellCroRevision}`)}
         />
-        <link
-          rel="stylesheet"
-          href={asset(
-            `/esmera-product-card.css?v=${productCardStyleRevision}`,
-          )}
-        />
+        {hasProductCards && (
+          <link
+            rel="stylesheet"
+            href={asset(
+              `/esmera-product-card.css?v=${productCardStyleRevision}`,
+            )}
+          />
+        )}
         <link
           rel="stylesheet"
           href={asset(`/esmera-motion-v2.css?v=${homeStyleRevision}`)}
