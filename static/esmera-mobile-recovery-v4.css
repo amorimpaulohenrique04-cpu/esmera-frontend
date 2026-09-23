@@ -1,0 +1,243 @@
+/* ESMÉRA — Mobile recovery v4
+ * Restores mobile breathing room after the length-compression pass without undoing desktop gains.
+ * Also adds a simple transparent ↔ solid header transition.
+ */
+
+/* -------------------------------------------------------------------------- */
+/* Header transition                                                          */
+/* -------------------------------------------------------------------------- */
+
+.esv-header.esv-header[data-header-variant="transparent"] {
+  transition:
+    color 220ms var(--ease-out),
+    border-color 220ms var(--ease-out);
+}
+
+.esv-header.esv-header[data-header-variant="transparent"]::before {
+  height: calc(var(--header-h) * 2 + env(safe-area-inset-top));
+  background: linear-gradient(
+    to bottom,
+    rgba(17, 18, 16, .28),
+    rgba(17, 18, 16, 0)
+  );
+  backdrop-filter: none;
+  opacity: 1;
+  transition: opacity 220ms var(--ease-out);
+}
+
+.esv-header.esv-header[data-header-variant="transparent"]::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: rgba(243, 240, 232, .96);
+  backdrop-filter: blur(12px);
+  opacity: 0;
+  transform: translateY(-3px);
+  pointer-events: none;
+  transition:
+    opacity 220ms var(--ease-out),
+    transform 220ms var(--ease-out);
+}
+
+.esv-header.esv-header[data-header-variant="transparent"].is-solid::before {
+  opacity: 0;
+}
+
+.esv-header.esv-header[data-header-variant="transparent"].is-solid::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Mobile recovery                                                            */
+/* -------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  :root {
+    --section-y: clamp(70px, 17.5vw, 90px);
+  }
+
+  .esv-hero {
+    min-height: 86svh;
+  }
+
+  .esv-hero-content {
+    padding-bottom: clamp(46px, 12vw, 62px);
+  }
+
+  .esv-hero-statement {
+    max-width: 8.8ch;
+    font-size: clamp(38px, 11vw, 48px);
+    line-height: .94;
+  }
+
+  .esv-maison {
+    padding-block: 76px 86px;
+  }
+
+  .esv-maison-media {
+    min-height: min(124vw, 530px);
+    margin-top: 44px;
+  }
+
+  .esv-selected {
+    padding-block: 76px 88px !important;
+  }
+
+  .esv-selected-head h2 {
+    margin-top: 22px;
+    font-size: clamp(36px, 9.8vw, 44px);
+  }
+
+  .esv-selected-head > p {
+    margin-top: 16px;
+  }
+
+  .esv-selected .esv-product-shelf {
+    gap: 40px;
+    margin-top: 40px;
+  }
+
+  .esv-selected .esv-product-card-copy {
+    min-height: 148px;
+    padding-top: 13px;
+  }
+
+  .esv-selected-collection-link {
+    margin-top: 28px !important;
+  }
+
+  .esv-territory-panel,
+  .esv-territory-panel + .esv-territory-panel {
+    height: 64svh;
+    min-height: 465px;
+  }
+
+  .esv-territory-copy {
+    right: 22px;
+    bottom: 32px;
+    left: 22px;
+  }
+
+  .esv-territory-copy h2 {
+    max-width: 8.6ch;
+    font-size: clamp(36px, 9.9vw, 44px);
+  }
+
+  .esv-signature {
+    padding-block: 82px 90px;
+  }
+
+  .esv-signature-copy {
+    margin-top: 32px;
+  }
+
+  .esv-signature-copy h2 {
+    font-size: clamp(33px, 9.1vw, 41px);
+  }
+
+  .esv-signature-text {
+    margin-top: 18px;
+  }
+
+  .esv-signature-facts {
+    margin-top: 22px;
+  }
+
+  .esv-matter-interlude {
+    min-height: 68svh;
+  }
+
+  .esv-matter-interlude-content {
+    padding-bottom: 52px;
+  }
+
+  .esv-matter-interlude-title {
+    font-size: clamp(37px, 10.2vw, 46px);
+  }
+
+  .esv-provenance {
+    padding-block: 82px 90px;
+  }
+
+  .esv-provenance-intro-copy {
+    margin-top: 20px;
+  }
+
+  .esv-provenance-intro-copy h2 {
+    font-size: clamp(36px, 9.8vw, 44px);
+  }
+
+  .esv-provenance-stages {
+    margin-top: 42px;
+  }
+
+  .esv-provenance-stage,
+  .esv-provenance-stage + .esv-provenance-stage {
+    padding: 26px 0 32px;
+  }
+
+  .esv-provenance-stage-copy {
+    margin-top: 18px;
+  }
+
+  .esv-private-grid {
+    padding-block: 82px 90px;
+  }
+
+  .esv-private-copy {
+    margin-top: 34px;
+  }
+
+  .esv-private-copy h2 {
+    font-size: clamp(37px, 10.2vw, 46px);
+  }
+
+  .esv-private-copy p {
+    margin-top: 22px;
+  }
+
+  .esv-private-cta {
+    margin-top: 24px;
+  }
+
+  .esv-footer.esv-footer-premium .esv-footer-grid {
+    padding-block: 38px 24px;
+  }
+
+  .esv-footer.esv-footer-premium .esv-footer-brand {
+    padding-bottom: 28px;
+  }
+
+  .esv-footer.esv-footer-premium .esv-footer-column {
+    padding-block: 22px;
+  }
+
+  .esv-footer.esv-footer-premium .esv-footer-relationship {
+    padding-top: 24px;
+  }
+}
+
+@media (max-width: 429px) {
+  .esv-hero {
+    min-height: 84svh;
+  }
+
+  .esv-maison-media {
+    min-height: min(120vw, 505px);
+  }
+
+  .esv-territory-panel,
+  .esv-territory-panel + .esv-territory-panel {
+    min-height: 445px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .esv-header.esv-header[data-header-variant="transparent"],
+  .esv-header.esv-header[data-header-variant="transparent"]::before,
+  .esv-header.esv-header[data-header-variant="transparent"]::after {
+    transition: none !important;
+  }
+}
