@@ -33,12 +33,13 @@ interface ProductFact {
 interface OpenProductDetail {
   product?: EsmeraObject;
   trigger?: HTMLElement;
+  handoff?: boolean;
 }
 
 type ModalPhase = "unmounted" | "opening" | "open" | "closing";
 type RecommendationState = "idle" | "loading" | "ready" | "hidden";
 
-const MODAL_TRANSITION_TIMEOUT_MS = 300;
+const MODAL_TRANSITION_FALLBACK_MS = 230;
 
 const FOCUSABLE_SELECTOR = [
   "a[href]",
@@ -332,6 +333,7 @@ export default function ProductModal() {
   const phaseRef = useRef<ModalPhase>("unmounted");
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const afterCloseRef = useRef<(() => void) | null>(null);
+  const handoffRef = useRef(false);
 
   const updatePhase = (next: ModalPhase) => {
     phaseRef.current = next;
@@ -428,7 +430,7 @@ export default function ProductModal() {
     updatePhase("closing");
     closeTimerRef.current = globalThis.setTimeout(
       finalizeClose,
-      MODAL_TRANSITION_TIMEOUT_MS,
+      MODAL_TRANSITION_FALLBACK_MS,
     );
   };
 
@@ -459,6 +461,7 @@ export default function ProductModal() {
       }
       afterCloseRef.current = null;
       triggerRef.current = detail.trigger ?? null;
+      handoffRef.current = Boolean(detail.handoff);
       viewerTriggerRef.current = null;
       selectProduct(detail.product);
       updatePhase("opening");
@@ -486,15 +489,18 @@ export default function ProductModal() {
     if (!isMounted) return;
     const body = document.body;
     const root = document.documentElement;
-    const scrollY = globalThis.scrollY || 0;
+    const handoff = handoffRef.current;
+    handoffRef.current = false;
+    const lockedScrollY = Math.abs(Number.parseInt(body.style.top || "0", 10));
+    const scrollY = handoff ? lockedScrollY : globalThis.scrollY || 0;
     const previous = {
-      rootOverflow: root.style.overflow,
-      position: body.style.position,
-      top: body.style.top,
-      left: body.style.left,
-      right: body.style.right,
-      width: body.style.width,
-      overflow: body.style.overflow,
+      rootOverflow: handoff ? "" : root.style.overflow,
+      position: handoff ? "" : body.style.position,
+      top: handoff ? "" : body.style.top,
+      left: handoff ? "" : body.style.left,
+      right: handoff ? "" : body.style.right,
+      width: handoff ? "" : body.style.width,
+      overflow: handoff ? "" : body.style.overflow,
     };
 
     root.classList.add("esv-product-modal-active");
@@ -510,6 +516,7 @@ export default function ProductModal() {
     return () => {
       root.classList.remove("esv-product-modal-active");
       body.classList.remove("esv-product-modal-open");
+      if (root.classList.contains("esv-overlay-active")) return;
       root.style.overflow = previous.rootOverflow;
       body.style.position = previous.position;
       body.style.top = previous.top;
@@ -523,7 +530,7 @@ export default function ProductModal() {
   }, [isMounted]);
 
   useEffect(() => {
-    if (!isMounted) return;
+    if (!isMounted || phase === "closing") return;
     const dialog = modalRef.current;
     if (!dialog) return;
 
@@ -608,10 +615,10 @@ export default function ProductModal() {
       observer?.disconnect();
       mediaQuery.removeEventListener("change", connect);
     };
-  }, [product, images.length]);
+  }, [product, images.length, phase]);
 
   useEffect(() => {
-    if (!product || images.length === 0) return;
+    if (!product || images.length === 0 || phase === "closing") return;
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (zoomIndexRef.current !== null) return;
@@ -647,7 +654,7 @@ export default function ProductModal() {
 
     globalThis.addEventListener("keydown", onKeyDown);
     return () => globalThis.removeEventListener("keydown", onKeyDown);
-  }, [product, images.length]);
+  }, [product, images.length, phase]);
 
   if (!isMounted || !product || images.length === 0) return null;
 
@@ -673,13 +680,12 @@ export default function ProductModal() {
       }
       : product;
 
-    closeModal(() => {
-      globalThis.dispatchEvent(
-        new CustomEvent("esmera:add-to-enquiry", {
-          detail: { product: cartProduct },
-        }),
-      );
-    });
+    closeModal();
+    globalThis.dispatchEvent(
+      new CustomEvent("esmera:add-to-enquiry", {
+        detail: { product: cartProduct, handoff: true },
+      }),
+    );
   };
 
   return (

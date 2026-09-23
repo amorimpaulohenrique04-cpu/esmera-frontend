@@ -11,7 +11,7 @@ export interface Props {
 
 type CarouselPhase = "idle" | "loading" | "transitioning";
 
-const HERO_TRANSITION_FALLBACK_MS = 950;
+const HERO_TRANSITION_FALLBACK_MS = 440;
 
 function prefersReducedMotion(): boolean {
   return Boolean(

@@ -1,7 +1,6 @@
 import { useEffect } from "preact/hooks";
 
 const MENU_SELECTOR = ".esv-nav-v2-desktop, .esv-mega-v2, .esv-nav-v2-drawer";
-const MENU_EXIT_MS = 220;
 
 function isModifiedActivation(event: MouseEvent): boolean {
   return event.button !== 0 || event.metaKey || event.ctrlKey ||
@@ -34,9 +33,6 @@ function beginMenuExit(): boolean {
 
 export default function MenuNavigationCoordinator() {
   useEffect(() => {
-    let pendingNavigation = false;
-    let navigationTimer: ReturnType<typeof globalThis.setTimeout> | null = null;
-
     const onClick = (event: MouseEvent) => {
       if (event.defaultPrevented || isModifiedActivation(event)) return;
       if (!(event.target instanceof Element)) return;
@@ -58,25 +54,13 @@ export default function MenuNavigationCoordinator() {
       if (isSameDocumentHash(url)) return;
       if (url.href === globalThis.location.href) return;
 
-      if (!beginMenuExit()) return;
-
-      event.preventDefault();
-      if (pendingNavigation) return;
-      pendingNavigation = true;
-
-      const reduceMotion = globalThis.matchMedia?.(
-        "(prefers-reduced-motion: reduce)",
-      ).matches;
-      navigationTimer = globalThis.setTimeout(
-        () => globalThis.location.assign(url.href),
-        reduceMotion ? 0 : MENU_EXIT_MS,
-      );
+      // Native navigation starts in this activation; motion follows the state.
+      beginMenuExit();
     };
 
     document.addEventListener("click", onClick, true);
     return () => {
       document.removeEventListener("click", onClick, true);
-      if (navigationTimer !== null) globalThis.clearTimeout(navigationTimer);
     };
   }, []);
 

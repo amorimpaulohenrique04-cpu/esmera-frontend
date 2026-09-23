@@ -258,7 +258,10 @@ Deno.test("cards and Conhecer a peça share the adaptive modal and never navigat
   assertStringIncludes(viewer, "onWheel");
   assertStringIncludes(modal, 'root.style.overflow = "hidden"');
   assertStringIncludes(modal, "root.style.overflow = previous.rootOverflow");
-  assertStringIncludes(modal, "if (!product || images.length === 0) return;");
+  assertStringIncludes(
+    modal,
+    'if (!product || images.length === 0 || phase === "closing") return;',
+  );
   assertStringIncludes(css, ".esv-product-modal-slide.is-pair");
   assertStringIncludes(css, ".esv-product-modal-slide.is-mounted");
   assertStringIncludes(css, "aspect-ratio: 3 / 2");
@@ -278,7 +281,7 @@ Deno.test("cards and Conhecer a peça share the adaptive modal and never navigat
   assertStringIncludes(css, "scroll-snap-type: x mandatory");
   assertStringIncludes(css, ".esv-product-modal-gallery-mobile-counter");
   assertStringIncludes(css, "object-fit: contain");
-  assertStringIncludes(css, "opacity 240ms cubic-bezier(.4, 0, .2, 1)");
+  assertStringIncludes(css, "opacity 160ms cubic-bezier(.4, 0, .2, 1)");
   assertStringIncludes(css, "@media (prefers-reduced-motion: reduce)");
   assertFalse(css.includes("!important"));
   assertFalse(css.includes("object-fit: cover"));
@@ -296,7 +299,7 @@ Deno.test("cards and Conhecer a peça share the adaptive modal and never navigat
   assertStringIncludes(modal, 'type ModalPhase = "unmounted" | "opening"');
   assertStringIncludes(modal, 'updatePhase("closing")');
   assertStringIncludes(modal, "onTransitionEnd");
-  assertStringIncludes(modal, "MODAL_TRANSITION_TIMEOUT_MS");
+  assertStringIncludes(modal, "MODAL_TRANSITION_FALLBACK_MS");
   assertStringIncludes(modal, "controller.abort()");
   assertStringIncludes(modal, "VOCÊ TAMBÉM VAI GOSTAR");
   assertStringIncludes(modal, "item.id !== product.id");
