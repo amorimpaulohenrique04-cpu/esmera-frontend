@@ -91,8 +91,17 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .esv-mega-v2 .esv-mega-v2-column a:not(.esv-mega-v2-column-title):hover {
-    color: var(--ink);
+  /* Keep every collection readable while the user scans a column. The
+   * canonical header used to fade siblings to 50%, which made navigation
+   * unnecessarily difficult. */
+  .esv-mega-v2 .esv-mega-v2-column:hover a {
+    opacity: 1;
+  }
+
+  .esv-mega-v2 .esv-mega-v2-column a:not(.esv-mega-v2-column-title):hover,
+  .esv-mega-v2 .esv-mega-v2-column a:not(.esv-mega-v2-column-title):focus-visible {
+    color: var(--accent);
+    opacity: 1;
     transform: translateX(2px);
   }
 
