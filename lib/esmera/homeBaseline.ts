@@ -179,7 +179,7 @@ export const defaultHome: HomeBaseline = {
     contactLabel: defaultEmail,
     contactHref: `mailto:${defaultEmail}`,
     privacyLabel: "Privacidade",
-    privacyHref: "#contact",
+    privacyHref: "/politica-de-privacidade",
     termsLabel: "Termos",
     termsHref: "#contact",
     location: "Brasil",
