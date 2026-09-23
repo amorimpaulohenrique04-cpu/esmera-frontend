@@ -206,8 +206,12 @@ export default function HeroCarousel(
 
   const firstSlide = slides[0];
   const firstMobile = firstSlide.mobileImage ?? firstSlide.desktopImage;
-  const firstDesktopSrc = optimizePayloadMediaURL(firstSlide.desktopImage, 1800);
+  const firstDesktopSrc = optimizePayloadMediaURL(
+    firstSlide.desktopImage,
+    1800,
+  );
   const firstMobileSrc = optimizePayloadMediaURL(firstMobile, 900);
+
   return (
     <>
       <Head>
@@ -225,79 +229,79 @@ export default function HeroCarousel(
         />
       </Head>
       <section
-      class={`esv-hero esv-hero-carousel is-overlay-${overlay} is-focal-${focalPoint}${
-        transitioning ? " is-transitioning" : ""
-      }${phase === "loading" ? " is-loading" : ""}`}
-      style={{ display: "grid" }}
-      aria-roledescription="carousel"
-      aria-label="Destaques Esméra"
-      aria-busy={phase === "loading" ? "true" : undefined}
-      onPointerEnter={() => setPaused(true)}
-      onPointerLeave={() => setPaused(false)}
-      onFocusIn={() => setPaused(true)}
-      onFocusOut={() => setPaused(false)}
-    >
-      <SlidePicture
-        slide={currentSlide}
-        className="is-current"
-        priority={active === 0 ? "high" : "low"}
-      />
-      {incomingSlide && (
-        <SlidePicture
-          slide={incomingSlide}
-          className="is-incoming"
-          priority="low"
-          onTransitionEnd={(event) => {
-            if (
-              phase === "transitioning" &&
-              event.propertyName === "opacity" &&
-              incoming !== null &&
-              event.currentTarget === event.target
-            ) {
-              finishTransition(incoming);
-            }
-          }}
-        />
-      )}
-
-      <div class="esv-hero-overlay" aria-hidden="true" />
-
-      <SlideCopy
-        slide={currentSlide}
-        className="is-current"
-        hidden={incomingSlide !== null}
-      />
-      {incomingSlide && (
-        <SlideCopy
-          slide={incomingSlide}
-          className="is-incoming"
-          hidden={false}
-        />
-      )}
-
-      <div
-        class="esv-hero-carousel-controls"
-        aria-label="Controles do carrossel"
+        class={`esv-hero esv-hero-carousel is-overlay-${overlay} is-focal-${focalPoint}${
+          transitioning ? " is-transitioning" : ""
+        }${phase === "loading" ? " is-loading" : ""}`}
+        style={{ display: "grid" }}
+        aria-roledescription="carousel"
+        aria-label="Destaques Esméra"
+        aria-busy={phase === "loading" ? "true" : undefined}
+        onPointerEnter={() => setPaused(true)}
+        onPointerLeave={() => setPaused(false)}
+        onFocusIn={() => setPaused(true)}
+        onFocusOut={() => setPaused(false)}
       >
-        <button
-          type="button"
-          aria-label="Slide anterior"
-          disabled={phase !== "idle"}
-          onClick={() =>
-            requestSlide((active - 1 + slides.length) % slides.length)}
+        <SlidePicture
+          slide={currentSlide}
+          className="is-current"
+          priority={active === 0 ? "high" : "low"}
+        />
+        {incomingSlide && (
+          <SlidePicture
+            slide={incomingSlide}
+            className="is-incoming"
+            priority="low"
+            onTransitionEnd={(event) => {
+              if (
+                phase === "transitioning" &&
+                event.propertyName === "opacity" &&
+                incoming !== null &&
+                event.currentTarget === event.target
+              ) {
+                finishTransition(incoming);
+              }
+            }}
+          />
+        )}
+
+        <div class="esv-hero-overlay" aria-hidden="true" />
+
+        <SlideCopy
+          slide={currentSlide}
+          className="is-current"
+          hidden={incomingSlide !== null}
+        />
+        {incomingSlide && (
+          <SlideCopy
+            slide={incomingSlide}
+            className="is-incoming"
+            hidden={false}
+          />
+        )}
+
+        <div
+          class="esv-hero-carousel-controls"
+          aria-label="Controles do carrossel"
         >
-          ←
-        </button>
-        <span aria-live="polite">{active + 1} / {slides.length}</span>
-        <button
-          type="button"
-          aria-label="Próximo slide"
-          disabled={phase !== "idle"}
-          onClick={() => requestSlide((active + 1) % slides.length)}
-        >
-          →
-        </button>
-      </div>
+          <button
+            type="button"
+            aria-label="Slide anterior"
+            disabled={phase !== "idle"}
+            onClick={() =>
+              requestSlide((active - 1 + slides.length) % slides.length)}
+          >
+            ←
+          </button>
+          <span aria-live="polite">{active + 1} / {slides.length}</span>
+          <button
+            type="button"
+            aria-label="Próximo slide"
+            disabled={phase !== "idle"}
+            onClick={() => requestSlide((active + 1) % slides.length)}
+          >
+            →
+          </button>
+        </div>
       </section>
     </>
   );
