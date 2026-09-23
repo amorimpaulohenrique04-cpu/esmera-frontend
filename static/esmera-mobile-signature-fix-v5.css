@@ -1,0 +1,67 @@
+/* ESMÉRA — Mobile signature flow fix v5
+ * Fixes the mobile SignatureObject boundary/order regression without changing desktop.
+ * On mobile the section announces itself before media, keeps the figure inside its own paint boundary,
+ * and disables structural reveal transforms that can visually bleed into the preceding territory.
+ */
+
+@media (max-width: 767px) {
+  .esv-signature {
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
+    background: var(--bg);
+  }
+
+  .esv-signature-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  /* Announce the section first on mobile. This matches the editorial reference
+   * and prevents the media from reading as part of the preceding territory. */
+  .esv-signature-copy {
+    order: 1;
+    width: 100%;
+    margin-top: 0 !important;
+  }
+
+  .esv-signature-media {
+    order: 2;
+    position: relative !important;
+    z-index: 0;
+    width: 100%;
+    max-width: 100%;
+    aspect-ratio: 4 / 3;
+    margin: 34px 0 0 !important;
+    overflow: hidden;
+    transform: none !important;
+    clip-path: none !important;
+    opacity: 1 !important;
+    will-change: auto !important;
+  }
+
+  .esv-signature-media img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Keep the mobile section boundary visually explicit. */
+  .esv-territory {
+    position: relative;
+    z-index: 0;
+    overflow: clip;
+  }
+
+  .esv-signature {
+    z-index: 1;
+  }
+}
+
+@media (max-width: 429px) {
+  .esv-signature-media {
+    margin-top: 30px !important;
+  }
+}
