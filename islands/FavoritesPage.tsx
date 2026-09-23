@@ -62,7 +62,7 @@ function availabilityLabel(value: EsmeraObject["availability"]) {
 
 async function syncRemoval(profile: WishlistProfile, productId: string) {
   try {
-    const response = await fetch("/api/esmera-lead", {
+    await fetch("/api/esmera-lead", {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
@@ -72,9 +72,8 @@ async function syncRemoval(profile: WishlistProfile, productId: string) {
         action: "remove",
       }),
     });
-    return response.ok;
   } catch {
-    return false;
+    // Local interaction remains instant; the CMS sync is best effort.
   }
 }
 
@@ -82,7 +81,6 @@ export default function FavoritesPage() {
   const [ids, setIds] = useState<string[]>([]);
   const [items, setItems] = useState<EsmeraObject[]>([]);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
-  const [busyId, setBusyId] = useState<string | null>(null);
   const [feedback, setFeedback] = useState("");
 
   const itemMap = useMemo(
@@ -126,22 +124,8 @@ export default function FavoritesPage() {
     return () => globalThis.removeEventListener("esmera:wishlist-sync", onSync);
   }, []);
 
-  const remove = async (product: EsmeraObject) => {
-    if (busyId) return;
-    setBusyId(product.id);
+  const remove = (product: EsmeraObject) => {
     setFeedback("");
-
-    const profile = readProfile();
-    if (profile) {
-      const synced = await syncRemoval(profile, product.id);
-      if (!synced) {
-        setFeedback(
-          "Não foi possível atualizar sua seleção agora. Tente novamente.",
-        );
-        setBusyId(null);
-        return;
-      }
-    }
 
     const next = ids.filter((id) => id !== product.id);
     writeIDs(next);
@@ -152,7 +136,9 @@ export default function FavoritesPage() {
         detail: { id: product.id, favorited: false },
       }),
     );
-    setBusyId(null);
+
+    const profile = readProfile();
+    if (profile) void syncRemoval(profile, product.id);
   };
 
   const addToCart = (product: EsmeraObject) => {
@@ -203,7 +189,7 @@ export default function FavoritesPage() {
           <strong>{ids.length}</strong>{" "}
           {ids.length === 1 ? "peça salva" : "peças salvas"}
         </p>
-        <p>Sua seleção também fica vinculada ao atendimento Esméra.</p>
+        <p>Organize aqui as peças que você deseja rever.</p>
       </div>
 
       {feedback && (
@@ -260,10 +246,9 @@ export default function FavoritesPage() {
                 <button
                   class="esv-favorite-remove"
                   type="button"
-                  disabled={busyId === product.id}
-                  onClick={() => void remove(product)}
+                  onClick={() => remove(product)}
                 >
-                  {busyId === product.id ? "Removendo…" : "Remover"}
+                  Remover
                 </button>
               </div>
             </div>
