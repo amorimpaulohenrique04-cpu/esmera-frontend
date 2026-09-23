@@ -77,7 +77,7 @@ Deno.test("menu navigation event contract has one source of truth", async () => 
   );
   assertStringIncludes(
     menu,
-    'from "./navigationMotion.ts"',
+    'from "../lib/esmera/navigationMotion.ts"',
   );
 
   assertEquals(
