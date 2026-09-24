@@ -24,11 +24,18 @@ Deno.test("P3 owns first paint in one canonical critical stylesheet", async () =
   assertStringIncludes(critical, ".esv-header");
   assertStringIncludes(critical, "/fonts/inter-latin-300-normal.woff2");
   assertFalse(critical.includes("cdn.jsdelivr.net"));
+
+  const criticalStat = await Deno.stat("static/esmera-critical.css");
+  assert(
+    criticalStat.size <= 40_000,
+    `Critical CSS exceeded 40 KB budget: ${criticalStat.size} bytes`,
+  );
 });
 
 Deno.test("P3 moves critical selectors instead of duplicating overrides", async () => {
   for (
     const path of [
+      "static/esmera-master.css",
       "static/esmera-finish.css",
       "static/esmera-home-art-direction-v2.css",
       "static/esmera-home-length-refinement-v3.css",
