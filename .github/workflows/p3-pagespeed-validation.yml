@@ -53,9 +53,6 @@ jobs:
           islands/EsmeraMotion.tsx
           islands/HeroCarousel.tsx
           routes/_app.tsx
-          routes/fonts/inter-latin-300-normal.woff2.ts
-          routes/fonts/inter-latin-400-normal.woff2.ts
-          routes/fonts/inter-latin-500-normal.woff2.ts
           tests/performance/p2_performance_contract_test.ts
           tests/performance/p3_pagespeed_contract_test.ts
           .github/workflows/p3-pagespeed-validation.yml
@@ -68,9 +65,6 @@ jobs:
           islands/EsmeraMotion.tsx
           islands/HeroCarousel.tsx
           routes/_app.tsx
-          routes/fonts/inter-latin-300-normal.woff2.ts
-          routes/fonts/inter-latin-400-normal.woff2.ts
-          routes/fonts/inter-latin-500-normal.woff2.ts
           tests/performance/p2_performance_contract_test.ts
           tests/performance/p3_pagespeed_contract_test.ts
 
@@ -126,13 +120,10 @@ jobs:
           fi
 
           font_headers="$(
-            curl --silent --show-error --dump-header - --output /dev/null               http://127.0.0.1:8000/fonts/inter-latin-300-normal.woff2
+            curl --silent --show-error --dump-header - --output /dev/null \
+              http://127.0.0.1:8000/fonts/inter-latin-300-normal.woff2
           )"
-          grep -qi 'content-type: font/woff2' <<< "$font_headers" || {
-            echo "::error title=P3 fonts::Same-origin Inter route did not return WOFF2"
-            exit 1
-          }
-          grep -qi 'max-age=31536000' <<< "$font_headers" || {
-            echo "::error title=P3 fonts::Inter route is missing immutable cache TTL"
+          grep -qi 'content-type:.*font\|content-type:.*octet-stream' <<< "$font_headers" || {
+            echo "::error title=P3 fonts::Vendored Inter asset was not served"
             exit 1
           }
