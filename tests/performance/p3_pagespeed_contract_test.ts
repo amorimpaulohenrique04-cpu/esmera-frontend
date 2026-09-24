@@ -17,7 +17,7 @@ Deno.test("P3 owns first paint in one canonical critical stylesheet", async () =
   assertStringIncludes(app, 'rel="preload"\n          as="style"');
   assertStringIncludes(app, "esmera-product-modal.css");
   assertFalse(
-    app.includes('rel="stylesheet"\n          href={asset(\`/esmera-product-modal.css'),
+    /rel="stylesheet"[\s\S]{0,160}esmera-product-modal\.css/.test(app),
   );
 
   assertStringIncludes(critical, ".esv-hero");
