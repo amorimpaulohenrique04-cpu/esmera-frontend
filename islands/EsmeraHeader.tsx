@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "preact/hooks";
+import Image from "apps/website/components/Image.tsx";
 import DynamicMenu from "./DynamicMenu.tsx";
 import type { HeaderVariant } from "../lib/esmera/shellData.ts";
 import type { NavigationNode } from "../lib/payload/navigation.ts";
@@ -43,6 +44,7 @@ export interface Props {
 }
 
 const CART_STORAGE_KEY = "esmera-cart-v2";
+const HEADER_LOGO_SOURCE = "https://www.esmeradecor.com.br/esmera-logo.png";
 const OVERLAY_EXIT_FALLBACK_MS = 210;
 const FOCUSABLE_SELECTOR = [
   "a[href]",
@@ -558,14 +560,18 @@ export default function EsmeraHeader({
           onDesktopHoverChange={setDesktopMenuHovered}
         />
         <a class="esv-wordmark" aria-label={`${logo} — início`} href="/">
-          <img
+          <Image
             class="esv-brand-image esv-header-logo-image"
-            src="/esmera-logo.png"
+            src={HEADER_LOGO_SOURCE}
             alt=""
-            width="1225"
-            height="369"
+            width={160}
+            height={48}
+            sizes="(max-width: 767px) 100px, (max-width: 1023px) 113px, 146px"
             loading="eager"
             decoding="async"
+            fetchPriority="auto"
+            fit="contain"
+            quality="high"
             style={isSolid ? undefined : "filter:brightness(0) invert(1)"}
           />
         </a>
@@ -641,13 +647,18 @@ export default function EsmeraHeader({
                 href="/"
                 aria-label={`${logo} — início`}
               >
-                <img
+                <Image
                   class="esv-brand-image esv-panel-logo-image"
-                  src="/esmera-logo.png"
+                  src={HEADER_LOGO_SOURCE}
                   alt=""
-                  width="1225"
-                  height="369"
+                  width={220}
+                  height={66}
+                  sizes="220px"
+                  loading="lazy"
                   decoding="async"
+                  fetchPriority="low"
+                  fit="contain"
+                  quality="high"
                 />
               </a>
               <span id="esv-overlay-title" class="esv-sr-only">
