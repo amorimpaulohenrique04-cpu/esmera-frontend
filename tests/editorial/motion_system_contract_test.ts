@@ -42,7 +42,10 @@ Deno.test("motion lifecycle keeps menu, drawer and overlays mounted through exit
 
 Deno.test("hero carousel uses decoded dual-layer crossfade instead of hard swap", async () => {
   const carousel = await Deno.readTextFile("islands/HeroCarousel.tsx");
-  const motion = await Deno.readTextFile("static/esmera-motion-v2.css");
+  const [critical, motion] = await Promise.all([
+    Deno.readTextFile("static/esmera-critical.css"),
+    Deno.readTextFile("static/esmera-motion-v2.css"),
+  ]);
 
   assertStringIncludes(carousel, "async function decodeSlide");
   assertStringIncludes(carousel, "await image.decode()");
@@ -50,10 +53,10 @@ Deno.test("hero carousel uses decoded dual-layer crossfade instead of hard swap"
   assertStringIncludes(carousel, 'className="is-incoming"');
   assertStringIncludes(carousel, "HERO_TRANSITION_FALLBACK_MS");
   assertStringIncludes(
-    motion,
+    critical,
     ".esv-hero-carousel.is-transitioning .esv-hero-carousel-media.is-incoming",
   );
-  assertStringIncludes(motion, "--motion-hero: 360ms;");
+  assertStringIncludes(critical, "--motion-hero: 360ms;");
 });
 
 Deno.test("homepage reveal contract is explicit and product cards reveal as one unit", async () => {
@@ -80,14 +83,17 @@ Deno.test("homepage reveal contract is explicit and product cards reveal as one 
 
 Deno.test("cross-document navigation uses one sequential root handoff", async () => {
   const app = await Deno.readTextFile("routes/_app.tsx");
-  const motion = await Deno.readTextFile("static/esmera-motion-v2.css");
+  const [critical, motion] = await Promise.all([
+    Deno.readTextFile("static/esmera-critical.css"),
+    Deno.readTextFile("static/esmera-motion-v2.css"),
+  ]);
 
   assertStringIncludes(motion, "@view-transition");
   assertStringIncludes(motion, "navigation: auto;");
   assertEquals(motion.includes("view-transition-name"), false);
   assertEquals(motion.includes("esmera-main"), false);
-  assertStringIncludes(motion, "--motion-page-exit: 80ms;");
-  assertStringIncludes(motion, "--motion-page-enter: 160ms;");
+  assertStringIncludes(critical, "--motion-page-exit: 80ms;");
+  assertStringIncludes(critical, "--motion-page-enter: 160ms;");
   assertStringIncludes(motion, "::view-transition-old(root)");
   assertStringIncludes(motion, "::view-transition-new(root)");
   assertStringIncludes(
@@ -128,7 +134,7 @@ Deno.test("cross-document navigation uses one sequential root handoff", async ()
     '.esv-product-modal-backdrop[data-phase="closing"]',
   );
   assertStringIncludes(
-    motion,
+    critical,
     ".esv-hero-carousel.is-transitioning .esv-hero-carousel-media.is-incoming",
   );
   assertStringIncludes(motion, "box-shadow: none !important;");
