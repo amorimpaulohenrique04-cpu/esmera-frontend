@@ -1,6 +1,7 @@
 import { useEffect } from "preact/hooks";
 
 const REVEAL_SELECTOR = '[data-motion="reveal"], [data-motion="media-reveal"]';
+const MOTION_READY_FALLBACK_MS = 500;
 
 export default function EsmeraMotion() {
   useEffect(() => {
@@ -16,8 +17,6 @@ export default function EsmeraMotion() {
     );
     if (elements.length === 0) return;
 
-    const viewportHeight = globalThis.innerHeight || 800;
-
     elements.forEach((element) => {
       element.classList.add("esv-reveal");
       if (element.dataset.motion === "media-reveal") {
@@ -31,15 +30,18 @@ export default function EsmeraMotion() {
           `${Math.min(Math.max(order, 0) * 30, 90)}ms`,
         );
       }
-
-      // Anything already visible at hydration stays visible. The motion-ready
-      // class is only enabled after this pass, so hydration never hides content
-      // that the server has already painted above the fold.
-      const rect = element.getBoundingClientRect();
-      if (rect.top < viewportHeight * .96 && rect.bottom > 0) {
-        element.classList.add("is-visible");
-      }
     });
+
+    let readyFrame = 0;
+    let ready = false;
+
+    const armMotion = () => {
+      if (ready) return;
+      ready = true;
+      readyFrame = requestAnimationFrame(() => {
+        root.classList.add("esv-motion-ready");
+      });
+    };
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -49,6 +51,10 @@ export default function EsmeraMotion() {
           element.classList.add("is-visible");
           observer.unobserve(element);
         });
+
+        // IntersectionObserver classifies the initial viewport before CSS may
+        // hide non-visible targets. No synchronous geometry read is needed.
+        armMotion();
       },
       {
         threshold: .08,
@@ -56,16 +62,15 @@ export default function EsmeraMotion() {
       },
     );
 
-    elements.forEach((element) => {
-      if (!element.classList.contains("is-visible")) observer.observe(element);
-    });
-
-    const frame = requestAnimationFrame(() => {
-      root.classList.add("esv-motion-ready");
-    });
+    elements.forEach((element) => observer.observe(element));
+    const fallback = globalThis.setTimeout(
+      armMotion,
+      MOTION_READY_FALLBACK_MS,
+    );
 
     return () => {
-      cancelAnimationFrame(frame);
+      globalThis.clearTimeout(fallback);
+      if (readyFrame) cancelAnimationFrame(readyFrame);
       observer.disconnect();
       root.classList.remove("esv-motion-ready");
       elements.forEach((element) => {
