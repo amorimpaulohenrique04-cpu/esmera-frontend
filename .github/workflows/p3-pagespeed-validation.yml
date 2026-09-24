@@ -1,0 +1,138 @@
+name: P3 PageSpeed validation
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "components/esmera/ResponsiveMedia.tsx"
+      - "islands/EsmeraHeader.tsx"
+      - "islands/EsmeraMotion.tsx"
+      - "islands/HeroCarousel.tsx"
+      - "routes/_app.tsx"
+      - "routes/fonts/**"
+      - "static/**"
+      - "tests/performance/**"
+      - ".github/workflows/p3-pagespeed-validation.yml"
+  push:
+    branches: [main]
+    paths:
+      - "components/esmera/ResponsiveMedia.tsx"
+      - "islands/EsmeraHeader.tsx"
+      - "islands/EsmeraMotion.tsx"
+      - "islands/HeroCarousel.tsx"
+      - "routes/_app.tsx"
+      - "routes/fonts/**"
+      - "static/**"
+      - "tests/performance/**"
+      - ".github/workflows/p3-pagespeed-validation.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  pagespeed:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    env:
+      DECO_SITE_NAME: testeesmera
+      PAYLOAD_API_URL: https://esmeracms-green.vercel.app
+      PORT: "8000"
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Format P3 source
+        run: >-
+          deno fmt --check
+          components/esmera/ResponsiveMedia.tsx
+          islands/EsmeraHeader.tsx
+          islands/EsmeraMotion.tsx
+          islands/HeroCarousel.tsx
+          routes/_app.tsx
+          routes/fonts/inter-latin-300-normal.woff2.ts
+          routes/fonts/inter-latin-400-normal.woff2.ts
+          routes/fonts/inter-latin-500-normal.woff2.ts
+          tests/performance/p2_performance_contract_test.ts
+          tests/performance/p3_pagespeed_contract_test.ts
+          .github/workflows/p3-pagespeed-validation.yml
+
+      - name: Lint P3 source
+        run: >-
+          deno lint
+          components/esmera/ResponsiveMedia.tsx
+          islands/EsmeraHeader.tsx
+          islands/EsmeraMotion.tsx
+          islands/HeroCarousel.tsx
+          routes/_app.tsx
+          routes/fonts/inter-latin-300-normal.woff2.ts
+          routes/fonts/inter-latin-400-normal.woff2.ts
+          routes/fonts/inter-latin-500-normal.woff2.ts
+          tests/performance/p2_performance_contract_test.ts
+          tests/performance/p3_pagespeed_contract_test.ts
+
+      - name: Typecheck
+        run: deno check dev.ts main.ts
+
+      - name: P2/P3 performance contracts
+        run: >-
+          deno test -A
+          tests/performance/p2_performance_contract_test.ts
+          tests/performance/p3_pagespeed_contract_test.ts
+
+      - name: Full regression suite
+        run: deno test -A
+
+      - name: Build
+        run: deno task build
+
+      - name: Start preview
+        shell: bash
+        run: |
+          deno task preview > /tmp/esmera-p3-preview.log 2>&1 &
+          for attempt in $(seq 1 60); do
+            if curl --silent --fail http://127.0.0.1:8000/ > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/esmera-p3-preview.log
+          exit 1
+
+      - name: Runtime critical-path contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          home="$(curl --silent --show-error --fail http://127.0.0.1:8000/)"
+
+          [[ "$home" == *'esmera-critical.css'* ]] || {
+            echo "::error title=P3 critical CSS::Critical stylesheet missing from Home"
+            exit 1
+          }
+          [[ "$home" == *'data-esmera-deferred-style="true"'* ]] || {
+            echo "::error title=P3 deferred CSS::Home has no deferred stylesheet contract"
+            exit 1
+          }
+          [[ "$home" == *'384w'* || "$home" == *'414w'* ]] || {
+            echo "::error title=P3 responsive media::Small mobile image candidates missing"
+            exit 1
+          }
+          if [[ "$home" == *'cdn.jsdelivr.net/fontsource/fonts/inter'* ]]; then
+            echo "::error title=P3 fonts::Third-party Inter URL leaked into Home HTML"
+            exit 1
+          fi
+
+          font_headers="$(
+            curl --silent --show-error --dump-header - --output /dev/null               http://127.0.0.1:8000/fonts/inter-latin-300-normal.woff2
+          )"
+          grep -qi 'content-type: font/woff2' <<< "$font_headers" || {
+            echo "::error title=P3 fonts::Same-origin Inter route did not return WOFF2"
+            exit 1
+          }
+          grep -qi 'max-age=31536000' <<< "$font_headers" || {
+            echo "::error title=P3 fonts::Inter route is missing immutable cache TTL"
+            exit 1
+          }
