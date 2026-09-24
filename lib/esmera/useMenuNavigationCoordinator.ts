@@ -4,7 +4,6 @@ import {
   type MenuNavigationRequestDetail,
 } from "./navigationMotion.ts";
 
-const MENU_SELECTOR = ".esv-nav-v2-desktop, .esv-mega-v2, .esv-nav-v2-drawer";
 const ACTIVE_MENU_SURFACE_SELECTOR = ".esv-mega-v2, .esv-nav-v2-backdrop";
 const MENU_NAVIGATION_FALLBACK_MS = 240;
 
@@ -42,7 +41,7 @@ export function useMenuNavigationCoordinator(): void {
       if (!(event.target instanceof Element)) return;
 
       const anchor = event.target.closest<HTMLAnchorElement>("a[href]");
-      if (!anchor || !anchor.closest(MENU_SELECTOR)) return;
+      if (!anchor) return;
       if (anchor.hasAttribute("download")) return;
       if (anchor.target && anchor.target !== "_self") return;
 
