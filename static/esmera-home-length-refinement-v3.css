@@ -397,7 +397,6 @@
 
 
   .esv-signature-grid {
-    grid-template-columns: repeat(8, minmax(0, 1fr));
     align-items: center;
   }
 
@@ -451,7 +450,6 @@
 
 
   .esv-matter-interlude-content {
-    grid-template-columns: repeat(8, minmax(0, 1fr));
     padding-bottom: clamp(42px, 5.5vw, 58px);
   }
 
@@ -475,10 +473,6 @@
     padding-block: clamp(88px, 9.5vw, 110px);
   }
 
-
-  .esv-provenance-intro-grid {
-    grid-template-columns: repeat(8, minmax(0, 1fr));
-  }
 
 
   .esv-provenance-intro-grid .esv-kicker {
@@ -565,7 +559,6 @@
 
 
   .esv-private-grid {
-    grid-template-columns: repeat(8, minmax(0, 1fr));
     padding-block: clamp(86px, 9.5vw, 108px);
   }
 
