@@ -42,10 +42,7 @@ Deno.test("motion lifecycle keeps menu, drawer and overlays mounted through exit
 
 Deno.test("hero carousel uses decoded dual-layer crossfade instead of hard swap", async () => {
   const carousel = await Deno.readTextFile("islands/HeroCarousel.tsx");
-  const [critical, motion] = await Promise.all([
-    Deno.readTextFile("static/esmera-critical.css"),
-    Deno.readTextFile("static/esmera-motion-v2.css"),
-  ]);
+  const critical = await Deno.readTextFile("static/esmera-critical.css");
 
   assertStringIncludes(carousel, "async function decodeSlide");
   assertStringIncludes(carousel, "await image.decode()");
