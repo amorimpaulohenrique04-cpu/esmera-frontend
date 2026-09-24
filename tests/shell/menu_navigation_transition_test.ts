@@ -17,7 +17,11 @@ Deno.test("menu navigation waits for the owned exit lifecycle before routing", a
     coordinator,
     "new CustomEvent(MENU_NAVIGATION_REQUEST_EVENT",
   );
-  assertEquals(coordinator.includes('.classList.add("is-closing")'), false);
+  assertStringIncludes(
+    coordinator,
+    'surface.classList.add("is-closing")',
+  );
+  assertEquals(menu.includes('.classList.add("is-closing")'), false);
 
   assertStringIncludes(
     menu,
