@@ -91,8 +91,8 @@ Deno.test("cross-document navigation uses one sequential root handoff", async ()
   assertStringIncludes(motion, "navigation: auto;");
   assertEquals(motion.includes("view-transition-name"), false);
   assertEquals(motion.includes("esmera-main"), false);
-  assertStringIncludes(critical, "--motion-page-exit: 80ms;");
-  assertStringIncludes(critical, "--motion-page-enter: 160ms;");
+  assertStringIncludes(motion, "--motion-page-exit: 80ms;");
+  assertStringIncludes(motion, "--motion-page-enter: 160ms;");
   assertStringIncludes(motion, "::view-transition-old(root)");
   assertStringIncludes(motion, "::view-transition-new(root)");
   assertStringIncludes(
