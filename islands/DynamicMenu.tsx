@@ -214,11 +214,6 @@ export default function DynamicMenu(
 
     if (megaPhase === "closing" || megaExitTimer.current) return;
 
-    // The navigation coordinator runs in capture phase. Mark the mounted
-    // surfaces immediately so the exit lifecycle is observable before the
-    // deferred Preact state flush, while state remains the canonical owner.
-    document.querySelector(".esv-mega-v2")?.classList.add("is-closing");
-    document.querySelector(".esv-mega-backdrop")?.classList.add("is-closing");
     setMegaPhase("closing");
     megaExitTimer.current = globalThis.setTimeout(
       finalizeDesktopClose,
@@ -281,10 +276,8 @@ export default function DynamicMenu(
 
     if (drawerExitTimer.current) return;
 
-    // The capture-phase navigation coordinator is the single owner of internal
-    // drawer navigation. Mark the mounted surface synchronously, then let
-    // Preact state complete the exit lifecycle before navigation.
-    drawerSurface?.classList.add("is-closing");
+    // Navigation marking is owned by the capture coordinator. Preact state
+    // owns the mounted drawer lifecycle after that synchronous handoff.
     setDrawerPhase("closing");
     drawerExitTimer.current = globalThis.setTimeout(
       finalizeMobileClose,
