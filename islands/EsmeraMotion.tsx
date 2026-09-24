@@ -17,6 +17,8 @@ export default function EsmeraMotion() {
     );
     if (elements.length === 0) return;
 
+    const revealGroups = new Map<Element, HTMLElement[]>();
+
     elements.forEach((element) => {
       element.classList.add("esv-reveal");
       if (element.dataset.motion === "media-reveal") {
@@ -30,6 +32,14 @@ export default function EsmeraMotion() {
           `${Math.min(Math.max(order, 0) * 30, 90)}ms`,
         );
       }
+
+      // Observe the editorial section rather than each transformed figure.
+      // Deferred CSS may settle a figure's own box after hydration; the section
+      // remains the stable semantic trigger and reveals its children together.
+      const trigger = element.closest("section") ?? element;
+      const group = revealGroups.get(trigger) ?? [];
+      group.push(element);
+      revealGroups.set(trigger, group);
     });
 
     let readyFrame = 0;
@@ -47,9 +57,9 @@ export default function EsmeraMotion() {
       (entries) => {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
-          const element = entry.target as HTMLElement;
-          element.classList.add("is-visible");
-          observer.unobserve(element);
+          const group = revealGroups.get(entry.target) ?? [];
+          group.forEach((element) => element.classList.add("is-visible"));
+          observer.unobserve(entry.target);
         });
 
         // IntersectionObserver classifies the initial viewport before CSS may
@@ -57,15 +67,12 @@ export default function EsmeraMotion() {
         armMotion();
       },
       {
-        // Reveal just before the target fully enters the viewport. This keeps
-        // editorial motion deterministic even when deferred CSS settles after
-        // hydration, without forcing a synchronous layout read.
         threshold: 0,
-        rootMargin: "0px 0px 18% 0px",
+        rootMargin: "0px 0px 12% 0px",
       },
     );
 
-    elements.forEach((element) => observer.observe(element));
+    revealGroups.forEach((_group, trigger) => observer.observe(trigger));
     const fallback = globalThis.setTimeout(
       armMotion,
       MOTION_READY_FALLBACK_MS,
