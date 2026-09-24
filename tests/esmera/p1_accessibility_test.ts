@@ -65,14 +65,13 @@ function contrast(foreground: string, background: string): number {
 }
 
 Deno.test("P1 secondary text token meets WCAG AA on Esmera light surfaces", async () => {
-  // --muted lives in esmera-master.css (single source of truth for the
-  // token); esmera-accessibility-p1-v1.css keeps the placeholder override
-  // that consumes it but no longer redefines the color itself.
-  const [masterCss, p1Css] = await Promise.all([
-    Deno.readTextFile("static/esmera-master.css"),
+  // P3 moved first-paint design tokens into the canonical critical stylesheet.
+  // The accessibility layer consumes --muted but does not redefine it.
+  const [criticalCss, p1Css] = await Promise.all([
+    Deno.readTextFile("static/esmera-critical.css"),
     Deno.readTextFile("static/esmera-accessibility-p1-v1.css"),
   ]);
-  const muted = masterCss.match(/--muted:\s*(#[0-9A-Fa-f]{6})/)?.[1];
+  const muted = criticalCss.match(/--muted:\s*(#[0-9A-Fa-f]{6})/)?.[1];
   if (!muted) throw new Error("P1 muted token is missing");
 
   for (const background of ["#F3F0E8", "#E9E5DC"]) {
