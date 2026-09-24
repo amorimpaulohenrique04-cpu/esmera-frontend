@@ -57,8 +57,11 @@ export default function EsmeraMotion() {
         armMotion();
       },
       {
-        threshold: .08,
-        rootMargin: "0px 0px -4% 0px",
+        // Reveal just before the target fully enters the viewport. This keeps
+        // editorial motion deterministic even when deferred CSS settles after
+        // hydration, without forcing a synchronous layout read.
+        threshold: 0,
+        rootMargin: "0px 0px 18% 0px",
       },
     );
 
