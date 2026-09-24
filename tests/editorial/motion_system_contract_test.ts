@@ -66,7 +66,9 @@ Deno.test("homepage reveal contract is explicit and product cards reveal as one 
   assertEquals(card.includes('data-motion="media-reveal"'), false);
   assertEquals(reveal.includes("fallbackRevealSelectors"), false);
   assertEquals(reveal.includes("legacyStaggerSelectors"), false);
-  assertEquals(reveal.includes("setTimeout"), false);
+  assertEquals(reveal.includes("getBoundingClientRect"), false);
+  assertStringIncludes(reveal, "MOTION_READY_FALLBACK_MS");
+  assertStringIncludes(reveal, "globalThis.setTimeout");
   assertStringIncludes(
     reveal,
     "document.querySelectorAll<HTMLElement>(REVEAL_SELECTOR)",
