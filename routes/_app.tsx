@@ -86,7 +86,7 @@ export default defineApp(async (_req, ctx) => {
           as="font"
           type="font/woff2"
           crossorigin=""
-          href={asset("/fonts/inter-latin-wght-normal.woff2")}
+          href={asset("/fonts/inter-latin-300-normal.woff2")}
         />
 
         <StyleLink
