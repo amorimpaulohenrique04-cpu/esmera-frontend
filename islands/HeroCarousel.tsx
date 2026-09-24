@@ -29,7 +29,7 @@ function preferredSlideSource(slide: HeroSlide): string {
   const source = compact && slide.mobileImage
     ? slide.mobileImage
     : slide.desktopImage;
-  return optimizePayloadMediaURL(source, compact ? 900 : 1800);
+  return optimizePayloadMediaURL(source, compact ? 414 : 1800);
 }
 
 async function decodeSlide(slide: HeroSlide): Promise<void> {
@@ -210,7 +210,7 @@ export default function HeroCarousel(
     firstSlide.desktopImage,
     1800,
   );
-  const firstMobileSrc = optimizePayloadMediaURL(firstMobile, 900);
+  const firstMobileSrc = optimizePayloadMediaURL(firstMobile, 414);
 
   return (
     <>
