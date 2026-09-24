@@ -105,3 +105,74 @@ Deno.test("P3 optimizes the header wordmark instead of shipping the full PNG", a
   );
   assertFalse(header.includes('width="1225"'));
 });
+
+
+Deno.test("P3 critical declarations are not duplicated across deferred styles", async () => {
+  const deferredFiles = [
+    "static/esmera-master.css",
+    "static/esmera-header.css",
+    "static/esmera-finish.css",
+    "static/esmera-commerce-refine.css",
+    "static/esmera-motion-v2.css",
+    "static/esmera-home-art-direction-v2.css",
+    "static/esmera-home-length-refinement-v3.css",
+    "static/esmera-shell-cro-v1.css",
+    "static/esmera-mobile-recovery-v4.css",
+    "static/esmera-product-card.css",
+    "static/esmera-footer.css",
+    "static/esmera-matter-interaction.css",
+    "static/esmera-accessibility-p1-v1.css",
+  ];
+
+  const parseRules = (input: string) => {
+    const clean = input.replace(/\/\*[\s\S]*?\*\//g, "");
+    const result = new Map<string, Set<string>>();
+    const rule = /([^{}]+)\{([^{}]*)\}/g;
+    let match: RegExpExecArray | null;
+
+    while ((match = rule.exec(clean)) !== null) {
+      const head = match[1].trim();
+      if (!head || head.startsWith("@")) continue;
+      const declarations = match[2]
+        .split(";")
+        .map((value) => value.trim().replace(/\s+/g, " "))
+        .filter(Boolean);
+
+      for (
+        const selector of head
+          .split(",")
+          .map((value) => value.trim().replace(/\s+/g, " "))
+          .filter(Boolean)
+      ) {
+        const owned = result.get(selector) ?? new Set<string>();
+        declarations.forEach((declaration) => owned.add(declaration));
+        result.set(selector, owned);
+      }
+    }
+
+    return result;
+  };
+
+  const critical = parseRules(
+    await Deno.readTextFile("static/esmera-critical.css"),
+  );
+
+  const duplicates: string[] = [];
+  for (const path of deferredFiles) {
+    const deferred = parseRules(await Deno.readTextFile(path));
+    for (const [selector, declarations] of critical) {
+      const later = deferred.get(selector);
+      if (!later) continue;
+      for (const declaration of declarations) {
+        if (later.has(declaration)) {
+          duplicates.push(`${path}: ${selector} -> ${declaration}`);
+        }
+      }
+    }
+  }
+
+  assert(
+    duplicates.length === 0,
+    `Critical CSS duplicated declarations in deferred owners:\n${duplicates.join("\n")}`,
+  );
+});
