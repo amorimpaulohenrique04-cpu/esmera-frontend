@@ -3,6 +3,10 @@ import { defineApp } from "$fresh/server.ts";
 import Theme from "../sections/Theme/Theme.tsx";
 import { Context } from "@deco/deco";
 
+const CRITICAL_CSS = await Deno.readTextFile(
+  new URL("../static/esmera-critical.css", import.meta.url),
+);
+
 interface StyleLinkProps {
   href: string;
   deferred?: boolean;
@@ -56,7 +60,6 @@ const DEFERRED_STYLE_BOOTSTRAP = `(() => {
 
 export default defineApp(async (_req, ctx) => {
   const revision = await Context.active().release?.revision();
-  const criticalStyleRevision = "2026-09-23-p3-critical-v1";
   const storefrontStyleRevision = "2026-09-23-p3-css-split-v1";
   const productCardStyleRevision = "2026-09-23-favorites-modal-v4";
   const aboutStyleRevision = "2026-09-23-privacy-editorial-v2";
@@ -77,9 +80,9 @@ export default defineApp(async (_req, ctx) => {
     <>
       <Theme colorScheme="any" />
       <Head>
-        <link
-          rel="stylesheet"
-          href={asset(`/esmera-critical.css?v=${criticalStyleRevision}`)}
+        <style
+          id="esmera-critical"
+          dangerouslySetInnerHTML={{ __html: CRITICAL_CSS }}
         />
         <link
           rel="preload"
