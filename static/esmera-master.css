@@ -1,197 +1,15 @@
-/* ESMÉRA — Homepage Master v2.0
- * Single active visual source for the Esméra experience.
- * Inter only. Quiet luxury. Grid, spacing, motion and responsive rules are centralized here.
- */
 
-@font-face {
-  font-family: "Inter";
-  font-style: normal;
-  font-display: swap;
-  font-weight: 300;
-  src: url("https://cdn.jsdelivr.net/fontsource/fonts/inter@5.3.0/latin-300-normal.woff2")
-    format("woff2");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC,
-    U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F,
-    U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
-@font-face {
-  font-family: "Inter";
-  font-style: normal;
-  font-display: swap;
-  font-weight: 400;
-  src: url("https://cdn.jsdelivr.net/fontsource/fonts/inter@5.3.0/latin-400-normal.woff2")
-    format("woff2");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC,
-    U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F,
-    U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
-@font-face {
-  font-family: "Inter";
-  font-style: normal;
-  font-display: swap;
-  font-weight: 500;
-  src: url("https://cdn.jsdelivr.net/fontsource/fonts/inter@5.3.0/latin-500-normal.woff2")
-    format("woff2");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC,
-    U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F,
-    U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
-:root {
-  --bg: #F3F0E8;
-  --bg-alt: #E9E5DC;
-  --black: #111210;
-  --ink: #262724;
-  --ink-inverse: #F3F0E8;
-  --muted: #62645F;
-  --muted-strong: #565954;
-  --accent: #2D6A63;
-  --line: rgba(38, 39, 36, .16);
-  --line-inverse: rgba(243, 240, 232, .18);
-
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-6: 24px;
-  --space-8: 32px;
-  --space-12: 48px;
-  --space-16: 64px;
-  --space-24: 96px;
-  --space-32: 128px;
-  --space-40: 160px;
-  --space-48: 192px;
-
-  --page-x: clamp(32px, 5vw, 80px);
-  --section-y: clamp(128px, 10vw, 192px);
-  --content-max: 1600px;
-  --grid-gap: clamp(20px, 1.8vw, 28px);
-  --header-h: 72px;
-  --ease-esmera: cubic-bezier(.16, 1, .3, 1);
-
-  /* Compatibility aliases used by existing components. */
-  --esv-paper: var(--bg);
-  --esv-paper-soft: var(--bg);
-  --esv-ink: var(--ink);
-  --esv-muted: var(--muted);
-  --esv-line: var(--line);
-  --esv-page-x: var(--page-x);
-  --esv-section-y: var(--section-y);
-  --esv-grid-gap: var(--grid-gap);
-  --esv-max: var(--content-max);
-  --esv-header-h: var(--header-h);
-  --esv-ease: var(--ease-esmera);
-  --esv-ease-out: var(--ease-esmera);
-}
-
-html {
-  background: var(--bg);
-}
-
-/* Reserve the vertical scrollbar gutter from tablet up so locking scroll for the
- * product modal / header overlays cannot shift the page and fixed header
- * sideways when the classic scrollbar is removed. Below 768px the product modal
- * is a full-screen takeover that must span the full viewport width, and mobile
- * uses overlay scrollbars (nothing to shift), so the gutter is intentionally not
- * reserved there. */
-@media (min-width: 768px) {
-  html {
-    scrollbar-gutter: stable;
-  }
-}
-
-body {
-  margin: 0;
-  overflow-x: hidden;
-  background: var(--bg);
-  color: var(--ink);
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-weight: 400;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-}
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-button,
-input,
-textarea,
-select {
-  font: inherit;
-}
-
-button,
-a {
-  -webkit-tap-highlight-color: transparent;
-}
-
-img {
-  display: block;
-  max-width: 100%;
-}
-
-::selection {
-  background: var(--accent);
-  color: var(--ink-inverse);
-}
-
-:where(a, button, input, textarea, select):focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 4px;
-}
-
-.esv-lock {
-  overflow: hidden;
-}
-
-.esv-shell {
-  width: min(100%, var(--content-max));
-  margin-inline: auto;
-  padding-inline: var(--page-x);
-}
 
 .esv-section {
   padding-block: var(--section-y);
 }
+
 
 .esv-rule-top {
   padding-top: var(--space-6);
   border-top: 1px solid var(--line);
 }
 
-.esv-sr-only {
-  position: absolute !important;
-  width: 1px !important;
-  height: 1px !important;
-  padding: 0 !important;
-  margin: -1px !important;
-  overflow: hidden !important;
-  clip: rect(0, 0, 0, 0) !important;
-  white-space: nowrap !important;
-  border: 0 !important;
-}
-
-.esv-skip {
-  position: fixed;
-  z-index: 999;
-  top: 0;
-  left: var(--page-x);
-  padding: 12px 16px;
-  background: var(--bg);
-  color: var(--ink);
-  transform: translateY(-120%);
-  transition: transform 180ms var(--ease-esmera);
-}
-
-.esv-skip:focus {
-  transform: translateY(0);
-}
 
 .esv-kicker {
   margin: 0;
@@ -203,31 +21,11 @@ img {
   text-transform: uppercase;
 }
 
+
 .esv-kicker-light {
   color: rgba(243, 240, 232, .72);
 }
 
-.esv-text-link,
-.esv-hero-cta,
-.esv-private-cta,
-.esv-signature .esv-product-actions button,
-.esv-experience-pillars a {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  min-height: 44px;
-  padding: 0;
-  border: 0;
-  border-bottom: 1px solid currentColor;
-  background: transparent;
-  color: inherit;
-  font-size: 12px;
-  font-weight: 400;
-  line-height: 1.2;
-  letter-spacing: .02em;
-  text-decoration: none;
-  cursor: pointer;
-}
 
 
 
@@ -266,6 +64,7 @@ img {
   background: rgba(17, 18, 16, .62);
 }
 
+
 /* .esv-header-panel base lives in esmera-commerce-refine.css (loaded after
  * this file), which overrode every property declared here. The dead copy
  * was removed to keep a single production source for the header panel. */
@@ -302,10 +101,12 @@ img {
 
 
 
+
 .esv-header-search,
 .esv-enquiry-panel {
   margin-top: clamp(72px, 9vh, 108px);
 }
+
 
 
 
@@ -327,11 +128,13 @@ img {
   cursor: pointer;
 }
 
+
 .esv-search-results img {
   width: 72px;
   height: 88px;
   object-fit: cover;
 }
+
 
 .esv-search-results span,
 .esv-enquiry-list span {
@@ -339,6 +142,7 @@ img {
   flex-direction: column;
   gap: 5px;
 }
+
 
 .esv-search-results small,
 .esv-enquiry-list small {
@@ -348,12 +152,14 @@ img {
   text-transform: uppercase;
 }
 
+
 .esv-search-results strong,
 .esv-enquiry-list strong {
   font-size: 16px;
   font-weight: 400;
   line-height: 1.2;
 }
+
 
 .esv-search-empty,
 .esv-enquiry-empty {
@@ -364,6 +170,7 @@ img {
   line-height: 1.55;
 }
 
+
 .esv-enquiry-panel h2 {
   margin: 16px 0 28px;
   font-size: clamp(34px, 3.4vw, 54px);
@@ -371,6 +178,7 @@ img {
   line-height: 1;
   letter-spacing: -.035em;
 }
+
 
 .esv-enquiry-list > div {
   display: grid;
@@ -381,11 +189,13 @@ img {
   border-bottom: 1px solid var(--line);
 }
 
+
 .esv-enquiry-list img {
   width: 74px;
   height: 90px;
   object-fit: cover;
 }
+
 
 .esv-enquiry-list > div > button {
   min-height: 44px;
@@ -396,6 +206,7 @@ img {
   font-size: 11px;
   cursor: pointer;
 }
+
 
 .esv-enquiry-send {
   display: flex;
@@ -415,12 +226,14 @@ img {
   cursor: pointer;
 }
 
+
 .esv-object-modal-backdrop {
   z-index: 320;
   align-items: center;
   justify-content: center;
   padding: 2vw;
 }
+
 
 .esv-object-modal {
   position: relative;
@@ -434,11 +247,13 @@ img {
   animation: esv-panel-in 360ms var(--ease-esmera) both;
 }
 
+
 .esv-object-modal-images {
   display: grid;
   grid-template-columns: 1fr 1fr;
   min-height: 640px;
 }
+
 
 .esv-object-modal-images img {
   width: 100%;
@@ -446,10 +261,12 @@ img {
   object-fit: cover;
 }
 
+
 .esv-object-modal-copy {
   align-self: center;
   padding: clamp(40px, 6vw, 82px);
 }
+
 
 .esv-object-modal-copy h2 {
   margin: 16px 0 12px;
@@ -459,10 +276,12 @@ img {
   letter-spacing: -.035em;
 }
 
+
 .esv-object-modal-subtitle {
   color: var(--muted);
   font-size: 13px;
 }
+
 
 .esv-object-modal-copy > p:not(.esv-kicker):not(.esv-object-modal-subtitle) {
   max-width: 42ch;
@@ -471,9 +290,11 @@ img {
   line-height: 1.55;
 }
 
+
 .esv-object-modal dl {
   margin: 28px 0 0;
 }
+
 
 .esv-object-modal dl div {
   display: flex;
@@ -486,90 +307,19 @@ img {
   text-transform: uppercase;
 }
 
+
 .esv-object-modal dd {
   margin: 0;
   color: var(--muted);
   text-align: right;
 }
 
+
 @keyframes esv-panel-in {
   from { opacity: 0; transform: translate3d(12px, 0, 0); }
   to { opacity: 1; transform: translate3d(0, 0, 0); }
 }
 
-/* -------------------------------------------------------------------------- */
-/* 01 — Hero                                                                  */
-/* -------------------------------------------------------------------------- */
-
-.esv-hero {
-  position: relative;
-  display: grid;
-  min-height: max(720px, 92svh);
-  overflow: hidden;
-  isolation: isolate;
-  background: var(--black);
-  color: var(--ink-inverse);
-}
-
-.esv-hero-picture,
-.esv-hero-picture img,
-.esv-hero-overlay {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.esv-hero-picture img {
-  object-fit: cover;
-}
-
-.esv-hero.is-focal-left .esv-hero-picture img { object-position: left center; }
-.esv-hero.is-focal-center .esv-hero-picture img { object-position: center; }
-.esv-hero.is-focal-right .esv-hero-picture img { object-position: right center; }
-
-.esv-hero-overlay {
-  z-index: 1;
-  background: linear-gradient(90deg, rgba(17,18,16,.46) 0%, rgba(17,18,16,.18) 38%, rgba(17,18,16,.04) 68%);
-}
-
-.esv-hero.is-overlay-10 .esv-hero-overlay { opacity: .72; }
-.esv-hero.is-overlay-20 .esv-hero-overlay { opacity: .88; }
-.esv-hero.is-overlay-30 .esv-hero-overlay { opacity: 1; }
-
-.esv-hero-content {
-  position: relative;
-  z-index: 2;
-  align-self: end;
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: var(--grid-gap);
-  width: 100%;
-  padding-bottom: clamp(64px, 7.5vw, 116px);
-}
-
-.esv-hero-statement,
-.esv-hero-cta {
-  grid-column: 1 / span 7;
-}
-
-.esv-hero-statement {
-  max-width: 10ch;
-  margin: 0;
-  font-size: clamp(50px, 5.55vw, 84px);
-  font-weight: 300;
-  line-height: .94;
-  letter-spacing: -.045em;
-  white-space: pre-line;
-}
-
-.esv-hero-cta {
-  justify-self: start;
-  width: fit-content;
-  margin-top: var(--space-8);
-  color: var(--ink-inverse);
-  font-size: 13px;
-}
 
 /* -------------------------------------------------------------------------- */
 /* 02 — Maison                                                                */
@@ -580,6 +330,7 @@ img {
   background: var(--bg);
 }
 
+
 .esv-maison-grid {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
@@ -587,10 +338,12 @@ img {
   align-items: center;
 }
 
+
 .esv-maison-copy {
   grid-column: 1 / span 5;
   align-self: center;
 }
+
 
 .esv-maison-copy h2 {
   max-width: 9.5ch;
@@ -602,6 +355,7 @@ img {
   white-space: pre-line;
 }
 
+
 .esv-maison-text {
   max-width: 44ch;
   margin: var(--space-6) 0 0;
@@ -609,15 +363,18 @@ img {
   line-height: 1.58;
 }
 
+
 .esv-maison-copy .esv-text-link {
   margin-top: var(--space-6);
 }
+
 
 .esv-maison-media {
   position: relative;
   grid-column: 6 / -1;
   min-height: clamp(580px, 48vw, 780px);
 }
+
 
 .esv-maison-main {
   position: absolute;
@@ -627,11 +384,13 @@ img {
   background: var(--bg-alt);
 }
 
+
 .esv-maison-main img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
+
 
 .esv-maison-secondary {
   position: absolute;
@@ -645,11 +404,13 @@ img {
   background: var(--bg-alt);
 }
 
+
 .esv-maison-secondary img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
+
 
 /* -------------------------------------------------------------------------- */
 /* 03 — Seleção                                                               */
@@ -661,6 +422,7 @@ img {
   background: var(--bg-alt);
 }
 
+
 .esv-selected-head,
 .esv-shelf-head {
   display: grid;
@@ -668,6 +430,7 @@ img {
   gap: var(--grid-gap);
   align-items: end;
 }
+
 
 .esv-selected-head h2,
 .esv-shelf-head h2 {
@@ -681,6 +444,7 @@ img {
   white-space: pre-line;
 }
 
+
 .esv-selected-head > p,
 .esv-shelf-head > p:last-child {
   grid-column: 8 / -1;
@@ -691,6 +455,7 @@ img {
   line-height: 1.58;
 }
 
+
 .esv-product-shelf {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -698,9 +463,11 @@ img {
   margin-top: var(--space-16);
 }
 
+
 .esv-collection-end {
   margin-top: var(--space-16);
 }
+
 
 /* -------------------------------------------------------------------------- */
 /* 04 — Território                                                            */
@@ -711,11 +478,13 @@ img {
   color: var(--ink-inverse);
 }
 
+
 .esv-territory-track {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   height: clamp(620px, 53vw, 760px);
 }
+
 
 .esv-territory-panel {
   position: relative;
@@ -724,6 +493,7 @@ img {
   color: var(--ink-inverse);
   text-decoration: none;
 }
+
 
 .esv-territory-media,
 .esv-territory-media img,
@@ -734,18 +504,22 @@ img {
   height: 100%;
 }
 
+
 .esv-territory-media {
   margin: 0;
 }
+
 
 .esv-territory-media img {
   object-fit: cover;
   transition: transform 420ms var(--ease-esmera);
 }
 
+
 .esv-territory-shade {
   background: linear-gradient(180deg, rgba(17,18,16,.04) 20%, rgba(17,18,16,.16) 54%, rgba(17,18,16,.82) 100%);
 }
+
 
 .esv-territory-copy {
   position: absolute;
@@ -755,6 +529,7 @@ img {
   left: clamp(20px, 2.6vw, 42px);
 }
 
+
 .esv-territory-copy small {
   display: block;
   color: rgba(243,240,232,.76);
@@ -762,6 +537,7 @@ img {
   letter-spacing: .09em;
   text-transform: uppercase;
 }
+
 
 .esv-territory-copy h2 {
   max-width: 10ch;
@@ -772,6 +548,7 @@ img {
   letter-spacing: -.04em;
 }
 
+
 .esv-territory-copy p {
   max-width: 30ch;
   margin: var(--space-4) 0 0;
@@ -779,6 +556,7 @@ img {
   font-size: 13px;
   line-height: 1.5;
 }
+
 
 .esv-territory-copy span {
   display: inline-flex;
@@ -790,11 +568,14 @@ img {
   font-size: 12px;
 }
 
+
 @media (hover: hover) and (pointer: fine) {
   .esv-territory-panel:hover .esv-territory-media img {
     transform: scale(1.015);
   }
+
 }
+
 
 /* -------------------------------------------------------------------------- */
 /* 05 — Peça assinatura                                                       */
@@ -805,12 +586,14 @@ img {
   background: var(--bg);
 }
 
+
 .esv-signature-grid {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   gap: var(--grid-gap);
   align-items: center;
 }
+
 
 .esv-signature-media {
   position: relative;
@@ -821,6 +604,7 @@ img {
   background: var(--bg-alt);
 }
 
+
 .esv-signature-media img {
   position: absolute;
   inset: 0;
@@ -830,13 +614,16 @@ img {
   transition: opacity 420ms var(--ease-esmera), transform 420ms var(--ease-esmera);
 }
 
+
 .esv-signature-image-detail {
   opacity: 0;
 }
 
+
 .esv-signature-copy {
   grid-column: 9 / -1;
 }
+
 
 .esv-signature-copy h2 {
   margin: var(--space-6) 0 0;
@@ -846,6 +633,7 @@ img {
   letter-spacing: -.035em;
 }
 
+
 .esv-signature-subtitle,
 .esv-signature-text {
   max-width: 42ch;
@@ -853,18 +641,22 @@ img {
   line-height: 1.55;
 }
 
+
 .esv-signature-subtitle {
   margin: var(--space-3) 0 0;
   color: var(--muted);
 }
 
+
 .esv-signature-text {
   margin: var(--space-6) 0 0;
 }
 
+
 .esv-signature-facts {
   margin: var(--space-8) 0 0;
 }
+
 
 .esv-signature-facts > div {
   display: grid;
@@ -876,23 +668,30 @@ img {
   line-height: 1.4;
 }
 
+
 .esv-signature-facts dt {
   color: var(--muted);
 }
 
+
 .esv-signature-facts dd {
   margin: 0;
 }
+
 
 .esv-signature-value {
   margin-top: var(--space-4);
   font-size: 13px;
 }
 
+
 @media (hover: hover) and (pointer: fine) {
   .esv-signature-media:hover .esv-signature-image-primary { opacity: 0; }
+
   .esv-signature-media:hover .esv-signature-image-detail { opacity: 1; transform: scale(1.015); }
+
 }
+
 
 /* -------------------------------------------------------------------------- */
 /* 06 — Matéria                                                               */
@@ -908,6 +707,7 @@ img {
   color: var(--ink-inverse);
 }
 
+
 .esv-matter-interlude-media,
 .esv-matter-interlude-media img,
 .esv-matter-interlude-shade {
@@ -917,22 +717,29 @@ img {
   height: 100%;
 }
 
+
 .esv-matter-interlude-media {
   margin: 0;
 }
+
 
 .esv-matter-interlude-media img {
   object-fit: cover;
 }
 
+
 .esv-matter-interlude.is-focal-left img { object-position: left center; }
+
 .esv-matter-interlude.is-focal-center img { object-position: center; }
+
 .esv-matter-interlude.is-focal-right img { object-position: right center; }
+
 
 .esv-matter-interlude-shade {
   z-index: 1;
   background: linear-gradient(90deg, rgba(17,18,16,.52) 0%, rgba(17,18,16,.17) 45%, rgba(17,18,16,.03) 75%);
 }
+
 
 .esv-matter-interlude-content {
   position: relative;
@@ -944,10 +751,12 @@ img {
   padding-bottom: clamp(64px, 8vw, 120px);
 }
 
+
 .esv-matter-interlude-meta,
 .esv-matter-interlude-title {
   grid-column: 1 / span 5;
 }
+
 
 .esv-matter-interlude-meta {
   margin: 0 0 var(--space-6);
@@ -956,6 +765,7 @@ img {
   letter-spacing: .10em;
   text-transform: uppercase;
 }
+
 
 .esv-matter-interlude-title {
   max-width: 9ch;
@@ -967,6 +777,7 @@ img {
   white-space: pre-line;
 }
 
+
 /* -------------------------------------------------------------------------- */
 /* 07 — Proveniência                                                          */
 /* -------------------------------------------------------------------------- */
@@ -977,6 +788,7 @@ img {
   color: var(--ink);
 }
 
+
 .esv-provenance-intro-grid {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
@@ -984,13 +796,16 @@ img {
   align-items: start;
 }
 
+
 .esv-provenance-intro-grid .esv-kicker {
   grid-column: 1 / span 3;
 }
 
+
 .esv-provenance-intro-copy {
   grid-column: 5 / span 6;
 }
+
 
 .esv-provenance-intro-copy h2 {
   max-width: 9ch;
@@ -1001,6 +816,7 @@ img {
   letter-spacing: -.04em;
 }
 
+
 .esv-provenance-intro-copy > p {
   max-width: 50ch;
   margin: var(--space-6) 0 0;
@@ -1008,9 +824,11 @@ img {
   line-height: 1.58;
 }
 
+
 .esv-provenance-stages {
   margin-top: var(--space-32);
 }
+
 
 .esv-provenance-stage {
   display: grid;
@@ -1021,15 +839,18 @@ img {
   border-top: 1px solid var(--line);
 }
 
+
 .esv-provenance-stage + .esv-provenance-stage {
   margin-top: var(--space-32);
 }
+
 
 .esv-provenance-stage-media {
   margin: 0;
   overflow: hidden;
   background: var(--bg-alt);
 }
+
 
 .esv-provenance-stage-media img {
   width: 100%;
@@ -1038,12 +859,14 @@ img {
   transition: transform 420ms var(--ease-esmera);
 }
 
+
 .esv-provenance-stage-copy small {
   color: var(--accent);
   font-size: 11px;
   font-weight: 500;
   letter-spacing: .10em;
 }
+
 
 .esv-provenance-stage-copy h3 {
   margin: var(--space-4) 0 0;
@@ -1053,6 +876,7 @@ img {
   letter-spacing: -.03em;
 }
 
+
 .esv-provenance-stage-copy p {
   max-width: 36ch;
   margin: var(--space-4) 0 0;
@@ -1060,38 +884,47 @@ img {
   line-height: 1.55;
 }
 
+
 .esv-provenance-stage-origin .esv-provenance-stage-media {
   grid-column: 1 / span 7;
   height: clamp(420px, 50vw, 680px);
 }
 
+
 .esv-provenance-stage-origin .esv-provenance-stage-copy {
   grid-column: 9 / span 3;
 }
 
+
 .esv-provenance-stage-transform .esv-provenance-stage-copy {
   grid-column: 2 / span 3;
 }
+
 
 .esv-provenance-stage-transform .esv-provenance-stage-media {
   grid-column: 6 / -1;
   height: clamp(360px, 43vw, 600px);
 }
 
+
 .esv-provenance-stage-register .esv-provenance-stage-media {
   grid-column: 3 / span 7;
   height: clamp(390px, 46vw, 640px);
 }
 
+
 .esv-provenance-stage-register .esv-provenance-stage-copy {
   grid-column: 10 / -1;
 }
+
 
 @media (hover: hover) and (pointer: fine) {
   .esv-provenance-stage:hover .esv-provenance-stage-media img {
     transform: scale(1.015);
   }
+
 }
+
 
 /* -------------------------------------------------------------------------- */
 /* 08 — Experiência / rituais                                                 */
@@ -1102,6 +935,7 @@ img {
   background: var(--bg-alt);
 }
 
+
 .esv-experience-head {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
@@ -1109,13 +943,16 @@ img {
   align-items: start;
 }
 
+
 .esv-experience-head > .esv-kicker {
   grid-column: 1 / span 3;
 }
 
+
 .esv-experience-intro {
   grid-column: 5 / span 6;
 }
+
 
 .esv-experience-intro h2 {
   max-width: 9ch;
@@ -1127,12 +964,14 @@ img {
   white-space: pre-line;
 }
 
+
 .esv-experience-text {
   max-width: 50ch;
   margin: var(--space-6) 0 0;
   font-size: 14px;
   line-height: 1.58;
 }
+
 
 .esv-experience-main {
   width: min(100%, var(--content-max));
@@ -1141,11 +980,13 @@ img {
   padding-inline: var(--page-x);
 }
 
+
 .esv-experience-main img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
+
 
 .esv-experience-pillars {
   display: grid;
@@ -1155,15 +996,20 @@ img {
   margin-top: var(--space-24);
 }
 
+
 .esv-experience-pillars article {
   min-width: 0;
   padding-top: var(--space-4);
   border-top: 1px solid var(--line);
 }
 
+
 .esv-experience-pillars article:nth-child(1) { grid-column: 1 / span 4; }
+
 .esv-experience-pillars article:nth-child(2) { grid-column: 6 / span 3; margin-top: var(--space-12); }
+
 .esv-experience-pillars article:nth-child(3) { grid-column: 9 / -1; margin-top: var(--space-24); }
+
 
 .esv-experience-pillars img {
   width: 100%;
@@ -1171,15 +1017,20 @@ img {
   margin-bottom: var(--space-4);
 }
 
+
 .esv-experience-pillars article:nth-child(1) img { aspect-ratio: 4 / 5; }
+
 .esv-experience-pillars article:nth-child(2) img { aspect-ratio: 3 / 2; }
+
 .esv-experience-pillars article:nth-child(3) img { aspect-ratio: 4 / 3; }
+
 
 .esv-experience-pillars small {
   color: var(--accent);
   font-size: 11px;
   letter-spacing: .08em;
 }
+
 
 .esv-experience-pillars h3 {
   margin: var(--space-4) 0 0;
@@ -1188,6 +1039,7 @@ img {
   line-height: 1.15;
 }
 
+
 .esv-experience-pillars p {
   max-width: 34ch;
   margin: var(--space-3) 0 0;
@@ -1195,9 +1047,11 @@ img {
   line-height: 1.55;
 }
 
+
 .esv-experience-pillars a {
   margin-top: var(--space-3);
 }
+
 
 /* -------------------------------------------------------------------------- */
 /* 09 — Private Client                                                        */
@@ -1210,6 +1064,7 @@ img {
   color: var(--ink-inverse);
 }
 
+
 .esv-private-grid {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
@@ -1219,13 +1074,16 @@ img {
   padding-block: clamp(112px, 10vw, 176px);
 }
 
+
 .esv-private-grid > .esv-kicker {
   grid-column: 1 / span 3;
 }
 
+
 .esv-private-copy {
   grid-column: 6 / span 6;
 }
+
 
 .esv-private-copy h2 {
   max-width: 11ch;
@@ -1236,6 +1094,7 @@ img {
   letter-spacing: -.04em;
 }
 
+
 .esv-private-copy p {
   max-width: 48ch;
   margin: var(--space-6) 0 0;
@@ -1244,11 +1103,13 @@ img {
   line-height: 1.58;
 }
 
+
 .esv-private-cta {
   margin-top: var(--space-8);
   color: var(--ink-inverse);
   font-size: 13px;
 }
+
 
 /* -------------------------------------------------------------------------- */
 /* 10 — Footer                                                                */
@@ -1260,12 +1121,14 @@ img {
   background: var(--bg);
 }
 
+
 .esv-footer-main {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   gap: var(--grid-gap);
   align-items: start;
 }
+
 
 .esv-footer-wordmark {
   grid-column: 1 / span 2;
@@ -1276,6 +1139,7 @@ img {
   text-decoration: none;
 }
 
+
 .esv-footer-main > p {
   grid-column: 5 / span 4;
   margin: 0;
@@ -1283,12 +1147,14 @@ img {
   line-height: 1.5;
 }
 
+
 .esv-footer-contact {
   grid-column: 11 / -1;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
+
 
 .esv-footer-contact small,
 .esv-footer-bottom {
@@ -1298,11 +1164,13 @@ img {
   text-transform: uppercase;
 }
 
+
 .esv-footer-contact a {
   color: var(--ink);
   font-size: 12px;
   text-decoration: none;
 }
+
 
 .esv-footer-bottom {
   display: grid;
@@ -1314,106 +1182,53 @@ img {
   border-top: 1px solid var(--line);
 }
 
+
 .esv-footer-bottom nav {
   display: flex;
   gap: var(--space-4);
 }
+
 
 .esv-footer-bottom a {
   color: inherit;
   text-decoration: none;
 }
 
+
 .esv-footer-bottom > span:last-child {
   justify-self: end;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Motion                                                                     */
-/* -------------------------------------------------------------------------- */
-
-/* .esv-reveal contract lives in esmera-motion-v2.css (loaded after this
- * file); the duplicate definition that used to sit here was overridden by
- * it and has been removed to keep a single source. */
-
-.esv-hero-cta svg,
-.esv-text-link svg,
-.esv-signature .esv-product-actions svg,
-.esv-private-cta svg,
-.esv-territory-copy span svg,
-.esv-experience-pillars a svg {
-  transition: transform 200ms var(--ease-esmera);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .esv-hero-cta:hover svg,
-  .esv-text-link:hover svg,
-  .esv-signature .esv-product-actions button:hover svg,
-  .esv-private-cta:hover svg,
-  .esv-territory-panel:hover .esv-territory-copy span svg,
-  .esv-experience-pillars a:hover svg {
-    transform: translate3d(3px, -2px, 0);
-  }
-}
 
 /* -------------------------------------------------------------------------- */
 /* Laptop                                                                     */
 /* -------------------------------------------------------------------------- */
 
 @media (max-width: 1279px) {
-  :root {
-    --page-x: clamp(32px, 3.75vw, 48px);
-    --grid-gap: clamp(20px, 1.8vw, 24px);
-    --section-y: clamp(112px, 10vw, 160px);
-  }
 
   .esv-signature-media { grid-column: 1 / span 6; }
+
   .esv-signature-copy { grid-column: 8 / -1; }
+
 }
+
 
 /* -------------------------------------------------------------------------- */
 /* Tablet                                                                     */
 /* -------------------------------------------------------------------------- */
 
 @media (max-width: 1023px) {
-  :root {
-    --page-x: clamp(24px, 3.4vw, 32px);
-    --grid-gap: clamp(16px, 2.2vw, 20px);
-    --section-y: clamp(96px, 12vw, 128px);
-  }
-
-
-
-
-
-  .esv-hero-content,
-  .esv-maison-grid,
-  .esv-selected-head,
-  .esv-shelf-head,
-  .esv-signature-grid,
-  .esv-matter-interlude-content,
-  .esv-provenance-intro-grid,
-  .esv-provenance-stage,
-  .esv-experience-head,
-  .esv-experience-pillars,
-  .esv-private-grid,
-  .esv-footer-main {
-    grid-template-columns: repeat(8, minmax(0, 1fr));
-  }
-
-  .esv-hero-statement,
-  .esv-hero-cta {
-    grid-column: 1 / span 5;
-  }
 
   .esv-maison-copy {
     grid-column: 1 / span 3;
   }
 
+
   .esv-maison-media {
     grid-column: 5 / -1;
     min-height: 560px;
   }
+
 
   .esv-selected-head h2,
   .esv-selected-head > p,
@@ -1422,101 +1237,122 @@ img {
     grid-column: 5 / -1;
   }
 
+
   .esv-product-shelf {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
 
   .esv-territory-track {
     height: clamp(540px, 68vw, 700px);
   }
 
+
   .esv-signature-media {
     grid-column: 1 / span 5;
   }
 
+
   .esv-signature-copy {
     grid-column: 6 / -1;
   }
+
 
   .esv-matter-interlude-meta,
   .esv-matter-interlude-title {
     grid-column: 1 / span 4;
   }
 
+
   .esv-provenance-intro-grid .esv-kicker {
     grid-column: 1 / span 2;
   }
 
+
   .esv-provenance-intro-copy {
     grid-column: 3 / span 5;
   }
+
 
   .esv-provenance-stage-origin .esv-provenance-stage-media {
     grid-column: 1 / span 5;
     height: 520px;
   }
 
+
   .esv-provenance-stage-origin .esv-provenance-stage-copy {
     grid-column: 6 / -1;
   }
 
+
   .esv-provenance-stage-transform .esv-provenance-stage-copy {
     grid-column: 1 / span 3;
   }
+
 
   .esv-provenance-stage-transform .esv-provenance-stage-media {
     grid-column: 4 / -1;
     height: 460px;
   }
 
+
   .esv-provenance-stage-register .esv-provenance-stage-media {
     grid-column: 2 / span 5;
     height: 500px;
   }
 
+
   .esv-provenance-stage-register .esv-provenance-stage-copy {
     grid-column: 7 / -1;
   }
+
 
   .esv-experience-head > .esv-kicker {
     grid-column: 1 / span 2;
   }
 
+
   .esv-experience-intro {
     grid-column: 3 / -1;
   }
 
+
   .esv-experience-pillars article:nth-child(1) { grid-column: 1 / span 3; }
+
   .esv-experience-pillars article:nth-child(2) { grid-column: 4 / span 2; }
+
   .esv-experience-pillars article:nth-child(3) { grid-column: 6 / -1; }
+
 
   .esv-private-grid > .esv-kicker {
     grid-column: 1 / span 2;
   }
 
+
   .esv-private-copy {
     grid-column: 3 / -1;
   }
 
+
   .esv-footer-wordmark { grid-column: 1 / span 2; }
+
   .esv-footer-main > p { grid-column: 3 / span 3; }
+
   .esv-footer-contact { grid-column: 7 / -1; }
+
 }
+
 
 /* -------------------------------------------------------------------------- */
 /* Mobile                                                                     */
 /* -------------------------------------------------------------------------- */
 
 @media (max-width: 767px) {
-  :root {
-    --page-x: clamp(16px, 5vw, 20px);
-    --grid-gap: clamp(12px, 3.5vw, 16px);
-    --section-y: clamp(72px, 20vw, 96px);
-  }
 
   .esv-kicker {
     font-size: 11px;
   }
+
 
 
 
@@ -1535,6 +1371,7 @@ img {
     padding: 0;
   }
 
+
   .esv-object-modal {
     display: block;
     width: 100%;
@@ -1542,66 +1379,45 @@ img {
     max-height: none;
   }
 
+
   .esv-object-modal-images {
     min-height: 58vh;
   }
+
 
   .esv-object-modal-copy {
     padding: var(--space-8) var(--page-x) var(--space-16);
   }
 
-  .esv-hero {
-    min-height: 86svh;
-  }
-
-  .esv-hero-content,
-  .esv-maison-grid,
-  .esv-selected-head,
-  .esv-shelf-head,
-  .esv-signature-grid,
-  .esv-matter-interlude-content,
-  .esv-provenance-intro-grid,
-  .esv-provenance-stage,
-  .esv-experience-head,
-  .esv-experience-pillars,
-  .esv-private-grid,
-  .esv-footer-main {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-
-  .esv-hero-statement,
-  .esv-hero-cta {
-    grid-column: 1 / -1;
-  }
-
-  .esv-hero-statement {
-    max-width: 8.5ch;
-    font-size: clamp(42px, 12vw, 58px);
-  }
 
   .esv-maison-copy,
   .esv-maison-media {
     grid-column: 1 / -1;
   }
 
+
   .esv-maison-copy h2 {
     font-size: clamp(36px, 10.8vw, 48px);
   }
+
 
   .esv-maison-media {
     min-height: 520px;
     margin-top: var(--space-12);
   }
 
+
   .esv-maison-main {
     inset: 0 0 0 10%;
   }
+
 
   .esv-maison-secondary {
     left: 0;
     bottom: 8%;
     width: 34%;
   }
+
 
   .esv-selected-head h2,
   .esv-selected-head > p,
@@ -1610,20 +1426,24 @@ img {
     grid-column: 1 / -1;
   }
 
+
   .esv-selected-head > p,
   .esv-shelf-head > p:last-child {
     margin-top: var(--space-6);
   }
+
 
   .esv-product-shelf {
     grid-template-columns: 1fr;
     margin-top: var(--space-16);
   }
 
+
   .esv-territory-track {
     display: block;
     height: auto;
   }
+
 
   .esv-territory-panel {
     display: block;
@@ -1631,55 +1451,67 @@ img {
     min-height: 520px;
   }
 
+
   .esv-territory-copy h2 {
     font-size: clamp(36px, 10.5vw, 48px);
   }
+
 
   .esv-signature-media,
   .esv-signature-copy {
     grid-column: 1 / -1;
   }
 
+
   .esv-signature-media {
     aspect-ratio: 4 / 3;
   }
+
 
   .esv-signature-copy {
     margin-top: var(--space-8);
   }
 
+
   .esv-matter-interlude {
     min-height: 80svh;
   }
+
 
   .esv-matter-interlude-meta,
   .esv-matter-interlude-title {
     grid-column: 1 / -1;
   }
 
+
   .esv-matter-interlude-title {
     max-width: 8ch;
     font-size: clamp(38px, 11vw, 52px);
   }
+
 
   .esv-provenance-intro-grid .esv-kicker,
   .esv-provenance-intro-copy {
     grid-column: 1 / -1;
   }
 
+
   .esv-provenance-intro-copy {
     margin-top: var(--space-6);
   }
 
+
   .esv-provenance-stages {
     margin-top: var(--space-16);
   }
+
 
   .esv-provenance-stage,
   .esv-provenance-stage + .esv-provenance-stage {
     margin-top: 0;
     padding-block: var(--space-16);
   }
+
 
   .esv-provenance-stage-origin .esv-provenance-stage-media,
   .esv-provenance-stage-transform .esv-provenance-stage-media,
@@ -1690,30 +1522,36 @@ img {
     grid-column: 1 / -1;
   }
 
+
   .esv-provenance-stage-origin .esv-provenance-stage-media,
   .esv-provenance-stage-transform .esv-provenance-stage-media,
   .esv-provenance-stage-register .esv-provenance-stage-media {
     height: min(66svh, 620px);
   }
 
+
   .esv-provenance-stage-copy {
     margin-top: var(--space-6);
   }
+
 
   .esv-experience-head > .esv-kicker,
   .esv-experience-intro {
     grid-column: 1 / -1;
   }
 
+
   .esv-experience-intro {
     margin-top: var(--space-6);
   }
+
 
   .esv-experience-main {
     height: 44svh;
     min-height: 300px;
     margin-top: var(--space-16);
   }
+
 
   .esv-experience-pillars article:nth-child(1),
   .esv-experience-pillars article:nth-child(2),
@@ -1722,9 +1560,11 @@ img {
     margin-top: 0;
   }
 
+
   .esv-experience-pillars article + article {
     margin-top: var(--space-12);
   }
+
 
   .esv-experience-pillars article:nth-child(1) img,
   .esv-experience-pillars article:nth-child(2) img,
@@ -1732,32 +1572,39 @@ img {
     aspect-ratio: 4 / 3;
   }
 
+
   .esv-private {
     min-height: 70svh;
   }
+
 
   .esv-private-grid > .esv-kicker,
   .esv-private-copy {
     grid-column: 1 / -1;
   }
 
+
   .esv-private-copy {
     margin-top: var(--space-8);
   }
+
 
   .esv-private-copy h2 {
     font-size: clamp(38px, 11vw, 52px);
   }
 
+
   .esv-footer-main {
     gap: var(--space-8) var(--grid-gap);
   }
+
 
   .esv-footer-wordmark,
   .esv-footer-main > p,
   .esv-footer-contact {
     grid-column: 1 / -1;
   }
+
 
   .esv-footer-bottom {
     display: flex;
@@ -1766,30 +1613,6 @@ img {
     gap: var(--space-3) var(--space-6);
     margin-top: var(--space-8);
   }
+
 }
 
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    scroll-behavior: auto !important;
-  }
-
-  .esv-motion-ready .esv-reveal,
-  .esv-motion-ready .esv-reveal.is-visible,
-  .esv-product-media img,
-  .esv-signature-media img,
-  .esv-territory-media img,
-  .esv-provenance-stage-media img,
-  .esv-hero-cta svg,
-  .esv-text-link svg,
-  .esv-product-actions svg,
-  .esv-private-cta svg,
-  .esv-territory-copy span svg,
-  .esv-experience-pillars a svg {
-    opacity: 1 !important;
-    transform: none !important;
-    transition: none !important;
-    animation: none !important;
-  }
-}
