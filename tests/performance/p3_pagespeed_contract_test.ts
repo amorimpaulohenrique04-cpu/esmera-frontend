@@ -1,8 +1,4 @@
-import {
-  assert,
-  assertFalse,
-  assertStringIncludes,
-} from "@std/assert";
+import { assert, assertFalse, assertStringIncludes } from "@std/assert";
 
 Deno.test("P3 owns first paint in one canonical critical stylesheet", async () => {
   const app = await Deno.readTextFile("routes/_app.tsx");
