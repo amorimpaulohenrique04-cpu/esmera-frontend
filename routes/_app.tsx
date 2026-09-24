@@ -80,10 +80,7 @@ export default defineApp(async (_req, ctx) => {
     <>
       <Theme colorScheme="any" />
       <Head>
-        <style
-          id="esmera-critical"
-          dangerouslySetInnerHTML={{ __html: CRITICAL_CSS }}
-        />
+        <style id="esmera-critical">{CRITICAL_CSS}</style>
         <link
           rel="preload"
           as="font"
@@ -191,10 +188,9 @@ export default defineApp(async (_req, ctx) => {
         />
 
         {isHome && (
-          <script
-            id="esmera-deferred-style-bootstrap"
-            dangerouslySetInnerHTML={{ __html: DEFERRED_STYLE_BOOTSTRAP }}
-          />
+          <script id="esmera-deferred-style-bootstrap">
+            {DEFERRED_STYLE_BOOTSTRAP}
+          </script>
         )}
 
         <meta
