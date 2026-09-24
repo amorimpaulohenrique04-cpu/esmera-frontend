@@ -613,7 +613,6 @@ export default function DynamicMenu(
                     rel={activeMobile.external
                       ? "noopener noreferrer"
                       : undefined}
-
                   >
                     Ver tudo
                   </a>
@@ -631,7 +630,6 @@ export default function DynamicMenu(
                         isCurrentPath(item.href, pathname)
                       ? "page"
                       : undefined}
-
                   >
                     {item.label}
                   </a>
