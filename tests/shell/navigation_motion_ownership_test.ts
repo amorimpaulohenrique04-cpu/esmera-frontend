@@ -86,4 +86,10 @@ Deno.test("menu navigation event contract has one source of truth", async () => 
   );
   assertEquals(menu.includes('"esmera:menu-navigation-request"'), false);
   assertEquals(coordinator.includes('.classList.add("is-closing")'), false);
+  assertEquals(menu.includes("handleMobileNavigation"), false);
+  assertStringIncludes(
+    coordinator,
+    'const MENU_SELECTOR = ".esv-nav-v2-desktop, .esv-mega-v2, .esv-nav-v2-drawer"',
+  );
+  assertStringIncludes(menu, "drawerRef.current?.parentElement");
 });
