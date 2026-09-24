@@ -37,8 +37,9 @@ Deno.test("menu navigation waits for the owned exit lifecycle before routing", a
   );
   assertStringIncludes(
     menu,
-    'if (drawerPhase === "closing" || drawerExitTimer.current) return;',
+    "if (drawerExitTimer.current) return;",
   );
+  assertEquals(menu.includes("handleMobileNavigation"), false);
 
   assertStringIncludes(coordinator, "event.metaKey");
   assertStringIncludes(coordinator, "event.ctrlKey");
