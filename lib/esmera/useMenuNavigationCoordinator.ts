@@ -1,4 +1,4 @@
-import { useEffect } from "preact/hooks";
+import { useLayoutEffect } from "preact/hooks";
 import {
   MENU_NAVIGATION_REQUEST_EVENT,
   type MenuNavigationRequestDetail,
@@ -33,7 +33,7 @@ function prefersReducedMotion(): boolean {
  * the EsmeraHeader island avoids a second global hydration root and bundle.
  */
 export function useMenuNavigationCoordinator(): void {
-  useEffect(() => {
+  useLayoutEffect(() => {
     let fallbackTimer: ReturnType<typeof globalThis.setTimeout> | null = null;
     let navigationPending = false;
 
