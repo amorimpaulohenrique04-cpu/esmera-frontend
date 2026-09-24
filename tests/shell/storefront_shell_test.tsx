@@ -80,41 +80,45 @@ Deno.test("transparent is explicit and solid remains the SSR default", () => {
 
 Deno.test("unified header stylesheet owns shell layers without trapping fixed menu surfaces", async () => {
   const masterCss = await Deno.readTextFile("static/esmera-master.css");
+  const criticalCss = await Deno.readTextFile("static/esmera-critical.css");
   const commerceCss = await Deno.readTextFile(
     "static/esmera-commerce-refine.css",
   );
   const finishCss = await Deno.readTextFile("static/esmera-finish.css");
   const catalogCss = await Deno.readTextFile("static/esmera-catalog-v2.css");
   const headerCss = await Deno.readTextFile("static/esmera-header.css");
-  const headerCssWithoutComments = headerCss.replace(/\/\*[\s\S]*?\*\//g, "");
+  const shellCssWithoutComments = `${criticalCss}\n${headerCss}`.replace(
+    /\/\*[\s\S]*?\*\//g,
+    "",
+  );
   const app = await Deno.readTextFile("routes/_app.tsx");
   const headerIsland = await Deno.readTextFile("islands/EsmeraHeader.tsx");
   const menuIsland = await Deno.readTextFile("islands/DynamicMenu.tsx");
   const headerSection = await Deno.readTextFile("sections/Esmera/Header.tsx");
   const shellData = await Deno.readTextFile("lib/esmera/shellData.ts");
 
-  assertStringIncludes(headerCss, ".esv-header.esv-header");
-  assertStringIncludes(headerCss, ".esv-header.esv-header.is-solid");
-  assertStringIncludes(headerCss, ".esv-header.esv-header.is-mega-open");
+  assertStringIncludes(criticalCss, ".esv-header.esv-header");
+  assertStringIncludes(criticalCss, ".esv-header.esv-header.is-solid");
+  assertStringIncludes(criticalCss, ".esv-header.esv-header.is-mega-open");
   assertStringIncludes(headerCss, '[data-header-variant="transparent"]');
-  assertStringIncludes(headerCss, ".esv-header .esv-nav-v2-desktop");
-  assertStringIncludes(headerCss, ".esv-header .esv-nav-v2-mobile-trigger");
+  assertStringIncludes(criticalCss, ".esv-header .esv-nav-v2-desktop");
+  assertStringIncludes(criticalCss, ".esv-header .esv-nav-v2-mobile-trigger");
   assertStringIncludes(headerCss, ".esv-mega-v2.esv-mega-v2");
   assertStringIncludes(headerCss, ".esv-mega-backdrop.esv-mega-backdrop");
   assertStringIncludes(headerCss, ".esv-nav-v2-backdrop.esv-nav-v2-backdrop");
   assertStringIncludes(headerCss, ".esv-nav-v2-drawer.esv-nav-v2-drawer");
-  assertStringIncludes(headerCss, "--esv-layer-mega: 110");
-  assertStringIncludes(headerCss, "--esv-layer-header: 120");
-  assertStringIncludes(headerCss, "--esv-layer-overlay: 200");
-  assertStringIncludes(headerCss, "--esv-layer-drawer: 210");
-  assertStringIncludes(headerCss, ".esv-header.esv-header::before");
-  assertStringIncludes(headerCss, "backdrop-filter: blur(12px)");
+  assertStringIncludes(criticalCss, "--esv-layer-mega: 110");
+  assertStringIncludes(criticalCss, "--esv-layer-header: 120");
+  assertStringIncludes(criticalCss, "--esv-layer-overlay: 200");
+  assertStringIncludes(criticalCss, "--esv-layer-drawer: 210");
+  assertStringIncludes(criticalCss, ".esv-header.esv-header::before");
+  assertStringIncludes(criticalCss, "backdrop-filter: blur(12px)");
   assertStringIncludes(headerCss, "@keyframes esv-mega-v2-in");
-  assertFalse(headerCssWithoutComments.includes("body:has("));
+  assertFalse(shellCssWithoutComments.includes("body:has("));
 
   const headerBase =
-    headerCss.match(/\.esv-header\.esv-header\s*\{([^}]*)\}/)?.[1] ?? "";
-  const megaOpenHeader = headerCss.match(
+    criticalCss.match(/\.esv-header\.esv-header\s*\{([^}]*)\}/)?.[1] ?? "";
+  const megaOpenHeader = criticalCss.match(
     /\.esv-header\.esv-header\.is-mega-open\s*\{([^}]*)\}/,
   )?.[1] ?? "";
   const megaBase =
@@ -126,9 +130,9 @@ Deno.test("unified header stylesheet owns shell layers without trapping fixed me
   assertStringIncludes(megaOpenHeader, "border-bottom: 0");
   assertStringIncludes(megaBase, "border-top: 0");
 
-  assertStringIncludes(masterCss, "--header-h: 72px");
-  assert(masterCss.match(/--header-h:/g)?.length === 1);
-  assertStringIncludes(masterCss, "--ease-esmera: cubic-bezier(.16, 1, .3, 1)");
+  assertStringIncludes(criticalCss, "--header-h: 72px");
+  assert(criticalCss.match(/--header-h:/g)?.length === 1);
+  assertStringIncludes(criticalCss, "--ease-esmera: cubic-bezier(.16, 1, .3, 1)");
   assertFalse(masterCss.includes(".esv-header.is-scrolled"));
   assertFalse(masterCss.includes(".esv-header-nav"));
   assertFalse(masterCss.includes(".esv-header-menu"));
@@ -215,16 +219,16 @@ Deno.test("unified header stylesheet owns shell layers without trapping fixed me
   assertStringIncludes(headerIsland, "key={cartCount}");
   assertStringIncludes(headerIsland, 'class="esv-cart-quantity"');
   assertStringIncludes(headerIsland, 'class="esv-cart-remove"');
-  assertStringIncludes(headerIsland, 'src="/esmera-logo.png"');
+  assertStringIncludes(headerIsland, "HEADER_LOGO_SOURCE");
   assertStringIncludes(
     headerIsland,
     'class="esv-brand-image esv-header-logo-image"',
   );
-  assertStringIncludes(headerIsland, 'width="1225"');
-  assertStringIncludes(headerIsland, 'height="369"');
-  assertStringIncludes(headerCss, "height: var(--esv-header-logo-h)");
-  assertStringIncludes(headerCss, "justify-content: space-between");
-  assertStringIncludes(headerCss, "--esv-header-group-gap:");
+  assertStringIncludes(headerIsland, "width={160}");
+  assertStringIncludes(headerIsland, "height={48}");
+  assertStringIncludes(criticalCss, "height: var(--esv-header-logo-h)");
+  assertStringIncludes(criticalCss, "justify-content: space-between");
+  assertStringIncludes(criticalCss, "--esv-header-group-gap:");
   assertStringIncludes(
     headerCss,
     "grid-template-columns: 44px 44px minmax(0, 1fr) 44px 44px",
@@ -235,19 +239,19 @@ Deno.test("unified header stylesheet owns shell layers without trapping fixed me
   assertStringIncludes(headerCss, ".esv-header .esv-wishlist-header-link {\n    grid-column: 4;");
   assertStringIncludes(headerCss, ".esv-header .esv-cart-link {\n    grid-column: 5;");
   assertFalse(
-    headerCss.includes(
+    criticalCss.includes(
       "minmax(88px, auto) minmax(0, 1fr) minmax(88px, auto)",
     ),
   );
-  assertFalse(headerCss.includes("width: 40px;"));
-  assertStringIncludes(headerCss, ".esv-header .esv-cart-label");
-  assertStringIncludes(headerCss, ".esv-header .esv-cart-icon");
-  assertStringIncludes(headerCss, "--esv-header-logo-h: 44px");
-  assertStringIncludes(headerCss, "--esv-header-logo-h: 34px");
-  assertStringIncludes(headerCss, "--esv-header-logo-h: 30px");
-  assertStringIncludes(headerCss, "padding-inline: var(--page-x)");
-  assertStringIncludes(headerCss, "rgba(17, 18, 16, .28)");
-  assertFalse(headerCss.includes("padding-inline: 12px"));
+  assertFalse(criticalCss.includes("width: 40px;"));
+  assertStringIncludes(criticalCss, ".esv-header .esv-cart-label");
+  assertStringIncludes(criticalCss, ".esv-header .esv-cart-icon");
+  assertStringIncludes(criticalCss, "--esv-header-logo-h: 44px");
+  assertStringIncludes(criticalCss, "--esv-header-logo-h: 34px");
+  assertStringIncludes(criticalCss, "--esv-header-logo-h: 30px");
+  assertStringIncludes(criticalCss, "padding-inline: var(--page-x)");
+  assertStringIncludes(criticalCss, "rgba(17, 18, 16, .28)");
+  assertFalse(criticalCss.includes("padding-inline: 12px"));
   assertFalse(headerCss.includes(".esv-nav-v2-desktop {\n  position: static"));
   assertFalse(
     headerCss.includes(".esv-nav-v2-mobile-trigger {\n  position: static"),
