@@ -63,12 +63,8 @@ Deno.test("P3 serves smaller responsive image candidates and mobile preload", as
   assertStringIncludes(media, "384,");
   assertStringIncludes(media, "414,");
   assertStringIncludes(media, "512,");
-  assertStringIncludes(media, "Math.min(mobileWidth, 414)");
-  assertStringIncludes(carousel, "compact ? 414 : 1800");
-  assertStringIncludes(
-    carousel,
-    "optimizePayloadMediaURL(firstMobile, 414)",
-  );
+  assertStringIncludes(carousel, "compact ? 750 : 1800");
+  assertFalse(carousel.includes('rel="preload"'));
 });
 
 Deno.test("P3 removes the synchronous reveal geometry read", async () => {
