@@ -1,3 +1,4 @@
+import { Head } from "$fresh/runtime.ts";
 import { useEffect, useRef, useState } from "preact/hooks";
 import type { HeroSlide } from "../sections/Esmera/Hero.tsx";
 import {
@@ -203,8 +204,37 @@ export default function HeroCarousel(
   const incomingSlide = incoming === null ? null : slides[incoming];
   const transitioning = phase === "transitioning";
 
+  const firstSlide = slides[0];
+  const firstMobile = firstSlide.mobileImage ?? firstSlide.desktopImage;
+  const firstMobileSrcSet = payloadMediaSrcSet(firstMobile, 900);
+  const firstDesktopSrcSet = payloadMediaSrcSet(firstSlide.desktopImage, 1800);
+
   return (
     <>
+      <Head>
+        <link
+          rel="preload"
+          as="image"
+          href={optimizePayloadMediaURL(firstMobile, 750)}
+          media="(max-width: 767px)"
+          {...{
+            imagesrcset: firstMobileSrcSet,
+            imagesizes: "100vw",
+            fetchpriority: "high",
+          }}
+        />
+        <link
+          rel="preload"
+          as="image"
+          href={optimizePayloadMediaURL(firstSlide.desktopImage, 1800)}
+          media="(min-width: 768px)"
+          {...{
+            imagesrcset: firstDesktopSrcSet,
+            imagesizes: "100vw",
+            fetchpriority: "high",
+          }}
+        />
+      </Head>
       <section
         class={`esv-hero esv-hero-carousel is-overlay-${overlay} is-focal-${focalPoint}${
           transitioning ? " is-transitioning" : ""
