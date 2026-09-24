@@ -302,6 +302,36 @@ export default function DynamicMenu(
     requestAnimationFrame(() => setDrawerPhase("open"));
   };
 
+  const handleMobileNavigation = (
+    event: MouseEvent,
+    href: string,
+    external = false,
+  ) => {
+    if (
+      event.defaultPrevented || external || event.button !== 0 ||
+      event.metaKey || event.ctrlKey || event.shiftKey || event.altKey
+    ) {
+      return;
+    }
+
+    let url: URL;
+    try {
+      url = new URL(href, globalThis.location.href);
+    } catch {
+      return;
+    }
+
+    if (
+      url.origin !== globalThis.location.origin ||
+      (url.protocol !== "http:" && url.protocol !== "https:")
+    ) {
+      return;
+    }
+
+    event.preventDefault();
+    requestMobileClose(() => globalThis.location.assign(url.href));
+  };
+
   useEffect(() => {
     const onNavigationRequest = (event: Event) => {
       const detail = (
@@ -604,7 +634,23 @@ export default function DynamicMenu(
               <div class="esv-nav-v2-level-heading">
                 <p class="esv-kicker">{activeMobile.label}</p>
                 {activeMobile.description && <p>{activeMobile.description}</p>}
-                {activeMobile.href && <a href={activeMobile.href}>Ver tudo</a>}
+                {activeMobile.href && (
+                  <a
+                    href={activeMobile.href}
+                    target={activeMobile.external ? "_blank" : undefined}
+                    rel={activeMobile.external
+                      ? "noopener noreferrer"
+                      : undefined}
+                    onClick={(event) =>
+                      handleMobileNavigation(
+                        event,
+                        activeMobile.href,
+                        activeMobile.external,
+                      )}
+                  >
+                    Ver tudo
+                  </a>
+                )}
               </div>
             )}
             <div class="esv-nav-v2-mobile-links">
@@ -618,11 +664,12 @@ export default function DynamicMenu(
                         isCurrentPath(item.href, pathname)
                       ? "page"
                       : undefined}
-                    onClick={() => {
-                      if (item.children.length === 0) {
-                        requestMobileClose();
-                      }
-                    }}
+                    onClick={(event) =>
+                      handleMobileNavigation(
+                        event,
+                        item.href,
+                        item.external,
+                      )}
                   >
                     {item.label}
                   </a>
