@@ -108,8 +108,8 @@ jobs:
           set -euo pipefail
           home="$(curl --silent --show-error --fail http://127.0.0.1:8000/)"
 
-          [[ "$home" == *'esmera-critical.css'* ]] || {
-            echo "::error title=P3 critical CSS::Critical stylesheet missing from Home"
+          [[ "$home" == *'id="esmera-critical"'* ]] || {
+            echo "::error title=P3 critical CSS::Inline critical stylesheet missing from Home"
             exit 1
           }
           [[ "$home" == *'data-esmera-deferred-style="true"'* ]] || {
