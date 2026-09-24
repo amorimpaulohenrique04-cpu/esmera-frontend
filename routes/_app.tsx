@@ -103,6 +103,13 @@ export default defineApp(async (_req, ctx) => {
           deferred={isHome}
         />
 
+        <link
+          rel="preload"
+          as="style"
+          href={asset(
+            `/esmera-product-modal.css?v=${storefrontStyleRevision}`,
+          )}
+        />
         <meta
           name="esmera-product-modal-css"
           content={asset(
