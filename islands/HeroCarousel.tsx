@@ -203,7 +203,6 @@ export default function HeroCarousel(
   const incomingSlide = incoming === null ? null : slides[incoming];
   const transitioning = phase === "transitioning";
 
-
   return (
     <>
       <section
