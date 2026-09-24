@@ -271,18 +271,20 @@ export default function DynamicMenu(
   const requestMobileClose = (afterClose?: () => void) => {
     if (afterClose) drawerAfterClose.current = afterClose;
 
-    if (!mobileOpen || drawerPhase === "closed") {
+    const drawerSurface = drawerRef.current?.parentElement;
+    if (!drawerSurface && (!mobileOpen || drawerPhase === "closed")) {
       const callback = drawerAfterClose.current;
       drawerAfterClose.current = null;
       if (callback) globalThis.setTimeout(callback, 0);
       return;
     }
 
-    if (drawerPhase === "closing" || drawerExitTimer.current) return;
+    if (drawerExitTimer.current) return;
 
-    // Keep the close handoff synchronous for intercepted navigation. Preact
-    // state owns the lifecycle after this immediate class marker.
-    drawerRef.current?.parentElement?.classList.add("is-closing");
+    // The capture-phase navigation coordinator is the single owner of internal
+    // drawer navigation. Mark the mounted surface synchronously, then let
+    // Preact state complete the exit lifecycle before navigation.
+    drawerSurface?.classList.add("is-closing");
     setDrawerPhase("closing");
     drawerExitTimer.current = globalThis.setTimeout(
       finalizeMobileClose,
@@ -302,36 +304,6 @@ export default function DynamicMenu(
     requestAnimationFrame(() => setDrawerPhase("open"));
   };
 
-  const handleMobileNavigation = (
-    event: MouseEvent,
-    href: string,
-    external = false,
-  ) => {
-    if (
-      external || event.button !== 0 ||
-      event.metaKey || event.ctrlKey || event.shiftKey || event.altKey
-    ) {
-      return;
-    }
-
-    let url: URL;
-    try {
-      url = new URL(href, globalThis.location.href);
-    } catch {
-      return;
-    }
-
-    if (
-      url.origin !== globalThis.location.origin ||
-      (url.protocol !== "http:" && url.protocol !== "https:")
-    ) {
-      return;
-    }
-
-    event.preventDefault();
-    requestMobileClose(() => globalThis.location.assign(url.href));
-  };
-
   useEffect(() => {
     const onNavigationRequest = (event: Event) => {
       const detail = (
@@ -340,12 +312,12 @@ export default function DynamicMenu(
       const navigate = detail?.navigate;
       if (typeof navigate !== "function") return;
 
-      if (mobileOpen && drawerPhase !== "closed") {
+      if (drawerRef.current?.parentElement) {
         requestMobileClose(navigate);
         return;
       }
 
-      if (desktopOpen && megaPhase !== "closed") {
+      if (document.querySelector(".esv-mega-v2")) {
         requestDesktopClose(navigate);
         return;
       }
@@ -641,12 +613,7 @@ export default function DynamicMenu(
                     rel={activeMobile.external
                       ? "noopener noreferrer"
                       : undefined}
-                    onClick={(event) =>
-                      handleMobileNavigation(
-                        event,
-                        activeMobile.href,
-                        activeMobile.external,
-                      )}
+
                   >
                     Ver tudo
                   </a>
@@ -664,12 +631,7 @@ export default function DynamicMenu(
                         isCurrentPath(item.href, pathname)
                       ? "page"
                       : undefined}
-                    onClick={(event) =>
-                      handleMobileNavigation(
-                        event,
-                        item.href,
-                        item.external,
-                      )}
+
                   >
                     {item.label}
                   </a>
