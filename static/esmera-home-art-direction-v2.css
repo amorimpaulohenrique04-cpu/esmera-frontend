@@ -922,11 +922,3 @@
 }
 
 
-@media (prefers-reduced-motion: reduce) {
-  .esv-territory-media img,
-  .esv-signature-media img {
-    transition: none !important;
-  }
-
-}
-
