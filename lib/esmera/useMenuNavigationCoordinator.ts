@@ -64,6 +64,10 @@ export function useMenuNavigationCoordinator(): void {
       if (navigationPending) return;
       navigationPending = true;
 
+      document.querySelectorAll(ACTIVE_MENU_SURFACE_SELECTOR).forEach(
+        (surface) => surface.classList.add("is-closing"),
+      );
+
       let navigated = false;
       const navigate = () => {
         if (navigated) return;
