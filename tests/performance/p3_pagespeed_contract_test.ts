@@ -173,6 +173,8 @@ Deno.test("P3 critical declarations are not duplicated across deferred styles", 
 
   assert(
     duplicates.length === 0,
-    `Critical CSS duplicated declarations in deferred owners:\n${duplicates.join("\n")}`,
+    `Critical CSS duplicated declarations in deferred owners:\n${
+      duplicates.join("\n")
+    }`,
   );
 });
