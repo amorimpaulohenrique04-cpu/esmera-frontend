@@ -37,8 +37,14 @@ Deno.test("shared header owns root navigation and preserves Menu → Logo → Se
   const headerStart = html.indexOf("<header");
   const headerEnd = html.indexOf("</header>", headerStart);
   const headerClass = html.indexOf('class="esv-header', headerStart);
-  const navStart = html.indexOf('<nav class="esv-nav-v2-desktop"', headerStart);
-  const wordmarkStart = html.indexOf('class="esv-wordmark"', headerStart);
+  const navStart = html.indexOf(
+    'aria-label="Navegação principal"',
+    headerStart,
+  );
+  const wordmarkStart = html.indexOf(
+    'aria-label="ESMÉRA — início"',
+    navStart,
+  );
   const searchStart = html.indexOf('aria-label="Buscar objetos"', headerStart);
   const cartStart = html.indexOf("Carrinho", searchStart);
 
@@ -100,7 +106,7 @@ Deno.test("unified header stylesheet owns shell layers without trapping fixed me
   assertStringIncludes(criticalCss, ".esv-header.esv-header");
   assertStringIncludes(criticalCss, ".esv-header.esv-header.is-solid");
   assertStringIncludes(criticalCss, ".esv-header.esv-header.is-mega-open");
-  assertStringIncludes(headerCss, '[data-header-variant="transparent"]');
+  assertStringIncludes(criticalCss, '[data-header-variant="transparent"]');
   assertStringIncludes(criticalCss, ".esv-header .esv-nav-v2-desktop");
   assertStringIncludes(criticalCss, ".esv-header .esv-nav-v2-mobile-trigger");
   assertStringIncludes(headerCss, ".esv-mega-v2.esv-mega-v2");
