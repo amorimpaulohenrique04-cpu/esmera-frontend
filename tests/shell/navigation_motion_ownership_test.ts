@@ -85,7 +85,11 @@ Deno.test("menu navigation event contract has one source of truth", async () => 
     false,
   );
   assertEquals(menu.includes('"esmera:menu-navigation-request"'), false);
-  assertEquals(coordinator.includes('.classList.add("is-closing")'), false);
+  assertStringIncludes(
+    coordinator,
+    'surface.classList.add("is-closing")',
+  );
+  assertEquals(menu.includes('.classList.add("is-closing")'), false);
   assertEquals(menu.includes("handleMobileNavigation"), false);
   assertStringIncludes(
     coordinator,
