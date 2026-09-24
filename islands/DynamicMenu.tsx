@@ -470,7 +470,8 @@ export default function DynamicMenu(
           onAnimationEnd={(event) => {
             if (
               megaPhase === "closing" &&
-              event.currentTarget === event.target
+              event.currentTarget === event.target &&
+              event.animationName === "esv-mega-out"
             ) {
               finalizeDesktopClose();
             }
@@ -567,7 +568,8 @@ export default function DynamicMenu(
           onAnimationEnd={(event) => {
             if (
               drawerPhase === "closing" &&
-              event.currentTarget === event.target
+              event.currentTarget === event.target &&
+              event.animationName === "esv-drawer-out"
             ) {
               finalizeMobileClose();
             }
