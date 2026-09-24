@@ -308,7 +308,7 @@ export default function DynamicMenu(
     external = false,
   ) => {
     if (
-      event.defaultPrevented || external || event.button !== 0 ||
+      external || event.button !== 0 ||
       event.metaKey || event.ctrlKey || event.shiftKey || event.altKey
     ) {
       return;
