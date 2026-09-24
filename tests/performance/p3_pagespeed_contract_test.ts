@@ -106,7 +106,6 @@ Deno.test("P3 optimizes the header wordmark instead of shipping the full PNG", a
   assertFalse(header.includes('width="1225"'));
 });
 
-
 Deno.test("P3 critical declarations are not duplicated across deferred styles", async () => {
   const deferredFiles = [
     "static/esmera-master.css",
