@@ -1,0 +1,90 @@
+import { assertFalse, assertStringIncludes } from "@std/assert";
+
+Deno.test("P3 owns first paint in one canonical critical stylesheet", async () => {
+  const app = await Deno.readTextFile("routes/_app.tsx");
+  const critical = await Deno.readTextFile("static/esmera-critical.css");
+
+  assertStringIncludes(app, "/esmera-critical.css");
+  assertStringIncludes(app, 'data-esmera-deferred-style="true"');
+  assertStringIncludes(app, "DEFERRED_STYLE_BOOTSTRAP");
+  assertFalse(app.includes("cdn.jsdelivr.net"));
+  assertFalse(app.includes('rel="preload"\n          as="style"'));
+
+  assertStringIncludes(critical, ".esv-hero");
+  assertStringIncludes(critical, ".esv-header");
+  assertStringIncludes(critical, "/fonts/inter-latin-300-normal.woff2");
+  assertFalse(critical.includes("cdn.jsdelivr.net"));
+});
+
+Deno.test("P3 moves critical selectors instead of duplicating overrides", async () => {
+  for (
+    const path of [
+      "static/esmera-finish.css",
+      "static/esmera-home-art-direction-v2.css",
+      "static/esmera-home-length-refinement-v3.css",
+      "static/esmera-motion-v2.css",
+    ]
+  ) {
+    const css = await Deno.readTextFile(path);
+    assertFalse(css.includes(".esv-hero"), `${path} still owns hero selectors`);
+  }
+
+  const shell = await Deno.readTextFile("static/esmera-shell-cro-v1.css");
+  const mobile = await Deno.readTextFile("static/esmera-mobile-recovery-v4.css");
+  assertFalse(shell.includes(".esv-hero"));
+  assertFalse(mobile.includes(".esv-hero"));
+  assertFalse(mobile.includes(".esv-header.esv-header"));
+});
+
+Deno.test("P3 serves Inter through immutable same-origin font routes", async () => {
+  const critical = await Deno.readTextFile("static/esmera-critical.css");
+
+  for (const weight of [300, 400, 500]) {
+    const route = await Deno.readTextFile(
+      `routes/fonts/inter-latin-${weight}-normal.woff2.ts`,
+    );
+    assertStringIncludes(
+      critical,
+      `/fonts/inter-latin-${weight}-normal.woff2`,
+    );
+    assertStringIncludes(route, `latin-${weight}-normal.woff2`);
+    assertStringIncludes(route, "max-age=31536000");
+  }
+});
+
+Deno.test("P3 serves smaller responsive image candidates and mobile preload", async () => {
+  const media = await Deno.readTextFile(
+    "components/esmera/ResponsiveMedia.tsx",
+  );
+  const carousel = await Deno.readTextFile("islands/HeroCarousel.tsx");
+
+  assertStringIncludes(media, "384,");
+  assertStringIncludes(media, "414,");
+  assertStringIncludes(media, "512,");
+  assertStringIncludes(media, "Math.min(mobileWidth, 414)");
+  assertStringIncludes(carousel, "compact ? 414 : 1800");
+  assertStringIncludes(
+    carousel,
+    "optimizePayloadMediaURL(firstMobile, 414)",
+  );
+});
+
+Deno.test("P3 removes the synchronous reveal geometry read", async () => {
+  const motion = await Deno.readTextFile("islands/EsmeraMotion.tsx");
+  assertFalse(motion.includes("getBoundingClientRect"));
+  assertFalse(motion.includes("offsetWidth"));
+  assertFalse(motion.includes("offsetHeight"));
+  assertStringIncludes(motion, "No synchronous geometry read");
+});
+
+Deno.test("P3 optimizes the header wordmark instead of shipping the full PNG", async () => {
+  const header = await Deno.readTextFile("islands/EsmeraHeader.tsx");
+  assertStringIncludes(header, 'apps/website/components/Image.tsx');
+  assertStringIncludes(header, "HEADER_LOGO_SOURCE");
+  assertStringIncludes(header, "width={160}");
+  assertStringIncludes(
+    header,
+    'sizes="(max-width: 767px) 100px',
+  );
+  assertFalse(header.includes('width="1225"'));
+});
