@@ -151,6 +151,7 @@ export default function DynamicMenu(
   >(
     null,
   );
+  const drawerOpenFrame = useRef<number | null>(null);
   const megaAfterClose = useRef<(() => void) | null>(null);
   const drawerAfterClose = useRef<(() => void) | null>(null);
 
@@ -264,6 +265,10 @@ export default function DynamicMenu(
   };
 
   const requestMobileClose = (afterClose?: () => void) => {
+    if (drawerOpenFrame.current !== null) {
+      cancelAnimationFrame(drawerOpenFrame.current);
+      drawerOpenFrame.current = null;
+    }
     if (afterClose) drawerAfterClose.current = afterClose;
 
     const drawerSurface = drawerRef.current?.parentElement;
@@ -294,7 +299,10 @@ export default function DynamicMenu(
     setPath([]);
     setMobileOpen(true);
     setDrawerPhase("opening");
-    requestAnimationFrame(() => setDrawerPhase("open"));
+    drawerOpenFrame.current = requestAnimationFrame(() => {
+      drawerOpenFrame.current = null;
+      setDrawerPhase("open");
+    });
   };
 
   useEffect(() => {
@@ -362,6 +370,9 @@ export default function DynamicMenu(
     cancelMegaExit();
     if (drawerExitTimer.current) {
       globalThis.clearTimeout(drawerExitTimer.current);
+    }
+    if (drawerOpenFrame.current !== null) {
+      cancelAnimationFrame(drawerOpenFrame.current);
     }
   }, []);
 
