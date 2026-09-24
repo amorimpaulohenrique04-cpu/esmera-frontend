@@ -1,4 +1,3 @@
-import { Head } from "$fresh/runtime.ts";
 import Image from "apps/website/components/Image.tsx";
 import { Picture, Source } from "apps/website/components/Picture.tsx";
 
@@ -190,9 +189,6 @@ export function EsmeraPicture({
     const optimizedMobile = mobilePayload
       ? optimizePayloadMediaURL(mobileAsset, mobileWidth)
       : mobileAsset;
-    const preloadMobile = mobilePayload
-      ? optimizePayloadMediaURL(mobileAsset, Math.min(mobileWidth, 414))
-      : optimizedMobile;
     const desktopSrcSet = desktopPayload
       ? payloadMediaSrcSet(desktopSrc, desktopWidth)
       : optimizedDesktop;
@@ -201,22 +197,6 @@ export function EsmeraPicture({
       : optimizedMobile;
     return (
       <>
-        {preload && (
-          <Head>
-            <link
-              rel="preload"
-              as="image"
-              href={preloadMobile}
-              media="(max-width: 767px)"
-            />
-            <link
-              rel="preload"
-              as="image"
-              href={optimizedDesktop}
-              media="(min-width: 768px)"
-            />
-          </Head>
-        )}
         <picture class={className}>
           <source
             media="(max-width: 767px)"
