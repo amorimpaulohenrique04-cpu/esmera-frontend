@@ -4,9 +4,11 @@ Deno.test("P3 owns first paint in one canonical critical stylesheet", async () =
   const app = await Deno.readTextFile("routes/_app.tsx");
   const critical = await Deno.readTextFile("static/esmera-critical.css");
 
-  assertStringIncludes(app, "/esmera-critical.css");
+  assertStringIncludes(app, 'id="esmera-critical"');
+  assertStringIncludes(app, "CRITICAL_CSS");
   assertStringIncludes(app, 'data-esmera-deferred-style="true"');
   assertStringIncludes(app, "DEFERRED_STYLE_BOOTSTRAP");
+  assertFalse(app.includes('rel="stylesheet"\n          href={asset(`/esmera-critical.css'));
   assertFalse(app.includes("cdn.jsdelivr.net"));
   assertFalse(app.includes('rel="preload"\n          as="style"'));
 
