@@ -236,14 +236,29 @@ Deno.test("unified header stylesheet owns shell layers without trapping fixed me
   assertStringIncludes(criticalCss, "justify-content: space-between");
   assertStringIncludes(criticalCss, "--esv-header-group-gap:");
   assertStringIncludes(
-    headerCss,
+    criticalCss,
     "grid-template-columns: 44px 44px minmax(0, 1fr) 44px 44px",
   );
-  assertStringIncludes(headerCss, ".esv-header .esv-header-actions {\n    display: contents;");
-  assertStringIncludes(headerCss, ".esv-header .esv-search-trigger {\n    grid-column: 2;");
-  assertStringIncludes(headerCss, ".esv-header .esv-wordmark {\n    grid-column: 3;");
-  assertStringIncludes(headerCss, ".esv-header .esv-wishlist-header-link {\n    grid-column: 4;");
-  assertStringIncludes(headerCss, ".esv-header .esv-cart-link {\n    grid-column: 5;");
+  assertStringIncludes(
+    criticalCss,
+    ".esv-header .esv-header-actions {\n    display: contents;",
+  );
+  assertStringIncludes(
+    criticalCss,
+    ".esv-header .esv-search-trigger {\n    grid-column: 2;",
+  );
+  assertStringIncludes(
+    criticalCss,
+    ".esv-header .esv-wordmark {\n    grid-column: 3;",
+  );
+  assertStringIncludes(
+    criticalCss,
+    ".esv-header .esv-wishlist-header-link {\n    grid-column: 4;",
+  );
+  assertStringIncludes(
+    criticalCss,
+    ".esv-header .esv-cart-link {\n    grid-column: 5;",
+  );
   assertFalse(
     criticalCss.includes(
       "minmax(88px, auto) minmax(0, 1fr) minmax(88px, auto)",
