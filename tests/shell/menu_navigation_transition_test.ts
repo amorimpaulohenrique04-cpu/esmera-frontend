@@ -7,8 +7,9 @@ Deno.test("menu navigation waits for the owned exit lifecycle before routing", a
   const menu = await Deno.readTextFile("islands/DynamicMenu.tsx");
   const header = await Deno.readTextFile("islands/EsmeraHeader.tsx");
 
-  assertStringIncludes(coordinator, "anchor.closest(MENU_SELECTOR)");
+  assertStringIncludes(coordinator, "ACTIVE_MENU_SURFACE_SELECTOR");
   assertStringIncludes(coordinator, "hasActiveMenuSurface()");
+  assertEquals(coordinator.includes("MENU_SELECTOR"), false);
   assertStringIncludes(coordinator, "prefersReducedMotion()");
   assertStringIncludes(coordinator, "event.preventDefault()");
   assertStringIncludes(coordinator, "MENU_NAVIGATION_FALLBACK_MS");
