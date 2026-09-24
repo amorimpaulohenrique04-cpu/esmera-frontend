@@ -91,9 +91,7 @@ Deno.test("menu navigation event contract has one source of truth", async () => 
   );
   assertEquals(menu.includes('.classList.add("is-closing")'), false);
   assertEquals(menu.includes("handleMobileNavigation"), false);
-  assertStringIncludes(
-    coordinator,
-    'const MENU_SELECTOR = ".esv-nav-v2-desktop, .esv-mega-v2, .esv-nav-v2-drawer"',
-  );
+  assertEquals(coordinator.includes("MENU_SELECTOR"), false);
+  assertStringIncludes(coordinator, "hasActiveMenuSurface()");
   assertStringIncludes(menu, "drawerRef.current?.parentElement");
 });
