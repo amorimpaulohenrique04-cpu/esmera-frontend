@@ -1,3 +1,4 @@
+import Image from "apps/website/components/Image.tsx";
 import Icon from "../../components/ui/Icon.tsx";
 import FooterLeadForm from "../../islands/FooterLeadForm.tsx";
 import {
@@ -6,6 +7,8 @@ import {
 } from "../../lib/esmera/homeData.ts";
 import type { NavigationNode } from "../../lib/payload/navigation.ts";
 import type { NavigationLink } from "../../lib/payload/types.ts";
+
+const FOOTER_LOGO_SOURCE = "https://www.esmeradecor.com.br/esmera-logo.png";
 
 export interface Props {
   siteName?: string;
@@ -132,14 +135,16 @@ export default function Footer(
               href="/"
               aria-label={`${siteName} — início`}
             >
-              <img
+              <Image
                 class="esv-brand-image esv-footer-logo-image"
-                src="/esmera-logo.png"
+                src={FOOTER_LOGO_SOURCE}
                 alt=""
-                width="1225"
-                height="369"
+                width={220}
+                height={66}
+                sizes="220px"
                 loading="lazy"
                 decoding="async"
+                fetchPriority="low"
               />
             </a>
             <span class="esv-footer-accent-line" aria-hidden="true" />
