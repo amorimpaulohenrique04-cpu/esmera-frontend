@@ -70,7 +70,7 @@ Deno.test("P3 vendors Inter as same-origin static assets", async () => {
   }
 });
 
-Deno.test("P3 serves smaller responsive image candidates without duplicate hero preload", async () => {
+Deno.test("P3 serves smaller responsive image candidates with responsive hero preload", async () => {
   const media = await Deno.readTextFile(
     "components/esmera/ResponsiveMedia.tsx",
   );
@@ -80,7 +80,10 @@ Deno.test("P3 serves smaller responsive image candidates without duplicate hero 
   assertStringIncludes(media, "414,");
   assertStringIncludes(media, "512,");
   assertStringIncludes(carousel, "compact ? 750 : 1800");
-  assertFalse(carousel.includes('rel="preload"'));
+  assertStringIncludes(carousel, 'rel="preload"');
+  assertStringIncludes(carousel, "imagesrcset: firstMobileSrcSet");
+  assertStringIncludes(carousel, 'imagesizes: "100vw"');
+  assertStringIncludes(carousel, 'fetchpriority: "high"');
 });
 
 Deno.test("P3 removes the synchronous reveal geometry read", async () => {
