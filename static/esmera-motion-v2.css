@@ -1,23 +1,9 @@
-/* ESMÉRA — canonical motion system
- * Motion is deliberately non-structural: opacity/transform first, selective
- * editorial clipping only where the markup explicitly opts into media-reveal.
- */
-
 :root {
-  --motion-instant: 80ms;
-  --motion-fast: 140ms;
-  --motion-exit: 150ms;
-  --motion-ui: 180ms;
-  --motion-medium: 260ms;
-  --motion-reveal: 340ms;
-  --motion-editorial: 440ms;
-  --motion-hero: 360ms;
   --motion-page-exit: 80ms;
   --motion-page-enter: 160ms;
-  --ease-out: cubic-bezier(.16, 1, .3, 1);
-  --ease-standard: cubic-bezier(.22, .61, .36, 1);
-  --ease-inout: cubic-bezier(.65, 0, .35, 1);
 }
+
+
 
 /* -------------------------------------------------------------------------- */
 /* Cross-document navigation: one root snapshot, strictly sequenced.          */
@@ -27,9 +13,11 @@
   navigation: auto;
 }
 
+
 ::view-transition {
   background: #f3f0e8;
 }
+
 
 ::view-transition-group(root) {
   animation-duration: calc(
@@ -37,9 +25,11 @@
   );
 }
 
+
 ::view-transition-image-pair(root) {
   isolation: auto;
 }
+
 
 ::view-transition-old(root) {
   opacity: 1;
@@ -47,12 +37,14 @@
   mix-blend-mode: normal;
 }
 
+
 ::view-transition-new(root) {
   opacity: 0;
   animation: esv-page-in var(--motion-page-enter) var(--ease-out)
     var(--motion-page-exit) both;
   mix-blend-mode: normal;
 }
+
 
 @keyframes esv-page-out {
   from {
@@ -64,6 +56,7 @@
   }
 }
 
+
 @keyframes esv-page-in {
   from {
     opacity: 0;
@@ -73,6 +66,7 @@
     opacity: 1;
   }
 }
+
 
 /* -------------------------------------------------------------------------- */
 /* Explicit reveal contract                                                   */
@@ -87,11 +81,13 @@
   will-change: opacity, transform;
 }
 
+
 .esv-motion-ready .esv-reveal.is-visible {
   opacity: 1;
   transform: translate3d(0, 0, 0);
   will-change: auto;
 }
+
 
 .esv-motion-ready .esv-reveal-media {
   opacity: .01;
@@ -103,116 +99,37 @@
     clip-path var(--motion-editorial) var(--ease-out) var(--esv-reveal-delay, 0ms);
 }
 
+
 .esv-motion-ready .esv-reveal-media.is-visible {
   opacity: 1;
   clip-path: inset(0 0 0 0);
   transform: translate3d(0, 0, 0) scale(1);
 }
 
+
 .esv-motion-ready .esv-provenance-stage-origin .esv-reveal-media {
   clip-path: inset(0 10% 0 0);
   transform: translate3d(-12px, 0, 0) scale(1.006);
 }
+
 
 .esv-motion-ready .esv-provenance-stage-transform .esv-reveal-media {
   clip-path: inset(0 0 0 10%);
   transform: translate3d(12px, 0, 0) scale(1.006);
 }
 
+
 .esv-motion-ready .esv-provenance-stage-register .esv-reveal-media {
   clip-path: inset(0 8% 0 0);
   transform: translate3d(-10px, 0, 0) scale(1.006);
 }
+
 
 .esv-motion-ready .esv-provenance-stage .esv-reveal-media.is-visible {
   clip-path: inset(0 0 0 0);
   transform: translate3d(0, 0, 0) scale(1);
 }
 
-/* The hero never has a first-paint entrance animation. */
-.esv-hero-statement {
-  overflow: hidden;
-}
-
-.esv-hero-line {
-  display: block;
-}
-
-/* -------------------------------------------------------------------------- */
-/* Hero carousel: decoded two-layer cross dissolve                            */
-/* -------------------------------------------------------------------------- */
-
-.esv-hero-carousel {
-  position: relative;
-  overflow: hidden;
-  isolation: isolate;
-}
-
-.esv-hero-carousel .esv-hero-carousel-media {
-  position: absolute;
-  z-index: 0;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity var(--motion-hero) var(--ease-inout);
-}
-
-.esv-hero-carousel .esv-hero-carousel-media img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.esv-hero-carousel .esv-hero-carousel-media.is-current {
-  opacity: 1;
-}
-
-.esv-hero-carousel.is-transitioning .esv-hero-carousel-media.is-current {
-  opacity: 0;
-}
-
-.esv-hero-carousel.is-transitioning .esv-hero-carousel-media.is-incoming {
-  opacity: 1;
-}
-
-.esv-hero-carousel .esv-hero-overlay {
-  z-index: 1;
-}
-
-.esv-hero-carousel .esv-hero-carousel-content {
-  position: relative;
-  z-index: 2;
-  grid-area: 1 / 1;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.esv-hero-carousel .esv-hero-carousel-content.is-current {
-  opacity: 1;
-  pointer-events: auto;
-  transition: opacity 140ms var(--ease-standard);
-}
-
-.esv-hero-carousel .esv-hero-carousel-content.is-incoming {
-  transition: opacity 200ms var(--ease-out) 60ms;
-}
-
-.esv-hero-carousel.is-transitioning .esv-hero-carousel-content.is-current {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.esv-hero-carousel.is-transitioning .esv-hero-carousel-content.is-incoming {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.esv-hero-carousel .esv-hero-carousel-controls {
-  z-index: 3;
-}
 
 /* -------------------------------------------------------------------------- */
 /* Product cards: reveal as one object, hover without moving the card shell.  */
@@ -223,6 +140,7 @@
   transition: none;
 }
 
+
 .esv-product-card,
 .esv-product-card:hover,
 .esv-product-card:has(:focus-visible) {
@@ -230,10 +148,12 @@
   box-shadow: none;
 }
 
+
 .esv-product-card:hover .esv-product-media-wrap,
 .esv-product-card:has(:focus-visible) .esv-product-media-wrap {
   box-shadow: none !important;
 }
+
 
 @media (hover: hover) and (pointer: fine) {
   .esv-card-wishlist,
@@ -244,11 +164,14 @@
       background-color var(--motion-fast) var(--ease-standard),
       color var(--motion-fast) var(--ease-standard);
   }
+
 }
+
 
 .esv-selected-collection-link {
   margin-top: var(--space-8);
 }
+
 
 .esv-territory-copy > .esv-kicker {
   display: block;
@@ -258,6 +181,7 @@
   font-size: 11px;
 }
 
+
 /* -------------------------------------------------------------------------- */
 /* Persistent menu / drawer lifecycle                                         */
 /* -------------------------------------------------------------------------- */
@@ -266,38 +190,46 @@
   animation: esv-backdrop-out var(--motion-exit) var(--ease-standard) both !important;
 }
 
+
 .esv-mega-v2.is-closing {
   animation: esv-mega-out var(--motion-exit) var(--ease-standard) both !important;
   pointer-events: none;
 }
 
+
 .esv-mega-v2-content {
   animation: esv-mega-content-in var(--motion-fast) var(--ease-out) both;
 }
+
 
 .esv-nav-v2-backdrop.is-closing {
   animation: esv-backdrop-out var(--motion-exit) var(--ease-standard) both !important;
   pointer-events: none;
 }
 
+
 .esv-nav-v2-backdrop.is-closing .esv-nav-v2-drawer {
   animation: esv-drawer-out var(--motion-exit) var(--ease-standard) both !important;
 }
+
 
 @keyframes esv-mega-out {
   from { opacity: 1; transform: translate3d(0, 0, 0); }
   to { opacity: 0; transform: translate3d(0, -4px, 0); }
 }
 
+
 @keyframes esv-mega-content-in {
   from { opacity: .3; transform: translate3d(0, 4px, 0); }
   to { opacity: 1; transform: translate3d(0, 0, 0); }
 }
 
+
 @keyframes esv-drawer-out {
   from { opacity: 1; transform: translate3d(0, 0, 0); }
   to { opacity: .98; transform: translate3d(-10px, 0, 0); }
 }
+
 
 /* -------------------------------------------------------------------------- */
 /* Header/search/cart + product modal exit lifecycle                          */
@@ -309,6 +241,7 @@
   animation: esv-backdrop-in var(--motion-fast) var(--ease-standard) both;
 }
 
+
 .esv-header-overlay.is-closing,
 .esv-object-modal-backdrop.is-closing,
 .esv-product-modal-backdrop[data-phase="closing"] {
@@ -316,53 +249,64 @@
   pointer-events: none;
 }
 
+
 .esv-header-overlay.is-closing .esv-header-panel,
 .esv-object-modal-backdrop.is-closing .esv-object-modal,
 .esv-product-modal-backdrop[data-phase="closing"] .esv-product-modal {
   animation: esv-panel-out var(--motion-ui) var(--ease-standard) both;
 }
 
+
 .esv-search-results.is-refreshing {
   animation: esv-search-in 150ms var(--ease-standard) both;
 }
+
 
 .esv-enquiry-link sup {
   animation: esv-count-in 160ms var(--ease-standard) both;
 }
 
+
 .esv-enquiry-list > div {
   animation: esv-enquiry-item-in 160ms var(--ease-standard) both;
 }
+
 
 @keyframes esv-backdrop-in {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 
+
 @keyframes esv-backdrop-out {
   from { opacity: 1; }
   to { opacity: 0; }
 }
+
 
 @keyframes esv-panel-out {
   from { opacity: 1; transform: translate3d(0, 0, 0); }
   to { opacity: 0; transform: translate3d(10px, 0, 0); }
 }
 
+
 @keyframes esv-search-in {
   from { opacity: .45; transform: translate3d(0, 4px, 0); }
   to { opacity: 1; transform: translate3d(0, 0, 0); }
 }
+
 
 @keyframes esv-count-in {
   from { opacity: 0; transform: translate3d(0, 4px, 0); }
   to { opacity: 1; transform: translate3d(0, 0, 0); }
 }
 
+
 @keyframes esv-enquiry-item-in {
   from { opacity: 0; transform: translate3d(0, 4px, 0); }
   to { opacity: 1; transform: translate3d(0, 0, 0); }
 }
+
 
 /* Signature hover remains a deliberately editorial exception. */
 @media (hover: hover) and (pointer: fine) {
@@ -371,15 +315,19 @@
     transform: none;
   }
 
+
   .esv-signature-media.has-detail:hover .esv-signature-image-primary {
     opacity: 0;
   }
+
 
   .esv-signature-media.has-detail:hover .esv-signature-image-detail {
     opacity: 1;
     transform: scale(1.015);
   }
+
 }
+
 
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-group(root),
@@ -388,34 +336,6 @@
     animation: none !important;
   }
 
-  .esv-header,
-  .esv-header-panel,
-  .esv-header-overlay,
-  .esv-object-modal,
-  .esv-object-modal-backdrop,
-  .esv-product-modal,
-  .esv-product-modal-backdrop,
-  .esv-mega-v2,
-  .esv-mega-v2-content,
-  .esv-mega-backdrop,
-  .esv-nav-v2-backdrop,
-  .esv-nav-v2-drawer,
-  .esv-hero-carousel-media,
-  .esv-hero-carousel-content,
-  .esv-skip,
-  .esv-header-nav button::after,
-  .esv-enquiry-link::after,
-  .esv-enquiry-link sup,
-  .esv-search-results,
-  .esv-enquiry-list > div,
-  .esv-product-card .esv-product-media img,
-  .esv-card-wishlist,
-  .esv-card-action-slot,
-  .esv-motion-ready .esv-reveal,
-  .esv-motion-ready .esv-reveal-media {
-    transition: none !important;
-    animation: none !important;
-  }
 
   .esv-motion-ready .esv-reveal,
   .esv-motion-ready .esv-reveal-media {
@@ -424,8 +344,5 @@
     transform: none;
   }
 
-  .esv-hero-carousel .esv-hero-carousel-media.is-current,
-  .esv-hero-carousel .esv-hero-carousel-content.is-current {
-    opacity: 1;
-  }
 }
+

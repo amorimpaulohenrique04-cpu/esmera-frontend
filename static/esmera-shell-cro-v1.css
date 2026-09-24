@@ -1,21 +1,4 @@
-/* ESMÉRA — Shell CRO refinement v1
- * Small UX/CRO improvements for the solid header, desktop mega menu and
- * floating WhatsApp action. Keeps the existing quiet-luxury visual language.
- */
 
-/* -------------------------------------------------------------------------- */
-/* Solid header separation                                                    */
-/* -------------------------------------------------------------------------- */
-
-.esv-header.esv-header.is-solid {
-  border-bottom-color: rgba(17, 18, 16, .07);
-}
-
-/* Keep header + mega menu visually continuous while the mega menu is open. */
-.esv-header.esv-header.is-solid.is-mega-open,
-.esv-header.esv-header.is-mega-open {
-  border-bottom-color: transparent;
-}
 
 /* -------------------------------------------------------------------------- */
 /* WhatsApp — quieter default, stronger only on intent                        */
@@ -35,12 +18,14 @@
     box-shadow 180ms var(--ease-esmera);
 }
 
+
 .esv-whatsapp-label {
   border-color: rgba(17, 18, 16, .10);
   background: rgba(243, 240, 232, .97);
   color: var(--ink);
   box-shadow: 0 6px 20px rgba(17, 18, 16, .045);
 }
+
 
 @media (hover: hover) and (pointer: fine) {
   .esv-whatsapp-sticky:hover {
@@ -50,7 +35,9 @@
     box-shadow: 0 6px 20px rgba(17, 18, 16, .09);
     transform: translateY(-2px);
   }
+
 }
+
 
 /* -------------------------------------------------------------------------- */
 /* Mega menu — hierarchy, scannability and tactile feedback                   */
@@ -64,6 +51,7 @@
   letter-spacing: .095em;
 }
 
+
 .esv-mega-v2 .esv-mega-v2-column a:not(.esv-mega-v2-column-title) {
   transform: translateX(0);
   transition:
@@ -72,23 +60,28 @@
     transform 180ms var(--ease-out);
 }
 
+
 .esv-mega-v2 .esv-mega-v2-editorial {
   min-width: 0;
   align-self: start;
 }
+
 
 .esv-mega-v2 .esv-mega-v2-editorial a {
   position: relative;
   min-width: 0;
 }
 
+
 .esv-mega-v2 .esv-mega-v2-editorial img {
   background: var(--bg-alt);
 }
 
+
 .esv-mega-v2 .esv-mega-v2-editorial strong {
   line-height: 1.35;
 }
+
 
 @media (hover: hover) and (pointer: fine) {
   /* Keep every collection readable while the user scans a column. The
@@ -98,6 +91,7 @@
     opacity: 1;
   }
 
+
   .esv-mega-v2 .esv-mega-v2-column a:not(.esv-mega-v2-column-title):hover,
   .esv-mega-v2 .esv-mega-v2-column a:not(.esv-mega-v2-column-title):focus-visible {
     color: var(--accent);
@@ -105,14 +99,18 @@
     transform: translateX(2px);
   }
 
+
   .esv-mega-v2 .esv-mega-v2-editorial a:hover img {
     transform: scale(1.018);
   }
 
+
   .esv-mega-v2 .esv-mega-v2-editorial a:hover strong {
     color: var(--ink);
   }
+
 }
+
 
 @media (prefers-reduced-motion: reduce) {
   .esv-whatsapp-sticky,
@@ -120,4 +118,6 @@
   .esv-mega-v2 .esv-mega-v2-editorial img {
     transition: none !important;
   }
+
 }
+

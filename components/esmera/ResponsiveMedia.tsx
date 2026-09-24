@@ -6,6 +6,9 @@ const PAYLOAD_MEDIA_PATH_PREFIX = "/api/media/file/";
 const GOOGLE_DRIVE_THUMBNAIL_HOST = "drive.google.com";
 const GOOGLE_DRIVE_THUMBNAIL_PATH = "/thumbnail";
 const NEXT_IMAGE_WIDTHS = [
+  384,
+  414,
+  512,
   640,
   750,
   828,
@@ -202,12 +205,22 @@ export function EsmeraPicture({
               as="image"
               href={optimizedMobile}
               media="(max-width: 767px)"
+              {...{
+                imagesrcset: mobileSrcSet,
+                imagesizes: "100vw",
+                fetchpriority: fetchPriority,
+              }}
             />
             <link
               rel="preload"
               as="image"
               href={optimizedDesktop}
               media="(min-width: 768px)"
+              {...{
+                imagesrcset: desktopSrcSet,
+                imagesizes: "100vw",
+                fetchpriority: fetchPriority,
+              }}
             />
           </Head>
         )}

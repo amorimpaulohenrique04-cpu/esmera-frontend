@@ -1,6 +1,7 @@
 import { useEffect } from "preact/hooks";
 
 const REVEAL_SELECTOR = '[data-motion="reveal"], [data-motion="media-reveal"]';
+const MOTION_READY_FALLBACK_MS = 500;
 
 export default function EsmeraMotion() {
   useEffect(() => {
@@ -16,7 +17,7 @@ export default function EsmeraMotion() {
     );
     if (elements.length === 0) return;
 
-    const viewportHeight = globalThis.innerHeight || 800;
+    const revealGroups = new Map<Element, HTMLElement[]>();
 
     elements.forEach((element) => {
       element.classList.add("esv-reveal");
@@ -32,40 +33,54 @@ export default function EsmeraMotion() {
         );
       }
 
-      // Anything already visible at hydration stays visible. The motion-ready
-      // class is only enabled after this pass, so hydration never hides content
-      // that the server has already painted above the fold.
-      const rect = element.getBoundingClientRect();
-      if (rect.top < viewportHeight * .96 && rect.bottom > 0) {
-        element.classList.add("is-visible");
-      }
+      // Observe the editorial section rather than each transformed figure.
+      // Deferred CSS may settle a figure's own box after hydration; the section
+      // remains the stable semantic trigger and reveals its children together.
+      const trigger = element.closest("section") ?? element;
+      const group = revealGroups.get(trigger) ?? [];
+      group.push(element);
+      revealGroups.set(trigger, group);
     });
+
+    let readyFrame = 0;
+    let ready = false;
+
+    const armMotion = () => {
+      if (ready) return;
+      ready = true;
+      readyFrame = requestAnimationFrame(() => {
+        root.classList.add("esv-motion-ready");
+      });
+    };
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
-          const element = entry.target as HTMLElement;
-          element.classList.add("is-visible");
-          observer.unobserve(element);
+          const group = revealGroups.get(entry.target) ?? [];
+          group.forEach((element) => element.classList.add("is-visible"));
+          observer.unobserve(entry.target);
         });
+
+        // IntersectionObserver classifies the initial viewport before CSS may
+        // hide non-visible targets. No synchronous geometry read is needed.
+        armMotion();
       },
       {
-        threshold: .08,
-        rootMargin: "0px 0px -4% 0px",
+        threshold: 0,
+        rootMargin: "0px 0px 12% 0px",
       },
     );
 
-    elements.forEach((element) => {
-      if (!element.classList.contains("is-visible")) observer.observe(element);
-    });
-
-    const frame = requestAnimationFrame(() => {
-      root.classList.add("esv-motion-ready");
-    });
+    revealGroups.forEach((_group, trigger) => observer.observe(trigger));
+    const fallback = globalThis.setTimeout(
+      armMotion,
+      MOTION_READY_FALLBACK_MS,
+    );
 
     return () => {
-      cancelAnimationFrame(frame);
+      globalThis.clearTimeout(fallback);
+      if (readyFrame) cancelAnimationFrame(readyFrame);
       observer.disconnect();
       root.classList.remove("esv-motion-ready");
       elements.forEach((element) => {

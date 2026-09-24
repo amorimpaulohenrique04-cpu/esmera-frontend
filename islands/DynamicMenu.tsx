@@ -151,6 +151,7 @@ export default function DynamicMenu(
   >(
     null,
   );
+  const drawerOpenFrame = useRef<number | null>(null);
   const megaAfterClose = useRef<(() => void) | null>(null);
   const drawerAfterClose = useRef<(() => void) | null>(null);
 
@@ -264,17 +265,24 @@ export default function DynamicMenu(
   };
 
   const requestMobileClose = (afterClose?: () => void) => {
+    if (drawerOpenFrame.current !== null) {
+      cancelAnimationFrame(drawerOpenFrame.current);
+      drawerOpenFrame.current = null;
+    }
     if (afterClose) drawerAfterClose.current = afterClose;
 
-    if (!mobileOpen || drawerPhase === "closed") {
+    const drawerSurface = drawerRef.current?.parentElement;
+    if (!drawerSurface && (!mobileOpen || drawerPhase === "closed")) {
       const callback = drawerAfterClose.current;
       drawerAfterClose.current = null;
       if (callback) globalThis.setTimeout(callback, 0);
       return;
     }
 
-    if (drawerPhase === "closing" || drawerExitTimer.current) return;
+    if (drawerExitTimer.current) return;
 
+    // Navigation marking is owned by the capture coordinator. Preact state
+    // owns the mounted drawer lifecycle after that synchronous handoff.
     setDrawerPhase("closing");
     drawerExitTimer.current = globalThis.setTimeout(
       finalizeMobileClose,
@@ -291,7 +299,10 @@ export default function DynamicMenu(
     setPath([]);
     setMobileOpen(true);
     setDrawerPhase("opening");
-    requestAnimationFrame(() => setDrawerPhase("open"));
+    drawerOpenFrame.current = requestAnimationFrame(() => {
+      drawerOpenFrame.current = null;
+      setDrawerPhase("open");
+    });
   };
 
   useEffect(() => {
@@ -302,12 +313,12 @@ export default function DynamicMenu(
       const navigate = detail?.navigate;
       if (typeof navigate !== "function") return;
 
-      if (mobileOpen && drawerPhase !== "closed") {
+      if (drawerRef.current?.parentElement) {
         requestMobileClose(navigate);
         return;
       }
 
-      if (desktopOpen && megaPhase !== "closed") {
+      if (document.querySelector(".esv-mega-v2")) {
         requestDesktopClose(navigate);
         return;
       }
@@ -359,6 +370,9 @@ export default function DynamicMenu(
     cancelMegaExit();
     if (drawerExitTimer.current) {
       globalThis.clearTimeout(drawerExitTimer.current);
+    }
+    if (drawerOpenFrame.current !== null) {
+      cancelAnimationFrame(drawerOpenFrame.current);
     }
   }, []);
 
@@ -467,7 +481,8 @@ export default function DynamicMenu(
           onAnimationEnd={(event) => {
             if (
               megaPhase === "closing" &&
-              event.currentTarget === event.target
+              event.currentTarget === event.target &&
+              event.animationName === "esv-mega-out"
             ) {
               finalizeDesktopClose();
             }
@@ -564,7 +579,8 @@ export default function DynamicMenu(
           onAnimationEnd={(event) => {
             if (
               drawerPhase === "closing" &&
-              event.currentTarget === event.target
+              event.currentTarget === event.target &&
+              event.animationName === "esv-drawer-out"
             ) {
               finalizeMobileClose();
             }
@@ -596,7 +612,17 @@ export default function DynamicMenu(
               <div class="esv-nav-v2-level-heading">
                 <p class="esv-kicker">{activeMobile.label}</p>
                 {activeMobile.description && <p>{activeMobile.description}</p>}
-                {activeMobile.href && <a href={activeMobile.href}>Ver tudo</a>}
+                {activeMobile.href && (
+                  <a
+                    href={activeMobile.href}
+                    target={activeMobile.external ? "_blank" : undefined}
+                    rel={activeMobile.external
+                      ? "noopener noreferrer"
+                      : undefined}
+                  >
+                    Ver tudo
+                  </a>
+                )}
               </div>
             )}
             <div class="esv-nav-v2-mobile-links">
@@ -610,11 +636,6 @@ export default function DynamicMenu(
                         isCurrentPath(item.href, pathname)
                       ? "page"
                       : undefined}
-                    onClick={() => {
-                      if (item.children.length === 0) {
-                        requestMobileClose();
-                      }
-                    }}
                   >
                     {item.label}
                   </a>

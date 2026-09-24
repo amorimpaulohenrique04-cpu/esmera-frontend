@@ -31,8 +31,8 @@ Deno.test("P2 serves responsive Payload media instead of fixed oversized images"
   assertStringIncludes(media, "payloadMediaSrcSet");
   assertStringIncludes(media, "srcSet={srcSet}");
   assertStringIncludes(cards, 'fetchPriority={priority ? "high" : "auto"}');
-  assertStringIncludes(carousel, "firstDesktopSrc");
   assertStringIncludes(carousel, 'priority={active === 0 ? "high" : "low"}');
+  assertStringIncludes(carousel, "payloadMediaSrcSet");
 });
 
 Deno.test("P2 folds global coordination into existing islands", async () => {
@@ -50,8 +50,9 @@ Deno.test("P2 folds global coordination into existing islands", async () => {
 
 Deno.test("P2 CSS source budgets stay bounded", async () => {
   const budgets: Record<string, number> = {
-    "static/esmera-master.css": 40_000,
-    "static/esmera-header.css": 22_000,
+    "static/esmera-critical.css": 40_000,
+    "static/esmera-master.css": 30_000,
+    "static/esmera-header.css": 12_000,
     "static/esmera-commerce-refine.css": 17_000,
     "static/esmera-product-card.css": 22_000,
     "static/esmera-product-modal.css": 22_000,

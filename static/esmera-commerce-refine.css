@@ -696,10 +696,6 @@ main {
 
 
 
-  .esv-footer-main {
-    grid-template-columns: repeat(8, minmax(0, 1fr));
-  }
-
   .esv-footer-wordmark { grid-column: 1 / span 2; }
   .esv-footer-statement,
   .esv-footer-main > p { grid-column: 3 / span 3; }

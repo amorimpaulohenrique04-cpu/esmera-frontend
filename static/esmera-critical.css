@@ -1,0 +1,1668 @@
+/* ESMÉRA — P3 critical render path
+ * Canonical first-paint styles only: base typography, hero and initial header.
+ * Rules here are moved from previous owners, never duplicated.
+ */
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 300;
+  src: url("/fonts/inter-latin-300-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url("/fonts/inter-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  src: url("/fonts/inter-latin-500-normal.woff2") format("woff2");
+}
+
+/* ESMÉRA — Homepage Master v2.0
+ * Single active visual source for the Esméra experience.
+ * Inter only. Quiet luxury. Grid, spacing, motion and responsive rules are centralized here.
+ */
+
+:root {
+  --bg: #F3F0E8;
+  --bg-alt: #E9E5DC;
+  --black: #111210;
+  --ink: #262724;
+  --ink-inverse: #F3F0E8;
+  --muted: #62645F;
+  --muted-strong: #565954;
+  --accent: #2D6A63;
+  --line: rgba(38, 39, 36, .16);
+  --line-inverse: rgba(243, 240, 232, .18);
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-24: 96px;
+  --space-32: 128px;
+  --space-40: 160px;
+  --space-48: 192px;
+
+  --page-x: clamp(32px, 5vw, 80px);
+  --section-y: clamp(128px, 10vw, 192px);
+  --content-max: 1600px;
+  --grid-gap: clamp(20px, 1.8vw, 28px);
+  --header-h: 72px;
+  --ease-esmera: cubic-bezier(.16, 1, .3, 1);
+
+  /* Compatibility aliases used by existing components. */
+  --esv-paper: var(--bg);
+  --esv-paper-soft: var(--bg);
+  --esv-ink: var(--ink);
+  --esv-muted: var(--muted);
+  --esv-line: var(--line);
+  --esv-page-x: var(--page-x);
+  --esv-section-y: var(--section-y);
+  --esv-grid-gap: var(--grid-gap);
+  --esv-max: var(--content-max);
+  --esv-header-h: var(--header-h);
+  --esv-ease: var(--ease-esmera);
+  --esv-ease-out: var(--ease-esmera);
+}
+
+
+html {
+  background: var(--bg);
+}
+
+
+/* Reserve the vertical scrollbar gutter from tablet up so locking scroll for the
+ * product modal / header overlays cannot shift the page and fixed header
+ * sideways when the classic scrollbar is removed. Below 768px the product modal
+ * is a full-screen takeover that must span the full viewport width, and mobile
+ * uses overlay scrollbars (nothing to shift), so the gutter is intentionally not
+ * reserved there. */
+@media (min-width: 768px) {
+  html {
+    scrollbar-gutter: stable;
+  }
+}
+
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+
+::selection {
+  background: var(--accent);
+  color: var(--ink-inverse);
+}
+
+
+:where(a, button, input, textarea, select):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+
+.esv-lock {
+  overflow: hidden;
+}
+
+
+.esv-shell {
+  width: min(100%, var(--content-max));
+  margin-inline: auto;
+  padding-inline: var(--page-x);
+}
+
+
+.esv-sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+
+.esv-skip {
+  position: fixed;
+  z-index: 999;
+  top: 0;
+  left: var(--page-x);
+  padding: 12px 16px;
+  background: var(--bg);
+  color: var(--ink);
+  transform: translateY(-120%);
+  transition: transform 180ms var(--ease-esmera);
+}
+
+
+.esv-skip:focus {
+  transform: translateY(0);
+}
+
+
+.esv-text-link,
+.esv-hero-cta,
+.esv-private-cta,
+.esv-signature .esv-product-actions button,
+.esv-experience-pillars a {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  background: transparent;
+  color: inherit;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: .02em;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* 01 — Hero                                                                  */
+/* -------------------------------------------------------------------------- */
+
+.esv-hero {
+  position: relative;
+  display: grid;
+  min-height: max(720px, 92svh);
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--black);
+  color: var(--ink-inverse);
+}
+
+
+.esv-hero-picture,
+.esv-hero-picture img,
+.esv-hero-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+
+.esv-hero-picture img {
+  object-fit: cover;
+}
+
+
+.esv-hero.is-focal-left .esv-hero-picture img { object-position: left center; }
+
+.esv-hero.is-focal-center .esv-hero-picture img { object-position: center; }
+
+.esv-hero.is-focal-right .esv-hero-picture img { object-position: right center; }
+
+
+.esv-hero-overlay {
+  z-index: 1;
+  background: linear-gradient(90deg, rgba(17,18,16,.46) 0%, rgba(17,18,16,.18) 38%, rgba(17,18,16,.04) 68%);
+}
+
+
+.esv-hero.is-overlay-10 .esv-hero-overlay { opacity: .72; }
+
+.esv-hero.is-overlay-20 .esv-hero-overlay { opacity: .88; }
+
+.esv-hero.is-overlay-30 .esv-hero-overlay { opacity: 1; }
+
+
+.esv-hero-content {
+  position: relative;
+  z-index: 2;
+  align-self: end;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--grid-gap);
+  width: 100%;
+  padding-bottom: clamp(64px, 7.5vw, 116px);
+}
+
+
+.esv-hero-statement,
+.esv-hero-cta {
+  grid-column: 1 / span 7;
+}
+
+
+.esv-hero-statement {
+  max-width: 10ch;
+  margin: 0;
+  font-size: clamp(50px, 5.55vw, 84px);
+  font-weight: 300;
+  line-height: .94;
+  letter-spacing: -.045em;
+  white-space: pre-line;
+}
+
+
+.esv-hero-cta {
+  justify-self: start;
+  width: fit-content;
+  margin-top: var(--space-8);
+  color: var(--ink-inverse);
+  font-size: 13px;
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* Motion                                                                     */
+/* -------------------------------------------------------------------------- */
+
+/* .esv-reveal contract lives in esmera-motion-v2.css (loaded after this
+ * file); the duplicate definition that used to sit here was overridden by
+ * it and has been removed to keep a single source. */
+
+.esv-hero-cta svg,
+.esv-text-link svg,
+.esv-signature .esv-product-actions svg,
+.esv-private-cta svg,
+.esv-territory-copy span svg,
+.esv-experience-pillars a svg {
+  transition: transform 200ms var(--ease-esmera);
+}
+
+
+@media (hover: hover) and (pointer: fine) {
+  .esv-hero-cta:hover svg,
+  .esv-text-link:hover svg,
+  .esv-signature .esv-product-actions button:hover svg,
+  .esv-private-cta:hover svg,
+  .esv-territory-panel:hover .esv-territory-copy span svg,
+  .esv-experience-pillars a:hover svg {
+    transform: translate3d(3px, -2px, 0);
+  }
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* Laptop                                                                     */
+/* -------------------------------------------------------------------------- */
+
+@media (max-width: 1279px) {
+  :root {
+    --page-x: clamp(32px, 3.75vw, 48px);
+    --grid-gap: clamp(20px, 1.8vw, 24px);
+    --section-y: clamp(112px, 10vw, 160px);
+  }
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* Tablet                                                                     */
+/* -------------------------------------------------------------------------- */
+
+@media (max-width: 1023px) {
+  :root {
+    --page-x: clamp(24px, 3.4vw, 32px);
+    --grid-gap: clamp(16px, 2.2vw, 20px);
+    --section-y: clamp(96px, 12vw, 128px);
+  }
+
+
+
+
+
+
+  .esv-hero-content,
+  .esv-maison-grid,
+  .esv-selected-head,
+  .esv-shelf-head,
+  .esv-signature-grid,
+  .esv-matter-interlude-content,
+  .esv-provenance-intro-grid,
+  .esv-provenance-stage,
+  .esv-experience-head,
+  .esv-experience-pillars,
+  .esv-private-grid,
+  .esv-footer-main {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+  }
+
+
+  .esv-hero-statement,
+  .esv-hero-cta {
+    grid-column: 1 / span 5;
+  }
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* Mobile                                                                     */
+/* -------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  :root {
+    --page-x: clamp(16px, 5vw, 20px);
+    --grid-gap: clamp(12px, 3.5vw, 16px);
+    --section-y: clamp(72px, 20vw, 96px);
+  }
+
+
+  .esv-hero {
+    min-height: 86svh;
+  }
+
+
+  .esv-hero-content,
+  .esv-maison-grid,
+  .esv-selected-head,
+  .esv-shelf-head,
+  .esv-signature-grid,
+  .esv-matter-interlude-content,
+  .esv-provenance-intro-grid,
+  .esv-provenance-stage,
+  .esv-experience-head,
+  .esv-experience-pillars,
+  .esv-private-grid,
+  .esv-footer-main {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+
+  .esv-hero-statement,
+  .esv-hero-cta {
+    grid-column: 1 / -1;
+  }
+
+
+  .esv-hero-statement {
+    max-width: 8.5ch;
+    font-size: clamp(42px, 12vw, 58px);
+  }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+  }
+
+
+  .esv-motion-ready .esv-reveal,
+  .esv-motion-ready .esv-reveal.is-visible,
+  .esv-product-media img,
+  .esv-signature-media img,
+  .esv-territory-media img,
+  .esv-provenance-stage-media img,
+  .esv-hero-cta svg,
+  .esv-text-link svg,
+  .esv-product-actions svg,
+  .esv-private-cta svg,
+  .esv-territory-copy span svg,
+  .esv-experience-pillars a svg {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* ESMÉRA — Responsive refinement layer v1.0
+ * Sources:
+ * - ESMERA_Homepage_10of10_Master_Plan_Asymmetry_Section8_v1.0
+ * - ESMERA_Responsive_Master_Plan_10of10_v1.0
+ * - ESMERA_Visual_Contract_Final_Responsive_Round_v1.0
+ * Scope: final responsive calibration and QA before consolidation into esmera-master.css.
+ */
+
+/* -------------------------------------------------------------------------- */
+/* Global micro-hierarchy                                                     */
+/* -------------------------------------------------------------------------- */
+
+.esv-hero-statement {
+  max-width: 10ch;
+  font-size: clamp(50px, 5.55vw, 84px);
+  line-height: .94;
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* Tablet — 768–1023                                                          */
+/* -------------------------------------------------------------------------- */
+
+@media (max-width: 1023px) {
+  :root {
+    --page-x: clamp(24px, 3.4vw, 32px);
+    --section-y: clamp(88px, 10vw, 120px);
+  }
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* Mobile — 430–767                                                           */
+/* -------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  :root {
+    --page-x: clamp(18px, 5vw, 22px);
+    --section-y: clamp(68px, 16vw, 88px);
+
+  }
+
+
+
+
+
+
+
+
+  .esv-hero {
+    min-height: 86svh;
+  }
+
+
+  .esv-hero-statement {
+    max-width: 9.5ch;
+    font-size: clamp(40px, 10.8vw, 54px);
+  }
+
+
+  .esv-hero-content {
+    padding-bottom: clamp(48px, 10vw, 72px);
+  }
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* Micro-mobile — ≤429                                                        */
+/* -------------------------------------------------------------------------- */
+
+@media (max-width: 429px) {
+  :root {
+    --page-x: 18px;
+    --section-y: 72px;
+    --grid-gap: 14px;
+  }
+
+
+
+
+
+
+
+
+  .esv-hero-statement {
+    font-size: clamp(36px, 10.4vw, 44px);
+  }
+
+
+  .esv-hero-content {
+    padding-bottom: 44px;
+  }
+}
+
+/* ESMÉRA — Home art direction v2
+ * Editorial refinement layered after the canonical storefront styles.
+ * Keeps Inter, official logo, product 3:2/contain grammar and existing data flows.
+ */
+
+/* -------------------------------------------------------------------------- */
+/* Global home rhythm                                                         */
+/* -------------------------------------------------------------------------- */
+
+.esv-hero,
+.esv-maison,
+.esv-selected,
+.esv-territory,
+.esv-signature,
+.esv-matter-interlude,
+.esv-provenance,
+.esv-private {
+  scroll-margin-top: calc(var(--header-h) + 16px);
+}
+
+
+.esv-hero {
+  min-height: max(760px, 94svh);
+}
+
+
+.esv-hero-overlay {
+  background:
+    linear-gradient(180deg, rgba(17,18,16,.20) 0%, rgba(17,18,16,.02) 30%, rgba(17,18,16,.18) 100%),
+    linear-gradient(90deg, rgba(17,18,16,.56) 0%, rgba(17,18,16,.22) 34%, rgba(17,18,16,.02) 68%);
+}
+
+
+.esv-hero-content {
+  padding-bottom: clamp(72px, 8vw, 128px);
+}
+
+
+.esv-hero-statement {
+  max-width: 8.8ch;
+  font-size: clamp(56px, 5.8vw, 88px);
+  line-height: .92;
+  letter-spacing: -.052em;
+}
+
+
+.esv-hero-cta {
+  margin-top: clamp(24px, 2.4vw, 36px);
+  font-size: 13px;
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* Tablet                                                                     */
+/* -------------------------------------------------------------------------- */
+
+@media (max-width: 1023px) {
+  .esv-hero {
+    min-height: max(700px, 90svh);
+  }
+
+
+  .esv-hero-statement {
+    max-width: 9ch;
+    font-size: clamp(46px, 7.6vw, 64px);
+  }
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* Mobile — intentionally composed, not merely stacked                        */
+/* -------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  :root {
+    --section-y: clamp(76px, 19vw, 96px);
+  }
+
+
+  .esv-hero {
+    min-height: 88svh;
+  }
+
+
+  .esv-hero-overlay {
+    background:
+      linear-gradient(180deg, rgba(17,18,16,.14) 0%, rgba(17,18,16,.02) 28%, rgba(17,18,16,.72) 100%);
+  }
+
+
+  .esv-hero-content {
+    padding-bottom: clamp(48px, 13vw, 68px);
+  }
+
+
+  .esv-hero-statement {
+    max-width: 8.8ch;
+    font-size: clamp(40px, 11.8vw, 52px);
+    line-height: .93;
+  }
+
+
+  .esv-hero-cta {
+    margin-top: 22px;
+    font-size: 12px;
+  }
+}
+
+
+@media (max-width: 429px) {
+  .esv-hero-statement {
+    font-size: clamp(37px, 10.7vw, 44px);
+  }
+}
+
+/* ESMÉRA — Home length refinement v3
+ * Gentle vertical compression layered after home art direction v2.
+ * No sections removed; identity, Inter, logo and product media contracts stay untouched.
+ */
+
+/* -------------------------------------------------------------------------- */
+/* Desktop rhythm — reduce overall page length without flattening hierarchy   */
+/* -------------------------------------------------------------------------- */
+
+.esv-hero {
+  min-height: max(720px, 90svh);
+}
+
+
+.esv-hero-content {
+  padding-bottom: clamp(64px, 7vw, 108px);
+}
+
+
+.esv-hero-statement {
+  font-size: clamp(52px, 5.35vw, 80px);
+  line-height: .94;
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* Tablet                                                                     */
+/* -------------------------------------------------------------------------- */
+
+@media (max-width: 1023px) {
+  :root {
+    --section-y: clamp(84px, 10vw, 112px);
+  }
+
+
+  .esv-hero {
+    min-height: max(660px, 86svh);
+  }
+
+
+  .esv-hero-statement {
+    font-size: clamp(43px, 7vw, 58px);
+  }
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* Dedicated tablet composition — 768–1023                                   */
+/* Bridges the approved desktop direction and the intentional mobile layout.  */
+/* -------------------------------------------------------------------------- */
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  :root {
+    --page-x: clamp(28px, 4vw, 42px);
+    --grid-gap: clamp(18px, 2.4vw, 24px);
+    --section-y: clamp(88px, 10vw, 108px);
+  }
+
+
+  /* Hero — retain editorial impact without desktop-scale typography. */
+  .esv-hero {
+    min-height: max(620px, 82svh);
+  }
+
+
+  .esv-hero-content {
+    padding-bottom: clamp(58px, 7vw, 78px);
+  }
+
+
+  .esv-hero-statement {
+    grid-column: 1 / span 5;
+    max-width: 9ch;
+    font-size: clamp(46px, 6.2vw, 60px);
+    line-height: .95;
+  }
+
+
+  .esv-hero-cta {
+    grid-column: 1 / span 4;
+    margin-top: 24px;
+  }
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* Mobile — preserve editorial pauses while removing redundant scroll         */
+/* -------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  :root {
+    --section-y: clamp(64px, 16vw, 82px);
+  }
+
+
+  .esv-hero {
+    min-height: 82svh;
+  }
+
+
+  .esv-hero-content {
+    padding-bottom: clamp(42px, 11vw, 56px);
+  }
+
+
+  .esv-hero-statement {
+    max-width: 9ch;
+    font-size: clamp(36px, 10.5vw, 46px);
+    line-height: .95;
+  }
+
+
+  .esv-hero-cta {
+    margin-top: 18px;
+  }
+}
+
+
+@media (max-width: 429px) {
+  .esv-hero {
+    min-height: 80svh;
+  }
+}
+
+/* ESMÉRA — canonical storefront header shell */
+
+html:root {
+  --ease-out: cubic-bezier(.16, 1, .3, 1);
+  --ease-esmera: var(--ease-out);
+  --esv-layer-content: 1;
+  --esv-layer-mega: 110;
+  --esv-layer-header: 120;
+  --esv-layer-overlay: 200;
+  --esv-layer-drawer: 210;
+  --esv-header-logo-h: 44px;
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* Header                                                                     */
+/* -------------------------------------------------------------------------- */
+
+.esv-header.esv-header {
+  position: fixed;
+  z-index: var(--esv-layer-header);
+  inset: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0;
+  --esv-header-group-gap: clamp(12px, 1.4vw, 20px);
+  width: 100%;
+  height: calc(var(--header-h) + env(safe-area-inset-top));
+  min-height: 0;
+  padding: env(safe-area-inset-top) var(--page-x) 0;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+  isolation: isolate;
+  transition: color 160ms var(--ease-out), border-color 160ms var(--ease-out);
+}
+
+
+.esv-header.esv-header::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: rgba(243, 240, 232, .96);
+  backdrop-filter: blur(12px);
+  opacity: 1;
+  transition: opacity 160ms var(--ease-out);
+}
+
+
+.esv-header.esv-header[data-header-variant="transparent"]:not(.is-solid) {
+  border-color: transparent;
+  color: var(--ink-inverse);
+}
+
+
+.esv-header.esv-header[data-header-variant="transparent"]:not(.is-solid)::before {
+  height: calc(var(--header-h) * 2 + env(safe-area-inset-top));
+  background: linear-gradient(
+    to bottom,
+    rgba(17, 18, 16, .28),
+    rgba(17, 18, 16, 0)
+  );
+  backdrop-filter: none;
+  opacity: 1;
+}
+
+
+.esv-header.esv-header.is-solid {
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+
+/* Mega aberto: header e mega formam uma unica superficie continua. */
+.esv-header.esv-header.is-mega-open {
+  border-bottom: 0;
+}
+
+
+.esv-header.esv-header.is-mega-open::before {
+  background: rgba(243, 240, 232, .985);
+  opacity: 1;
+}
+
+
+.esv-header .esv-wordmark {
+  display: inline-flex;
+  align-items: center;
+  order: 1;
+  width: auto;
+  height: 100%;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: .18em;
+  text-decoration: none;
+  white-space: nowrap;
+  transform: none;
+  transition: opacity 180ms var(--ease-out);
+}
+
+
+.esv-brand-image {
+  display: block;
+}
+
+
+.esv-header-logo-image {
+  width: auto;
+  height: var(--esv-header-logo-h);
+  max-width: min(40vw, 200px);
+}
+
+
+.esv-header .esv-header-actions {
+  display: flex;
+  align-items: center;
+  order: 3;
+  gap: var(--esv-header-group-gap);
+  min-width: 0;
+  color: inherit;
+  height: 100%;
+  overflow: visible;
+}
+
+
+.esv-header .esv-header-icon,
+.esv-header .esv-enquiry-link,
+.esv-header .esv-nav-v2-mobile-trigger {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+
+.esv-header .esv-header-icon,
+.esv-header .esv-nav-v2-mobile-trigger {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+}
+
+
+.esv-header .esv-header-icon::before,
+.esv-header .esv-nav-v2-mobile-trigger::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0;
+  transform: scale(.82);
+  transition: opacity 160ms var(--ease-out), transform 180ms var(--ease-out);
+}
+
+
+.esv-header .esv-header-icon svg,
+.esv-header .esv-nav-v2-mobile-trigger svg {
+  position: relative;
+  z-index: 1;
+  display: block;
+}
+
+
+.esv-header svg path,
+.esv-header svg circle {
+  transition: stroke-width 160ms var(--ease-out);
+}
+
+
+.esv-header .esv-enquiry-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 7px;
+  min-width: 76px;
+  min-height: 44px;
+  padding: 0;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: .035em;
+  white-space: nowrap;
+}
+
+
+.esv-header .esv-enquiry-link sup {
+  min-width: 12px;
+  font-size: 9px;
+  line-height: 1;
+  text-align: center;
+  transition: transform 180ms var(--ease-out);
+}
+
+
+.esv-header .esv-cart-icon {
+  display: none;
+}
+
+
+.esv-header :where(a, button):focus-visible,
+.esv-nav-v2-drawer :where(a, button):focus-visible,
+.esv-mega-v2 :where(a, button):focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: 3px;
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* Navigation                                                                 */
+/* -------------------------------------------------------------------------- */
+
+.esv-header .esv-nav-v2-root {
+  position: relative;
+  z-index: auto;
+  min-width: 0;
+  order: 2;
+  margin: 0 auto;
+  color: inherit;
+  height: 100%;
+}
+
+
+.esv-header .esv-nav-v2-desktop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(20px, 2vw, 34px);
+  width: auto;
+  max-width: 100%;
+  height: var(--header-h);
+  color: inherit;
+}
+
+
+.esv-header[data-header-variant] .esv-nav-v2-root .esv-nav-v2-desktop,
+.esv-header[data-header-variant] .esv-nav-v2-root .esv-nav-v2-mobile-trigger {
+  color: inherit;
+}
+
+
+.esv-header .esv-nav-v2-root-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: inherit;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: .08em;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: opacity 180ms var(--ease-out);
+}
+
+
+.esv-header .esv-nav-v2-root-link::after,
+.esv-header .esv-enquiry-link::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 8px;
+  left: 0;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 160ms var(--ease-out);
+}
+
+
+.esv-header .esv-nav-v2-root-link:focus-visible::after,
+.esv-header .esv-nav-v2-root-link[aria-expanded="true"]::after,
+.esv-header .esv-nav-v2-root-link[aria-current="page"]::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+
+.esv-header .esv-nav-v2-mobile-trigger {
+  display: none;
+  height: 100%;
+}
+
+
+@media (hover: hover) and (pointer: fine) {
+  .esv-header .esv-nav-v2-root-link:hover::after,
+  .esv-header .esv-enquiry-link:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+    transition-duration: 280ms;
+  }
+
+
+  .esv-header .esv-nav-v2-desktop:hover .esv-nav-v2-root-link {
+    opacity: .42;
+  }
+
+
+  .esv-header .esv-nav-v2-desktop .esv-nav-v2-root-link:hover,
+  .esv-header .esv-nav-v2-desktop .esv-nav-v2-root-link[aria-current="page"] {
+    opacity: 1;
+  }
+
+
+  .esv-header .esv-header-icon:hover::before,
+  .esv-header .esv-nav-v2-mobile-trigger:hover::before {
+    opacity: .06;
+    transform: scale(1);
+  }
+
+
+  .esv-header .esv-header-icon:hover svg path,
+  .esv-header .esv-header-icon:hover svg circle {
+    stroke-width: 1.7;
+  }
+
+
+  .esv-header .esv-wordmark:hover {
+    opacity: .62;
+  }
+
+
+  .esv-header .esv-enquiry-link:hover sup {
+    transform: translate3d(0, -1px, 0);
+  }
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* Responsive                                                                 */
+/* -------------------------------------------------------------------------- */
+
+@media (max-width: 1180px) {
+  .esv-header .esv-nav-v2-desktop { gap: clamp(12px, 1.3vw, 20px); }
+
+  .esv-header .esv-nav-v2-root-link { font-size: 12px; letter-spacing: .06em; }
+}
+
+
+@media (max-width: 1023.98px) {
+  html:root {
+    --esv-header-logo-h: 34px;
+  }
+
+
+  .esv-header.esv-header {
+    display: grid;
+    grid-template-columns: 44px 44px minmax(0, 1fr) 44px 44px;
+    column-gap: 0;
+    align-items: center;
+    padding-inline: var(--page-x);
+  }
+
+  .esv-header .esv-nav-v2-desktop { display: none; }
+
+  .esv-header .esv-nav-v2-mobile-trigger { display: grid; }
+
+  .esv-header .esv-nav-v2-root {
+    display: grid;
+    grid-column: 1;
+    grid-row: 1;
+    place-items: center;
+    align-self: stretch;
+    width: 44px;
+    height: 100%;
+    margin: 0;
+  }
+
+  .esv-header .esv-header-actions {
+    display: contents;
+  }
+
+  .esv-header .esv-search-trigger {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: center;
+  }
+
+  .esv-header .esv-wordmark {
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: center;
+    align-self: stretch;
+    width: auto;
+    height: 100%;
+  }
+
+  .esv-header .esv-wishlist-header-link {
+    grid-column: 4;
+    grid-row: 1;
+    justify-self: center;
+    width: 44px;
+  }
+
+  .esv-header .esv-cart-link {
+    grid-column: 5;
+    grid-row: 1;
+    justify-self: center;
+  }
+
+  .esv-header .esv-cart-label {
+    display: none;
+  }
+
+  .esv-header .esv-cart-icon {
+    display: grid;
+    place-items: center;
+  }
+
+  .esv-header .esv-enquiry-link {
+    justify-content: center;
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+    overflow: visible;
+  }
+
+  .esv-header .esv-enquiry-link sup {
+    position: absolute;
+    top: 4px;
+    right: 2px;
+    display: grid;
+    place-items: center;
+    min-width: 15px;
+    height: 15px;
+    padding: 0 3px;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 8px;
+  }
+}
+
+
+@media (max-width: 767px) {
+  html:root {
+    --esv-header-logo-h: 30px;
+  }
+
+
+  .esv-header.esv-header {
+    padding-inline: var(--page-x);
+  }
+
+  .esv-header .esv-header-actions { gap: 0; }
+
+  .esv-header .esv-enquiry-link {
+    gap: 0;
+    min-width: 44px;
+    font-size: 11px;
+  }
+}
+
+
+@media (max-width: 360px) {
+  .esv-header .esv-header-actions { gap: 0; }
+
+  .esv-header .esv-enquiry-link { min-width: 44px; }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  .esv-header.esv-header,
+  .esv-header.esv-header::before,
+  .esv-header .esv-wordmark,
+  .esv-header .esv-header-icon::before,
+  .esv-header .esv-nav-v2-mobile-trigger::before,
+  .esv-header .esv-enquiry-link sup,
+  .esv-mega-v2,
+  .esv-mega-backdrop,
+  .esv-mega-v2 .esv-mega-v2-column,
+  .esv-mega-v2 .esv-mega-v2-editorial img,
+  .esv-nav-v2-backdrop,
+  .esv-nav-v2-drawer,
+  .esv-search-results img,
+  .esv-cart-item-media img {
+    animation: none;
+    transform: none;
+  }
+
+
+  .esv-header .esv-header-icon:hover svg path,
+  .esv-header .esv-header-icon:hover svg circle {
+    stroke-width: 1.4;
+  }
+
+
+  .esv-header .esv-nav-v2-root-link::after,
+  .esv-header .esv-enquiry-link::after {
+    transform: none;
+    opacity: 0;
+    transition: opacity 120ms linear;
+  }
+
+
+  .esv-header .esv-nav-v2-root-link:focus-visible::after,
+  .esv-header .esv-nav-v2-root-link[aria-expanded="true"]::after,
+  .esv-header .esv-nav-v2-root-link[aria-current="page"]::after {
+    opacity: 1;
+  }
+}
+
+
+/* Header favorites --------------------------------------------------------- */
+
+.esv-header .esv-wishlist-header-link {
+  position: relative;
+  color: inherit;
+  text-decoration: none;
+}
+
+
+.esv-header .esv-wishlist-header-link sup {
+  position: absolute;
+  top: 4px;
+  right: 1px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--bg);
+  font-size: 8px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0;
+  transition:
+    background-color 160ms var(--ease-out),
+    color 160ms var(--ease-out);
+}
+
+
+.esv-header[data-header-surface="hero"] .esv-wishlist-header-link sup {
+  background: #f3f0e8;
+  color: var(--ink);
+}
+
+
+.esv-header[data-header-surface="solid"] .esv-wishlist-header-link sup,
+.esv-header[data-header-surface="mega"] .esv-wishlist-header-link sup,
+.esv-header.is-mega-open .esv-wishlist-header-link sup {
+  background: var(--ink);
+  color: #f3f0e8;
+}
+
+
+@media (hover: hover) and (pointer: fine) {
+  .esv-header .esv-wishlist-header-link:hover::before {
+    opacity: .07;
+    transform: scale(1);
+  }
+
+
+  .esv-header .esv-wishlist-header-link:hover svg path {
+    stroke-width: 1.6;
+  }
+}
+
+
+@media (max-width: 767px) {
+  .esv-header .esv-wishlist-header-link sup {
+    top: 5px;
+    right: 0;
+    min-width: 15px;
+    height: 15px;
+    font-size: 7.5px;
+  }
+}
+
+/* ESMÉRA — Shell CRO refinement v1
+ * Small UX/CRO improvements for the solid header, desktop mega menu and
+ * floating WhatsApp action. Keeps the existing quiet-luxury visual language.
+ */
+
+/* -------------------------------------------------------------------------- */
+/* Solid header separation                                                    */
+/* -------------------------------------------------------------------------- */
+
+.esv-header.esv-header.is-solid {
+  border-bottom-color: rgba(17, 18, 16, .07);
+}
+
+
+/* Keep header + mega menu visually continuous while the mega menu is open. */
+.esv-header.esv-header.is-solid.is-mega-open,
+.esv-header.esv-header.is-mega-open {
+  border-bottom-color: transparent;
+}
+
+/* ESMÉRA — canonical motion system
+ * Motion is deliberately non-structural: opacity/transform first, selective
+ * editorial clipping only where the markup explicitly opts into media-reveal.
+ */
+
+:root {
+  --motion-instant: 80ms;
+  --motion-fast: 140ms;
+  --motion-exit: 150ms;
+  --motion-ui: 180ms;
+  --motion-medium: 260ms;
+  --motion-reveal: 340ms;
+  --motion-editorial: 440ms;
+  --motion-hero: 360ms;
+  --ease-out: cubic-bezier(.16, 1, .3, 1);
+  --ease-standard: cubic-bezier(.22, .61, .36, 1);
+  --ease-inout: cubic-bezier(.65, 0, .35, 1);
+}
+
+
+/* The hero never has a first-paint entrance animation. */
+.esv-hero-statement {
+  overflow: hidden;
+}
+
+
+.esv-hero-line {
+  display: block;
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* Hero carousel: decoded two-layer cross dissolve                            */
+/* -------------------------------------------------------------------------- */
+
+.esv-hero-carousel {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+
+.esv-hero-carousel .esv-hero-carousel-media {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--motion-hero) var(--ease-inout);
+}
+
+
+.esv-hero-carousel .esv-hero-carousel-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+
+.esv-hero-carousel .esv-hero-carousel-media.is-current {
+  opacity: 1;
+}
+
+
+.esv-hero-carousel.is-transitioning .esv-hero-carousel-media.is-current {
+  opacity: 0;
+}
+
+
+.esv-hero-carousel.is-transitioning .esv-hero-carousel-media.is-incoming {
+  opacity: 1;
+}
+
+
+.esv-hero-carousel .esv-hero-overlay {
+  z-index: 1;
+}
+
+
+.esv-hero-carousel .esv-hero-carousel-content {
+  position: relative;
+  z-index: 2;
+  grid-area: 1 / 1;
+  opacity: 0;
+  pointer-events: none;
+}
+
+
+.esv-hero-carousel .esv-hero-carousel-content.is-current {
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 140ms var(--ease-standard);
+}
+
+
+.esv-hero-carousel .esv-hero-carousel-content.is-incoming {
+  transition: opacity 200ms var(--ease-out) 60ms;
+}
+
+
+.esv-hero-carousel.is-transitioning .esv-hero-carousel-content.is-current {
+  opacity: 0;
+  pointer-events: none;
+}
+
+
+.esv-hero-carousel.is-transitioning .esv-hero-carousel-content.is-incoming {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+
+.esv-hero-carousel .esv-hero-carousel-controls {
+  z-index: 3;
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+
+  .esv-header,
+  .esv-header-panel,
+  .esv-header-overlay,
+  .esv-object-modal,
+  .esv-object-modal-backdrop,
+  .esv-product-modal,
+  .esv-product-modal-backdrop,
+  .esv-mega-v2,
+  .esv-mega-v2-content,
+  .esv-mega-backdrop,
+  .esv-nav-v2-backdrop,
+  .esv-nav-v2-drawer,
+  .esv-hero-carousel-media,
+  .esv-hero-carousel-content,
+  .esv-skip,
+  .esv-header-nav button::after,
+  .esv-enquiry-link::after,
+  .esv-enquiry-link sup,
+  .esv-search-results,
+  .esv-enquiry-list > div,
+  .esv-product-card .esv-product-media img,
+  .esv-card-wishlist,
+  .esv-card-action-slot,
+  .esv-motion-ready .esv-reveal,
+  .esv-motion-ready .esv-reveal-media {
+    transition: none !important;
+    animation: none !important;
+  }
+
+
+  .esv-hero-carousel .esv-hero-carousel-media.is-current,
+  .esv-hero-carousel .esv-hero-carousel-content.is-current {
+    opacity: 1;
+  }
+}
+
+/* ESMÉRA — Mobile recovery v4
+ * Authoritative mobile rhythm layer after the home length-compression pass.
+ * Restores breathing room, fixes section 04 → 05 document flow and keeps the
+ * transparent ↔ solid header transition simple and reversible.
+ */
+
+/* -------------------------------------------------------------------------- */
+/* Header transition                                                          */
+/* -------------------------------------------------------------------------- */
+
+.esv-header.esv-header[data-header-variant="transparent"] {
+  transition:
+    color 240ms var(--ease-out),
+    border-color 240ms var(--ease-out);
+}
+
+
+.esv-header.esv-header[data-header-variant="transparent"]::before {
+  height: calc(var(--header-h) * 2 + env(safe-area-inset-top));
+  background: linear-gradient(
+    to bottom,
+    rgba(17, 18, 16, .28),
+    rgba(17, 18, 16, 0)
+  );
+  backdrop-filter: none;
+  opacity: 1;
+  transition: opacity 240ms var(--ease-out);
+}
+
+
+.esv-header.esv-header[data-header-variant="transparent"]::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: rgba(243, 240, 232, .96);
+  backdrop-filter: blur(12px);
+  opacity: 0;
+  transform: translateY(-3px);
+  pointer-events: none;
+  transition:
+    opacity 240ms var(--ease-out),
+    transform 240ms var(--ease-out);
+}
+
+
+.esv-header.esv-header[data-header-variant="transparent"].is-solid {
+  transition-duration: 220ms;
+}
+
+
+.esv-header.esv-header[data-header-variant="transparent"].is-solid::before {
+  opacity: 0;
+  transition-duration: 220ms;
+}
+
+
+.esv-header.esv-header[data-header-variant="transparent"].is-solid::after {
+  opacity: 1;
+  transform: translateY(0);
+  transition-duration: 220ms;
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* Mobile recovery                                                            */
+/* -------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  :root {
+    --section-y: clamp(70px, 17.5vw, 90px);
+  }
+
+
+  .esv-hero {
+    min-height: 86svh;
+  }
+
+
+  .esv-hero-content {
+    padding-bottom: clamp(46px, 12vw, 62px);
+  }
+
+
+  .esv-hero-statement {
+    max-width: 8.8ch;
+    font-size: clamp(38px, 11vw, 48px);
+    line-height: .94;
+  }
+}
+
+
+@media (max-width: 429px) {
+  .esv-hero {
+    min-height: 84svh;
+  }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  .esv-header.esv-header[data-header-variant="transparent"],
+  .esv-header.esv-header[data-header-variant="transparent"]::before,
+  .esv-header.esv-header[data-header-variant="transparent"]::after {
+    transition: none !important;
+  }
+}

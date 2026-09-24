@@ -29,7 +29,7 @@ function preferredSlideSource(slide: HeroSlide): string {
   const source = compact && slide.mobileImage
     ? slide.mobileImage
     : slide.desktopImage;
-  return optimizePayloadMediaURL(source, compact ? 900 : 1800);
+  return optimizePayloadMediaURL(source, compact ? 750 : 1800);
 }
 
 async function decodeSlide(slide: HeroSlide): Promise<void> {
@@ -206,11 +206,8 @@ export default function HeroCarousel(
 
   const firstSlide = slides[0];
   const firstMobile = firstSlide.mobileImage ?? firstSlide.desktopImage;
-  const firstDesktopSrc = optimizePayloadMediaURL(
-    firstSlide.desktopImage,
-    1800,
-  );
-  const firstMobileSrc = optimizePayloadMediaURL(firstMobile, 900);
+  const firstMobileSrcSet = payloadMediaSrcSet(firstMobile, 900);
+  const firstDesktopSrcSet = payloadMediaSrcSet(firstSlide.desktopImage, 1800);
 
   return (
     <>
@@ -218,14 +215,24 @@ export default function HeroCarousel(
         <link
           rel="preload"
           as="image"
-          href={firstMobileSrc}
+          href={optimizePayloadMediaURL(firstMobile, 750)}
           media="(max-width: 767px)"
+          {...{
+            imagesrcset: firstMobileSrcSet,
+            imagesizes: "100vw",
+            fetchpriority: "high",
+          }}
         />
         <link
           rel="preload"
           as="image"
-          href={firstDesktopSrc}
+          href={optimizePayloadMediaURL(firstSlide.desktopImage, 1800)}
           media="(min-width: 768px)"
+          {...{
+            imagesrcset: firstDesktopSrcSet,
+            imagesizes: "100vw",
+            fetchpriority: "high",
+          }}
         />
       </Head>
       <section

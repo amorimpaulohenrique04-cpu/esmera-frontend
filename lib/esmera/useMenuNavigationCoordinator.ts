@@ -1,10 +1,9 @@
-import { useEffect } from "preact/hooks";
+import { useLayoutEffect } from "preact/hooks";
 import {
   MENU_NAVIGATION_REQUEST_EVENT,
   type MenuNavigationRequestDetail,
 } from "./navigationMotion.ts";
 
-const MENU_SELECTOR = ".esv-nav-v2-desktop, .esv-mega-v2, .esv-nav-v2-drawer";
 const ACTIVE_MENU_SURFACE_SELECTOR = ".esv-mega-v2, .esv-nav-v2-backdrop";
 const MENU_NAVIGATION_FALLBACK_MS = 240;
 
@@ -33,7 +32,7 @@ function prefersReducedMotion(): boolean {
  * the EsmeraHeader island avoids a second global hydration root and bundle.
  */
 export function useMenuNavigationCoordinator(): void {
-  useEffect(() => {
+  useLayoutEffect(() => {
     let fallbackTimer: ReturnType<typeof globalThis.setTimeout> | null = null;
     let navigationPending = false;
 
@@ -42,7 +41,7 @@ export function useMenuNavigationCoordinator(): void {
       if (!(event.target instanceof Element)) return;
 
       const anchor = event.target.closest<HTMLAnchorElement>("a[href]");
-      if (!anchor || !anchor.closest(MENU_SELECTOR)) return;
+      if (!anchor) return;
       if (anchor.hasAttribute("download")) return;
       if (anchor.target && anchor.target !== "_self") return;
 
@@ -63,6 +62,10 @@ export function useMenuNavigationCoordinator(): void {
       event.preventDefault();
       if (navigationPending) return;
       navigationPending = true;
+
+      document.querySelectorAll(ACTIVE_MENU_SURFACE_SELECTOR).forEach(
+        (surface) => surface.classList.add("is-closing"),
+      );
 
       let navigated = false;
       const navigate = () => {

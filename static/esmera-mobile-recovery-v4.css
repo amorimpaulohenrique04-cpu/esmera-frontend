@@ -1,119 +1,54 @@
-/* ESMÉRA — Mobile recovery v4
- * Authoritative mobile rhythm layer after the home length-compression pass.
- * Restores breathing room, fixes section 04 → 05 document flow and keeps the
- * transparent ↔ solid header transition simple and reversible.
- */
 
-/* -------------------------------------------------------------------------- */
-/* Header transition                                                          */
-/* -------------------------------------------------------------------------- */
-
-.esv-header.esv-header[data-header-variant="transparent"] {
-  transition:
-    color 240ms var(--ease-out),
-    border-color 240ms var(--ease-out);
-}
-
-.esv-header.esv-header[data-header-variant="transparent"]::before {
-  height: calc(var(--header-h) * 2 + env(safe-area-inset-top));
-  background: linear-gradient(
-    to bottom,
-    rgba(17, 18, 16, .28),
-    rgba(17, 18, 16, 0)
-  );
-  backdrop-filter: none;
-  opacity: 1;
-  transition: opacity 240ms var(--ease-out);
-}
-
-.esv-header.esv-header[data-header-variant="transparent"]::after {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  inset: 0;
-  background: rgba(243, 240, 232, .96);
-  backdrop-filter: blur(12px);
-  opacity: 0;
-  transform: translateY(-3px);
-  pointer-events: none;
-  transition:
-    opacity 240ms var(--ease-out),
-    transform 240ms var(--ease-out);
-}
-
-.esv-header.esv-header[data-header-variant="transparent"].is-solid {
-  transition-duration: 220ms;
-}
-
-.esv-header.esv-header[data-header-variant="transparent"].is-solid::before {
-  opacity: 0;
-  transition-duration: 220ms;
-}
-
-.esv-header.esv-header[data-header-variant="transparent"].is-solid::after {
-  opacity: 1;
-  transform: translateY(0);
-  transition-duration: 220ms;
-}
 
 /* -------------------------------------------------------------------------- */
 /* Mobile recovery                                                            */
 /* -------------------------------------------------------------------------- */
 
 @media (max-width: 767px) {
-  :root {
-    --section-y: clamp(70px, 17.5vw, 90px);
-  }
-
-  .esv-hero {
-    min-height: 86svh;
-  }
-
-  .esv-hero-content {
-    padding-bottom: clamp(46px, 12vw, 62px);
-  }
-
-  .esv-hero-statement {
-    max-width: 8.8ch;
-    font-size: clamp(38px, 11vw, 48px);
-    line-height: .94;
-  }
 
   .esv-maison {
     padding-block: 76px 86px;
   }
+
 
   .esv-maison-media {
     min-height: min(124vw, 530px);
     margin-top: 44px;
   }
 
+
   .esv-selected {
     padding-block: 76px 88px !important;
   }
+
 
   .esv-selected-head h2 {
     margin-top: 22px;
     font-size: clamp(36px, 9.8vw, 44px);
   }
 
+
   .esv-selected-head > p {
     margin-top: 16px;
   }
+
 
   .esv-selected .esv-product-shelf {
     gap: 40px;
     margin-top: 40px;
   }
 
+
   .esv-selected .esv-product-card-copy {
     min-height: 148px;
     padding-top: 13px;
   }
 
+
   .esv-selected-collection-link {
     margin-top: 28px !important;
   }
+
 
   /* Section 04 — Territories
    * The length-refinement layer has a fixed track height for tablet. On mobile
@@ -125,6 +60,7 @@
     overflow: visible;
   }
 
+
   .esv-territory-track {
     display: block !important;
     width: 100%;
@@ -132,6 +68,7 @@
     min-height: 0;
     overflow: visible;
   }
+
 
   .esv-territory-panel,
   .esv-territory-panel + .esv-territory-panel {
@@ -143,16 +80,19 @@
     overflow: hidden;
   }
 
+
   .esv-territory-copy {
     right: 22px;
     bottom: 32px;
     left: 22px;
   }
 
+
   .esv-territory-copy h2 {
     max-width: 8.6ch;
     font-size: clamp(36px, 9.9vw, 44px);
   }
+
 
   /* Section 05 — Signature Object
    * Starts only after the full Territory track. Mobile keeps the editorial
@@ -165,17 +105,20 @@
     padding-block: 82px 90px;
   }
 
+
   .esv-signature-grid {
     display: flex;
     flex-direction: column;
     align-items: stretch;
   }
 
+
   .esv-signature-copy {
     order: 1;
     width: 100%;
     margin-top: 0;
   }
+
 
   .esv-signature-media {
     order: 2;
@@ -187,115 +130,131 @@
     overflow: hidden;
   }
 
+
   .esv-signature-copy h2 {
     font-size: clamp(33px, 9.1vw, 41px);
   }
+
 
   .esv-signature-text {
     margin-top: 18px;
   }
 
+
   .esv-signature-facts {
     margin-top: 22px;
   }
+
 
   .esv-matter-interlude {
     min-height: 68svh;
   }
 
+
   .esv-matter-interlude-content {
     padding-bottom: 52px;
   }
+
 
   .esv-matter-interlude-title {
     font-size: clamp(37px, 10.2vw, 46px);
   }
 
+
   .esv-provenance {
     padding-block: 82px 90px;
   }
+
 
   .esv-provenance-intro-copy {
     margin-top: 20px;
   }
 
+
   .esv-provenance-intro-copy h2 {
     font-size: clamp(36px, 9.8vw, 44px);
   }
 
+
   .esv-provenance-stages {
     margin-top: 42px;
   }
+
 
   .esv-provenance-stage,
   .esv-provenance-stage + .esv-provenance-stage {
     padding: 26px 0 32px;
   }
 
+
   .esv-provenance-stage-copy {
     margin-top: 18px;
   }
+
 
   .esv-private-grid {
     padding-block: 82px 90px;
   }
 
+
   .esv-private-copy {
     margin-top: 34px;
   }
+
 
   .esv-private-copy h2 {
     font-size: clamp(37px, 10.2vw, 46px);
   }
 
+
   .esv-private-copy p {
     margin-top: 22px;
   }
+
 
   .esv-private-cta {
     margin-top: 24px;
   }
 
+
   .esv-footer.esv-footer-premium .esv-footer-grid {
     padding-block: 38px 24px;
   }
+
 
   .esv-footer.esv-footer-premium .esv-footer-brand {
     padding-bottom: 28px;
   }
 
+
   .esv-footer.esv-footer-premium .esv-footer-column {
     padding-block: 22px;
   }
 
+
   .esv-footer.esv-footer-premium .esv-footer-relationship {
     padding-top: 24px;
   }
+
 }
 
+
 @media (max-width: 429px) {
-  .esv-hero {
-    min-height: 84svh;
-  }
 
   .esv-maison-media {
     min-height: min(120vw, 505px);
   }
+
 
   .esv-territory-panel,
   .esv-territory-panel + .esv-territory-panel {
     min-height: 445px;
   }
 
+
   .esv-signature-media {
     margin-top: 30px;
   }
+
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .esv-header.esv-header[data-header-variant="transparent"],
-  .esv-header.esv-header[data-header-variant="transparent"]::before,
-  .esv-header.esv-header[data-header-variant="transparent"]::after {
-    transition: none !important;
-  }
-}

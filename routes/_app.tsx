@@ -3,62 +3,106 @@ import { defineApp } from "$fresh/server.ts";
 import Theme from "../sections/Theme/Theme.tsx";
 import { Context } from "@deco/deco";
 
+const CRITICAL_CSS = await Deno.readTextFile(
+  new URL("../static/esmera-critical.css", import.meta.url),
+);
+
+interface StyleLinkProps {
+  href: string;
+  deferred?: boolean;
+}
+
+function StyleLink({ href, deferred = false }: StyleLinkProps) {
+  if (!deferred) return <link rel="stylesheet" href={href} />;
+
+  return (
+    <>
+      <link
+        rel="stylesheet"
+        href={href}
+        media="print"
+        data-esmera-deferred-style="true"
+      />
+      <noscript>
+        <link rel="stylesheet" href={href} />
+      </noscript>
+    </>
+  );
+}
+
+const DEFERRED_STYLE_BOOTSTRAP = `(() => {
+  const selector = 'link[data-esmera-deferred-style="true"]';
+  let applied = false;
+  const apply = () => {
+    if (applied) return;
+    applied = true;
+    document.querySelectorAll(selector).forEach((node) => {
+      node.media = "all";
+      node.removeAttribute("data-esmera-deferred-style");
+    });
+  };
+  const schedule = () => {
+    if ("requestIdleCallback" in window) {
+      window.requestIdleCallback(apply, { timeout: 1200 });
+    } else {
+      window.setTimeout(apply, 0);
+    }
+  };
+  ["pointerdown", "keydown", "scroll"].forEach((eventName) => {
+    window.addEventListener(eventName, apply, { once: true, passive: true });
+  });
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", schedule, { once: true });
+  } else {
+    schedule();
+  }
+})();`;
+
 export default defineApp(async (_req, ctx) => {
   const revision = await Context.active().release?.revision();
-  // Preserve the stable storefront token for unchanged CSS contracts and bump
-  // only the layers that own new visual behavior.
-  const storefrontStyleRevision = "2026-09-23-mobile-header-five-zone-v37";
+  const storefrontStyleRevision = "2026-09-23-p3-css-split-v1";
   const productCardStyleRevision = "2026-09-23-favorites-modal-v4";
   const aboutStyleRevision = "2026-09-23-privacy-editorial-v2";
-  const homeStyleRevision = "2026-09-23-motion-handoff-v38";
+  const homeStyleRevision = "2026-09-23-p3-motion-v1";
   const footerStyleRevision = "2026-08-15-footer-whatsapp-form-v3";
-  const homeArtDirectionRevision = "2026-09-23-home-art-direction-v4";
-  const homeLengthRevision =
-    "2026-09-23-home-length-refinement-v5-tablet-section6";
-  const mobileRecoveryRevision = "2026-09-23-mobile-recovery-v5";
-  const shellCroRevision = "2026-09-23-shell-cro-v2";
+  const homeArtDirectionRevision = "2026-09-23-p3-home-art-v1";
+  const homeLengthRevision = "2026-09-23-p3-home-length-v1";
+  const mobileRecoveryRevision = "2026-09-23-p3-mobile-recovery-v1";
+  const shellCroRevision = "2026-09-23-p3-shell-cro-v1";
   const pathname = ctx.url.pathname;
   const isHome = pathname === "/";
   const isCatalog = pathname === "/colecao" || pathname.startsWith("/colecao/");
   const isAbout = pathname === "/sobre" || pathname === "/pagina/a-esmera";
   const isFavorites = pathname === "/favoritos";
   const hasProductCards = isHome || isCatalog || isFavorites;
+
   return (
     <>
       <Theme colorScheme="any" />
-
       <Head>
-        <link
-          href={asset(`/styles.css?revision=${revision}`)}
-          rel="stylesheet"
-        />
-
-        <link
-          rel="preconnect"
-          href="https://cdn.jsdelivr.net"
-          crossorigin=""
-        />
+        <style id="esmera-critical">{CRITICAL_CSS}</style>
         <link
           rel="preload"
           as="font"
           type="font/woff2"
           crossorigin=""
-          href="https://cdn.jsdelivr.net/fontsource/fonts/inter@5.3.0/latin-300-normal.woff2"
+          href={asset("/fonts/inter-latin-300-normal.woff2")}
         />
-        <link
-          rel="preconnect"
-          href="https://esmeracms-green.vercel.app"
-          crossorigin=""
+
+        <StyleLink
+          href={asset(`/styles.css?revision=${revision}`)}
+          deferred={isHome}
         />
-        <link
-          rel="stylesheet"
+        <StyleLink
           href={asset(`/esmera-master.css?v=${storefrontStyleRevision}`)}
+          deferred={isHome}
         />
-        <link rel="stylesheet" href={asset("/esmera-finish.css")} />
-        <link
-          rel="stylesheet"
+        <StyleLink href={asset("/esmera-finish.css")} deferred={isHome} />
+        <StyleLink
           href={asset("/esmera-commerce-refine.css")}
+          deferred={isHome}
         />
+
         <link
           rel="preload"
           as="style"
@@ -75,36 +119,34 @@ export default defineApp(async (_req, ctx) => {
 
         {isHome && (
           <>
-            <link
-              rel="stylesheet"
+            <StyleLink
               href={asset(
                 `/esmera-matter-interaction.css?v=${homeStyleRevision}`,
               )}
+              deferred
             />
-            <link
-              rel="stylesheet"
+            <StyleLink
               href={asset(
                 `/esmera-home-art-direction-v2.css?v=${homeArtDirectionRevision}`,
               )}
+              deferred
             />
-            <link
-              rel="stylesheet"
+            <StyleLink
               href={asset(
                 `/esmera-home-length-refinement-v3.css?v=${homeLengthRevision}`,
               )}
+              deferred
             />
           </>
         )}
         {isCatalog && (
           <>
-            <link
-              rel="stylesheet"
+            <StyleLink
               href={asset(
                 `/esmera-catalog-v2.css?v=${storefrontStyleRevision}`,
               )}
             />
-            <link
-              rel="stylesheet"
+            <StyleLink
               href={asset(
                 `/esmera-collection-filter-v3.css?v=${storefrontStyleRevision}`,
               )}
@@ -112,46 +154,51 @@ export default defineApp(async (_req, ctx) => {
           </>
         )}
 
-        <link
-          rel="stylesheet"
+        <StyleLink
           href={asset(`/esmera-header.css?v=${storefrontStyleRevision}`)}
+          deferred={isHome}
         />
-        <link
-          rel="stylesheet"
+        <StyleLink
           href={asset(`/esmera-shell-cro-v1.css?v=${shellCroRevision}`)}
+          deferred={isHome}
         />
         {hasProductCards && (
-          <link
-            rel="stylesheet"
+          <StyleLink
             href={asset(
               `/esmera-product-card.css?v=${productCardStyleRevision}`,
             )}
+            deferred={isHome}
           />
         )}
-        <link
-          rel="stylesheet"
+        <StyleLink
           href={asset(`/esmera-motion-v2.css?v=${homeStyleRevision}`)}
+          deferred={isHome}
         />
-        <link
-          rel="stylesheet"
+        <StyleLink
           href={asset("/esmera-accessibility-p1-v1.css")}
+          deferred={isHome}
         />
         {isAbout && (
-          <link
-            rel="stylesheet"
+          <StyleLink
             href={asset(`/esmera-about-page.css?v=${aboutStyleRevision}`)}
           />
         )}
-        <link
-          rel="stylesheet"
+        <StyleLink
           href={asset(`/esmera-footer.css?v=${footerStyleRevision}`)}
+          deferred={isHome}
         />
-        <link
-          rel="stylesheet"
+        <StyleLink
           href={asset(
             `/esmera-mobile-recovery-v4.css?v=${mobileRecoveryRevision}`,
           )}
+          deferred={isHome}
         />
+
+        {isHome && (
+          <script id="esmera-deferred-style-bootstrap">
+            {DEFERRED_STYLE_BOOTSTRAP}
+          </script>
+        )}
 
         <meta
           name="viewport"
