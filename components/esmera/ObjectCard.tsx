@@ -61,7 +61,7 @@ export default function ObjectCard(
 
   return (
     <div
-      class="esv-product-card"
+      class={`esv-product-card`}
       role="listitem"
       data-product-id={vm.id}
       data-motion="reveal"
