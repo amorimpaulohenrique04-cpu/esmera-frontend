@@ -911,7 +911,7 @@ export default function ProductModal() {
                 type="button"
                 onClick={addToCart}
                 aria-invalid={personalizationAttempted &&
-                    Boolean(personalizationError)}
+                  Boolean(personalizationError)}
               >
                 <span>
                   {personalizationRequired
