@@ -13,16 +13,16 @@ export interface FramePersonalization {
 }
 
 export const FRAME_PHRASES_LARGE = [
-  "“Tudo o que fizerem, façam de todo o coração, como para o Senhor, e não para os homens”. Colossenses 3:23",
+  "“Tudo o que fizerem, façam de todo o coração, como para o Senhor, e não para os homens\". Colossenses 3:23",
   "“A água rompe a rocha não pela força mas pela constância”. Hebreus 10:36",
   "Há beleza em tudo aquilo que floresce no seu próprio tempo",
   "A gente leva da vida, a vida que a gente leva",
   "Que nunca nos falte coragem para recomeçar e delicadeza para continuar",
   "A vida fica mais bonita quando a gente aprende a apreciar o caminho",
-  "“Confiem para sempre no Senhor, pois o Senhor, somente o Senhor, é rocha eterna”. Isaías 26:4",
+  "“Confiem para sempre no senhor pois o senhor, somente o senhor é rocha eterna”. Isaías 26:4",
   "Abençoada seja a mulher que teme ao Senhor e guia seus filhos no caminho da verdade",
   "Sobre a Rocha minha casa estará para sempre",
-  "“O seu valor em muito ultrapassa o de finas joias”. Provérbios 31:10",
+  "“O seu valor em muito ultrapassa o de finas joias” Provérbios 31:10",
   "Que haja Rocha sob os seus pés e tesouro no seu coração",
   "“O justo anda na sua integridade; felizes são os seus filhos depois dele.” Provérbios 20:7",
   "“Acima de todas as coisas guarde o seu coração, pois ele dirige o rumo da sua vida”. Provérbios 4:23",
@@ -182,12 +182,12 @@ export function coerceFramePersonalization(
   const text = typeof data.text === "string"
     ? data.text.trim().slice(0, maxFrameTextLength(size))
     : "";
-  const normalized: FramePersonalization = {
+  if (!finish || !text) return undefined;
+  return {
     kind: "frame_text",
     size,
     finish,
     mode,
     text,
   };
-  return validateFramePersonalization(normalized) ? undefined : normalized;
 }
