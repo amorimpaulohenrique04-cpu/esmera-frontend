@@ -16,7 +16,29 @@ export default function BuyButton(
   { productId, productSlug, productTitle, product }: BuyButtonProps,
 ) {
   const needsPersonalization = isFramePersonalizationProduct(product);
-  const actionLabel = needsPersonalization ? "Personalizar" : "Adicionar ao carrinho";
+  const actionLabel = needsPersonalization
+    ? "Personalizar"
+    : "Adicionar ao carrinho";
+
+  const handleClick = (trigger: HTMLButtonElement) => {
+    const detail = {
+      productId,
+      productSlug,
+      product,
+      trigger,
+    };
+
+    if (needsPersonalization) {
+      globalThis.dispatchEvent(
+        new CustomEvent("esmera:open-product", { detail }),
+      );
+      return;
+    }
+
+    globalThis.dispatchEvent(
+      new CustomEvent("esmera:add-to-enquiry", { detail }),
+    );
+  };
 
   return (
     <button
@@ -25,20 +47,7 @@ export default function BuyButton(
       aria-label={needsPersonalization
         ? `Personalizar ${productTitle}`
         : `Adicionar ${productTitle} ao carrinho`}
-      onClick={(event) =>
-        globalThis.dispatchEvent(
-          new CustomEvent(
-            needsPersonalization ? "esmera:open-product" : "esmera:add-to-enquiry",
-            {
-              detail: {
-                productId,
-                productSlug,
-                product,
-                trigger: event.currentTarget,
-              },
-            },
-          ),
-        )}
+      onClick={(event) => handleClick(event.currentTarget)}
     >
       <span>{actionLabel}</span>
       <svg viewBox="0 0 18 18" width="18" height="18" aria-hidden="true">
