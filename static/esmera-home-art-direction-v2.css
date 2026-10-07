@@ -163,16 +163,6 @@
   background: #f4f1e9;
 }
 
-/* Never change the 3:2/contain image contract. */
-.esv-selected .esv-product-card .esv-product-media {
-  aspect-ratio: 3 / 2 !important;
-}
-
-.esv-selected .esv-product-card .esv-product-media img {
-  object-fit: contain !important;
-  object-position: center !important;
-}
-
 .esv-selected .esv-product-card-copy {
   min-height: 168px;
   padding-top: 15px;

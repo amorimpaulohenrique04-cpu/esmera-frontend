@@ -1,6 +1,6 @@
 /*
- * Product card v9 — horizontal editorial commerce for collectible stone objects.
- * Matches the Home product ratio: fixed 3:2 frame + contain.
+ * Product card v10 — intact photographic media for collectible stone objects.
+ * One shared 3:2 stage for Home/collections, no source crop and hover-only detail.
  */
 :root {
   --product-card-ground: #e9e5dc;
@@ -37,8 +37,8 @@
 }
 
 /*
- * The catalog uses the same horizontal stage as the Home product shelf.
- * Source images remain fully visible with contain.
+ * Home and collection cards share this horizontal 3:2 stage. Crops are
+ * forbidden at the presentation layer; the API must deliver uncropped media.
  */
 .esv-product-card .esv-product-media-wrap {
   position: relative;

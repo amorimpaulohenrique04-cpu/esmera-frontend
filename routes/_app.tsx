@@ -8,12 +8,12 @@ export default defineApp(async (_req, ctx) => {
   // Preserve the stable storefront token for unchanged CSS contracts and bump
   // only the layers that own new visual behavior.
   const storefrontStyleRevision = "2026-09-23-mobile-header-five-zone-v37";
-  const productCardStyleRevision = "2026-10-07-horizontal-home-ratio-v9";
+  const productCardStyleRevision = "2026-10-07-uncropped-media-v10";
   const framePersonalizationStyleRevision = "2026-10-07-frame-v2";
   const aboutStyleRevision = "2026-09-23-privacy-editorial-v2";
   const homeStyleRevision = "2026-09-23-motion-handoff-v38";
   const footerStyleRevision = "2026-08-15-footer-whatsapp-form-v3";
-  const homeArtDirectionRevision = "2026-09-23-home-art-direction-v4";
+  const homeArtDirectionRevision = "2026-10-07-home-card-ownership-v5";
   const homeLengthRevision =
     "2026-09-23-home-length-refinement-v5-tablet-section6";
   const mobileRecoveryRevision = "2026-09-23-mobile-recovery-v5";
