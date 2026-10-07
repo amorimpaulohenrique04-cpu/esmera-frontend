@@ -6,11 +6,11 @@ import type { NavigationNode } from "../lib/payload/navigation.ts";
 import type { EsmeraObject, EsmeraVariant } from "../lib/payload/types.ts";
 import {
   coerceFramePersonalization,
+  type FramePersonalization,
   frameFinishLabel,
   framePersonalizationKey,
   frameSizeLabel,
   isFramePersonalizationProduct,
-  type FramePersonalization,
 } from "../lib/esmera/framePersonalization.ts";
 import { useMenuNavigationCoordinator } from "../lib/esmera/useMenuNavigationCoordinator.ts";
 
