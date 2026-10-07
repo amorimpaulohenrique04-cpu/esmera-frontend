@@ -6,11 +6,11 @@ import type { NavigationNode } from "../lib/payload/navigation.ts";
 import type { EsmeraObject, EsmeraVariant } from "../lib/payload/types.ts";
 import {
   coerceFramePersonalization,
-  type FramePersonalization,
   frameFinishLabel,
   framePersonalizationKey,
   frameSizeLabel,
   isFramePersonalizationProduct,
+  type FramePersonalization,
 } from "../lib/esmera/framePersonalization.ts";
 import { useMenuNavigationCoordinator } from "../lib/esmera/useMenuNavigationCoordinator.ts";
 
@@ -558,15 +558,19 @@ export default function EsmeraHeader({
     "Olá, gostaria de finalizar este carrinho Esméra:",
     ...cart.map(({ product, quantity, variant, personalization }) => {
       const lines = [
-        `${quantity}x ${product.title}${variant ? ` — ${variant.label}` : ""} — ${
-          variant?.formattedPrice ?? product.formattedPrice
-        }`,
+        `${quantity}x ${product.title}${
+          variant ? ` — ${variant.label}` : ""
+        } — ${variant?.formattedPrice ?? product.formattedPrice}`,
       ];
       if (personalization) {
         lines.push(
           `Personalização: ${frameSizeLabel(personalization.size)} · ${
             frameFinishLabel(personalization.finish)
-          } · ${personalization.mode === "custom" ? "frase personalizada" : "frase pronta"}`,
+          } · ${
+            personalization.mode === "custom"
+              ? "frase personalizada"
+              : "frase pronta"
+          }`,
           `Texto: “${personalization.text}”`,
         );
       }
@@ -836,7 +840,9 @@ export default function EsmeraHeader({
                                 {item.personalization && (
                                   <span class="esv-cart-personalization">
                                     <small>
-                                      {frameSizeLabel(item.personalization.size)} · {frameFinishLabel(
+                                      {frameSizeLabel(
+                                        item.personalization.size,
+                                      )} · {frameFinishLabel(
                                         item.personalization.finish,
                                       )}
                                     </small>
