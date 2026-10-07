@@ -335,7 +335,9 @@ export default function ProductModal() {
   const [personalization, setPersonalization] = useState<
     FramePersonalization | null
   >(null);
-  const [personalizationAttempted, setPersonalizationAttempted] = useState(false);
+  const [personalizationAttempted, setPersonalizationAttempted] = useState(
+    false,
+  );
   const [activeDesktopIndex, setActiveDesktopIndex] = useState(0);
   const [activeCompactIndex, setActiveCompactIndex] = useState(0);
   const [zoomIndex, setZoomIndex] = useState<number | null>(null);
@@ -906,13 +908,16 @@ export default function ProductModal() {
                 class="esv-product-modal-add"
                 type="button"
                 onClick={addToCart}
-                aria-describedby={personalizationAttempted && personalizationError
+                aria-describedby={personalizationAttempted &&
+                    personalizationError
                   ? "esv-frame-personalization-title"
                   : undefined}
               >
-                <span>{personalizationRequired
-                  ? "Adicionar personalizado"
-                  : "Adicionar ao carrinho"}</span>
+                <span>
+                  {personalizationRequired
+                    ? "Adicionar personalizado"
+                    : "Adicionar ao carrinho"}
+                </span>
                 <span aria-hidden="true">↗</span>
               </button>
             </div>
