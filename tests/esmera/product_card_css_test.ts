@@ -28,7 +28,9 @@ Deno.test("product card stylesheet is the only owner of card presentation", asyn
   assertStringIncludes(card, ".esv-collection-v2-grid .esv-card-cta");
   assertStringIncludes(card, ".esv-product-shelf .esv-card-cta");
   assertStringIncludes(card, 'font-family: "Inter", sans-serif');
-  assertStringIncludes(card, "aspect-ratio: 3 / 2 !important");
+  assertStringIncludes(card, "aspect-ratio: 3 / 4;");
+  assertFalse(card.includes("aspect-ratio: 3 / 2 !important"));
+  assertStringIncludes(card, ".esv-product-card .esv-product-media > img");
   assertStringIncludes(card, "object-fit: contain");
   assertStringIncludes(card, "object-position: center");
   assertFalse(card.includes("object-fit: cover"));
@@ -60,6 +62,8 @@ Deno.test("product card stylesheet is the only owner of card presentation", asyn
     ".esv-product-card.has-detail:hover .esv-product-image-detail",
   );
   assertFalse(master.includes(".esv-product-media img"));
+  assertStringIncludes(card, "@media (prefers-reduced-motion: reduce)");
+  assertStringIncludes(card, ".esv-product-card .esv-product-media > img");
 
   assertStringIncludes(component, 'class="esv-card-installment"');
   assertFalse(component.includes("containClass"));
