@@ -1,11 +1,12 @@
 import { assert, assertFalse, assertStringIncludes } from "@std/assert";
 
 Deno.test("product card stylesheet is the only owner of card presentation", async () => {
-  const [catalog, finish, master, card, app, component, buyButton, header] =
+  const [catalog, finish, master, homeArt, card, app, component, buyButton, header] =
     await Promise.all([
       Deno.readTextFile("static/esmera-catalog-v2.css"),
       Deno.readTextFile("static/esmera-finish.css"),
       Deno.readTextFile("static/esmera-master.css"),
+      Deno.readTextFile("static/esmera-home-art-direction-v2.css"),
       Deno.readTextFile("static/esmera-product-card.css"),
       Deno.readTextFile("routes/_app.tsx"),
       Deno.readTextFile("components/esmera/ObjectCard.tsx"),
@@ -63,6 +64,9 @@ Deno.test("product card stylesheet is the only owner of card presentation", asyn
     ".esv-product-card.has-detail:hover .esv-product-image-detail",
   );
   assertFalse(master.includes(".esv-product-media img"));
+  assertFalse(homeArt.includes("aspect-ratio: 3 / 2 !important"));
+  assertFalse(homeArt.includes("object-fit: contain !important"));
+  assertFalse(homeArt.includes(".esv-selected .esv-product-card .esv-product-media img"));
   assertStringIncludes(card, "@media (prefers-reduced-motion: reduce)");
   assertStringIncludes(card, ".esv-product-card .esv-product-media > img");
 
