@@ -52,6 +52,27 @@ Deno.test("renders Payload card images with a native responsive srcset", () => {
   assertStringIncludes(html, " 828w");
 });
 
+Deno.test("preserves full CMS source on product cards without optimizer or srcset", () => {
+  const original =
+    "https://esmeracms-green.vercel.app/api/media/file/19X2Cdgf3dpz1GBPqOKMGegS140Bug0kD-w1200";
+  const html = render(
+    <EsmeraImage
+      src={original}
+      alt="Kit Lavabo em Bege Bahia"
+      width={1200}
+      height={800}
+      sizes="31vw"
+      preserveOriginal
+    />,
+  );
+
+  assertStringIncludes(html, `src="${original}"`);
+  assertStringIncludes(html, 'alt="Kit Lavabo em Bege Bahia"');
+  assertFalse(html.includes("/_next/image"));
+  assertFalse(html.includes("srcset="));
+  assertFalse(html.includes("900x1200"));
+});
+
 Deno.test("renders Payload picture sources directly for mobile and desktop", () => {
   const html = render(
     <EsmeraPicture
