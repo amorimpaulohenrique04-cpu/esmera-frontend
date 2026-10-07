@@ -1,4 +1,5 @@
 import Arrow from "../components/esmera/Arrow.tsx";
+import { isFramePersonalizationProduct } from "../lib/esmera/framePersonalization.ts";
 import { ensureProductModalStyles } from "../lib/esmera/productModalStyles.ts";
 import type { ModalProductMedia } from "../lib/esmera/productDetail.ts";
 import type { EsmeraObject } from "../lib/payload/types.ts";
@@ -24,10 +25,12 @@ async function requestModalProduct(
   fallback: EsmeraObject,
 ): Promise<EsmeraObject | null> {
   try {
-    const response = await fetch(
-      `/api/esmera-product-detail?slug=${encodeURIComponent(slug)}&full=1`,
-      { headers: { accept: "application/json" } },
-    );
+    const endpoint = isFramePersonalizationProduct(fallback)
+      ? `/api/esmera-product-detail?full=1&slug=${encodeURIComponent(slug)}`
+      : `/api/esmera-product-detail?slug=${encodeURIComponent(slug)}`;
+    const response = await fetch(endpoint, {
+      headers: { accept: "application/json" },
+    });
     if (!response.ok) throw new Error("product detail failed");
     const data = await response.json() as ProductDetailResponse;
     const media = data.product ?? null;
