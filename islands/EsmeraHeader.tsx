@@ -3,6 +3,14 @@ import DynamicMenu from "./DynamicMenu.tsx";
 import type { HeaderVariant } from "../lib/esmera/shellData.ts";
 import type { NavigationNode } from "../lib/payload/navigation.ts";
 import type { EsmeraObject, EsmeraVariant } from "../lib/payload/types.ts";
+import {
+  coerceFramePersonalization,
+  frameFinishLabel,
+  type FramePersonalization,
+  framePersonalizationKey,
+  frameSizeLabel,
+  isFramePersonalizationProduct,
+} from "../lib/esmera/framePersonalization.ts";
 import { useMenuNavigationCoordinator } from "../lib/esmera/useMenuNavigationCoordinator.ts";
 
 type Overlay = "search" | "enquiry" | null;
@@ -12,6 +20,7 @@ type CartItem = {
   product: EsmeraObject;
   quantity: number;
   variant?: EsmeraVariant;
+  personalization?: FramePersonalization;
 };
 type StoredCartItem = {
   id: string;
@@ -24,6 +33,7 @@ type StoredCartItem = {
   priceCents: number | null;
   formattedPrice: string;
   quantity: number;
+  personalization?: FramePersonalization;
   variant?: {
     sku: string;
     label: string;
@@ -83,7 +93,11 @@ const formatBRL = (cents: number) =>
   );
 
 const cartItemKey = (item: CartItem) =>
-  `${item.product.id}:${item.variant?.sku ?? "base"}`;
+  [
+    item.product.id,
+    item.variant?.sku ?? "base",
+    framePersonalizationKey(item.personalization),
+  ].join(":");
 
 function checkoutHref(base: string, message: string) {
   if (!base) return "";
@@ -232,11 +246,21 @@ export default function EsmeraHeader({
     requestAnimationFrame(() => setOverlayPhase("open"));
   };
 
-  const addToCart = (product: EsmeraObject, variant?: EsmeraVariant) => {
-    const key = `${product.id}:${variant?.sku ?? "base"}`;
+  const addToCart = (
+    product: EsmeraObject,
+    variant?: EsmeraVariant,
+    personalization?: FramePersonalization,
+  ) => {
+    const key = [
+      product.id,
+      variant?.sku ?? "base",
+      framePersonalizationKey(personalization),
+    ].join(":");
     setCart((current) => {
       const existing = current.find((item) => cartItemKey(item) === key);
-      if (!existing) return [...current, { product, variant, quantity: 1 }];
+      if (!existing) {
+        return [...current, { product, variant, personalization, quantity: 1 }];
+      }
       return current.map((item) =>
         cartItemKey(item) === key
           ? { ...item, quantity: item.quantity + 1 }
@@ -388,6 +412,7 @@ export default function EsmeraHeader({
           parsed.filter((item) => item.id && item.quantity > 0).map((item) => ({
             product: emptyProduct(item),
             quantity: item.quantity,
+            personalization: coerceFramePersonalization(item.personalization),
             variant: item.variant
               ? {
                 ...item.variant,
@@ -409,7 +434,7 @@ export default function EsmeraHeader({
   useEffect(() => {
     if (!cartReady) return;
     const stored: StoredCartItem[] = cart.map((
-      { product, quantity, variant },
+      { product, quantity, variant, personalization },
     ) => ({
       id: product.id,
       slug: product.slug,
@@ -421,6 +446,7 @@ export default function EsmeraHeader({
       priceCents: product.priceCents,
       formattedPrice: product.formattedPrice,
       quantity,
+      personalization,
       variant: variant
         ? {
           sku: variant.sku,
@@ -480,11 +506,34 @@ export default function EsmeraHeader({
     const add = (event: Event) => {
       const detail = (event as CustomEvent<{
         product?: EsmeraObject;
+        personalization?: unknown;
+        trigger?: HTMLElement;
         handoff?: boolean;
       }>).detail;
       const product = detail?.product;
       if (!product) return;
-      addToCart(product, product.variants.find((variant) => !variant.disabled));
+
+      const personalization = coerceFramePersonalization(
+        detail?.personalization,
+      );
+      if (isFramePersonalizationProduct(product) && !personalization) {
+        globalThis.dispatchEvent(
+          new CustomEvent("esmera:open-product", {
+            detail: {
+              product,
+              trigger: detail?.trigger,
+              handoff: Boolean(detail?.handoff),
+            },
+          }),
+        );
+        return;
+      }
+
+      addToCart(
+        product,
+        product.variants.find((variant) => !variant.disabled),
+        personalization,
+      );
       overlayHandoffRef.current = Boolean(detail?.handoff);
       openOverlay("enquiry");
     };
@@ -505,11 +554,26 @@ export default function EsmeraHeader({
   );
   const message = [
     "Olá, gostaria de finalizar este carrinho Esméra:",
-    ...cart.map(({ product, quantity, variant }) =>
-      `${quantity}x ${product.title}${variant ? ` — ${variant.label}` : ""} — ${
-        variant?.formattedPrice ?? product.formattedPrice
-      }`
-    ),
+    ...cart.map(({ product, quantity, variant, personalization }) => {
+      const lines = [
+        `${quantity}x ${product.title}${
+          variant ? ` — ${variant.label}` : ""
+        } — ${variant?.formattedPrice ?? product.formattedPrice}`,
+      ];
+      if (personalization) {
+        lines.push(
+          `Personalização: ${frameSizeLabel(personalization.size)} · ${
+            frameFinishLabel(personalization.finish)
+          } · ${
+            personalization.mode === "custom"
+              ? "frase personalizada"
+              : "frase pronta"
+          }`,
+          `Texto: “${personalization.text}”`,
+        );
+      }
+      return lines.join("\n   ");
+    }),
     subtotal > 0 ? `Subtotal estimado: ${formatBRL(subtotal)}` : "",
     hasInquiry ? "Itens sob consulta serão confirmados pela curadoria." : "",
   ].filter(Boolean).join("\n");
@@ -761,6 +825,18 @@ export default function EsmeraHeader({
                                 <strong>{item.product.title}</strong>
                                 {item.variant?.label && (
                                   <small>{item.variant.label}</small>
+                                )}
+                                {item.personalization && (
+                                  <span class="esv-cart-personalization">
+                                    <small>
+                                      {frameSizeLabel(
+                                        item.personalization.size,
+                                      )} · {frameFinishLabel(
+                                        item.personalization.finish,
+                                      )}
+                                    </small>
+                                    <span>“{item.personalization.text}”</span>
+                                  </span>
                                 )}
                                 <em class="esv-cart-item-price">
                                   {item.variant?.formattedPrice ??
