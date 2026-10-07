@@ -1,4 +1,4 @@
-import { assert, assertFalse, assertStringIncludes } from "@std/assert";
+import { assert, assertEquals, assertFalse, assertStringIncludes } from "@std/assert";
 
 Deno.test("product card stylesheet is the only owner of card presentation", async () => {
   const [catalog, finish, master, homeArt, card, app, component, buyButton, header] =
@@ -92,6 +92,8 @@ Deno.test("product card stylesheet is the only owner of card presentation", asyn
   assertStringIncludes(component, 'class="esv-product-image-detail"');
   assertStringIncludes(component, "vm.hoverImage &&");
   assertStringIncludes(component, 'alt=""');
+  assertStringIncludes(component, 'preserveOriginal');
+  assertEquals(component.split("preserveOriginal").length - 1, 2);
   assertStringIncludes(component, 'from "../../islands/BuyButton.tsx"');
   assertFalse(component.includes('class="esv-card-footer"'));
 
