@@ -49,6 +49,18 @@ Deno.test("product card stylesheet is the only owner of card presentation", asyn
   assertStringIncludes(card, "background: transparent");
   assertFalse(card.includes("border-top: 1px solid var(--product-card-line)"));
 
+  assertStringIncludes(card, ".esv-product-card .esv-product-image-detail");
+  assertStringIncludes(card, "opacity: 0;");
+  assertStringIncludes(
+    card,
+    ".esv-product-card.has-detail:hover .esv-product-image-primary",
+  );
+  assertStringIncludes(
+    card,
+    ".esv-product-card.has-detail:hover .esv-product-image-detail",
+  );
+  assertFalse(master.includes(".esv-product-media img"));
+
   assertStringIncludes(component, 'class="esv-card-installment"');
   assertFalse(component.includes("containClass"));
   assertFalse(component.includes("is-media-contain"));
@@ -63,9 +75,14 @@ Deno.test("product card stylesheet is the only owner of card presentation", asyn
   );
   assertStringIncludes(component, 'class="esv-card-value-row"');
   assertStringIncludes(component, 'class="esv-card-action-slot"');
-  assertStringIncludes(component, 'class="esv-product-image-static"');
-  assertFalse(component.includes("esv-product-image-detail"));
-  assertFalse(component.includes("vm.hoverImage &&"));
+  assertStringIncludes(
+    component,
+    'class={`esv-product-card${vm.hoverImage ? " has-detail" : ""}`}',
+  );
+  assertStringIncludes(component, '"esv-product-image-primary"');
+  assertStringIncludes(component, 'class="esv-product-image-detail"');
+  assertStringIncludes(component, "vm.hoverImage &&");
+  assertStringIncludes(component, 'alt=""');
   assertStringIncludes(component, 'from "../../islands/BuyButton.tsx"');
   assertFalse(component.includes('class="esv-card-footer"'));
 
