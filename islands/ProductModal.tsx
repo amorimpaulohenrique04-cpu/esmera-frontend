@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
-import ProductMediaViewer from "../components/esmera/ProductMediaViewer.tsx";
+import FramePersonalizationSelector from "../components/esmera/FramePersonalizationSelector.tsx";\nimport ProductMediaViewer from "../components/esmera/ProductMediaViewer.tsx";
 import { getAvailabilityMeta } from "../components/esmera/availability.ts";
 import {
   buildGalleryPlates,
@@ -11,6 +11,13 @@ import {
   plateLabel,
 } from "../lib/esmera/gallery.ts";
 import { buildInstallmentFromPriceCents } from "../lib/esmera/productCard.ts";
+import {
+  createFramePersonalization,
+  type FramePersonalization,
+  isFramePersonalizationProduct,
+  reconcileFramePersonalization,
+  validateFramePersonalization,
+} from "../lib/esmera/framePersonalization.ts";
 import { ensureProductModalStyles } from "../lib/esmera/productModalStyles.ts";
 import { useProductModalLinkSync } from "../lib/esmera/useProductModalLinkSync.ts";
 import type { EsmeraObject, EsmeraVariant } from "../lib/payload/types.ts";
@@ -324,6 +331,10 @@ export default function ProductModal() {
   const [selectedVariant, setSelectedVariant] = useState<
     EsmeraVariant | undefined
   >();
+  const [personalization, setPersonalization] = useState<
+    FramePersonalization | null
+  >(null);
+  const [personalizationAttempted, setPersonalizationAttempted] = useState(false);
   const [activeDesktopIndex, setActiveDesktopIndex] = useState(0);
   const [activeCompactIndex, setActiveCompactIndex] = useState(0);
   const [zoomIndex, setZoomIndex] = useState<number | null>(null);
@@ -381,6 +392,12 @@ export default function ProductModal() {
 
   const chooseVariant = (next: EsmeraVariant | undefined) => {
     setSelectedVariant(next);
+    setPersonalization((current) =>
+      current && product
+        ? reconcileFramePersonalization(product, next, current)
+        : current
+    );
+    setPersonalizationAttempted(false);
     if (!next || next.mediaKeys.length === 0) return;
     const mediaIndex = mediaIndexForKeys(images, next.mediaKeys);
     if (mediaIndex < 0) return;
@@ -416,6 +433,8 @@ export default function ProductModal() {
     updateZoomIndex(null);
     updatePhase("unmounted");
     setProduct(null);
+    setPersonalization(null);
+    setPersonalizationAttempted(false);
     setRecommendations([]);
     setRecommendationState("idle");
     const afterClose = afterCloseRef.current;
@@ -441,9 +460,14 @@ export default function ProductModal() {
     setActiveDesktopIndex(0);
     setActiveCompactIndex(0);
     setProduct(next);
-    setSelectedVariant(
-      next.variants.find((variant) => !variant.disabled),
+    const initialVariant = next.variants.find((variant) => !variant.disabled);
+    setSelectedVariant(initialVariant);
+    setPersonalization(
+      isFramePersonalizationProduct(next)
+        ? createFramePersonalization(next, initialVariant)
+        : null,
     );
+    setPersonalizationAttempted(false);
     setRecommendations([]);
     setRecommendationState("loading");
     updateZoomIndex(null);
@@ -675,7 +699,15 @@ export default function ProductModal() {
   const installment = activeIsInquiry
     ? null
     : buildInstallmentFromPriceCents(activePriceCents);
+  const personalizationRequired = isFramePersonalizationProduct(product);
+  const personalizationError = personalizationRequired
+    ? validateFramePersonalization(personalization)
+    : null;
   const addToCart = () => {
+    if (personalizationRequired && personalizationError) {
+      setPersonalizationAttempted(true);
+      return;
+    }
     const cartProduct = selectedVariant
       ? {
         ...product,
@@ -689,7 +721,13 @@ export default function ProductModal() {
     closeModal();
     globalThis.dispatchEvent(
       new CustomEvent("esmera:add-to-enquiry", {
-        detail: { product: cartProduct, handoff: true },
+        detail: {
+          product: cartProduct,
+          handoff: true,
+          personalization: personalizationRequired
+            ? personalization ?? undefined
+            : undefined,
+        },
       }),
     );
   };
@@ -803,6 +841,19 @@ export default function ProductModal() {
                 </label>
               )}
 
+              {personalizationRequired && personalization && (
+                <FramePersonalizationSelector
+                  product={product}
+                  variant={selectedVariant}
+                  value={personalization}
+                  onChange={(next) => {
+                    setPersonalization(next);
+                    setPersonalizationAttempted(false);
+                  }}
+                  error={personalizationAttempted ? personalizationError : null}
+                />
+              )}
+
               {(recommendationState === "loading" ||
                 recommendationState === "ready") && (
                 <section
@@ -854,8 +905,13 @@ export default function ProductModal() {
                 class="esv-product-modal-add"
                 type="button"
                 onClick={addToCart}
+                aria-describedby={personalizationAttempted && personalizationError
+                  ? "esv-frame-personalization-title"
+                  : undefined}
               >
-                <span>Adicionar ao carrinho</span>
+                <span>{personalizationRequired
+                  ? "Adicionar personalizado"
+                  : "Adicionar ao carrinho"}</span>
                 <span aria-hidden="true">↗</span>
               </button>
             </div>
