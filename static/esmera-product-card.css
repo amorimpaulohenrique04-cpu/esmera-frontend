@@ -1,6 +1,6 @@
 /*
- * Product card v8 — portrait editorial commerce for collectible stone objects.
- * One photographic grammar for the whole catalog: fixed 3:4 frame + contain.
+ * Product card v9 — horizontal editorial commerce for collectible stone objects.
+ * Matches the Home product ratio: fixed 3:2 frame + contain.
  */
 :root {
   --product-card-ground: #e9e5dc;
@@ -37,8 +37,8 @@
 }
 
 /*
- * The catalog uses one fixed portrait stage while preserving every source image.
- * Vertical media fills the card more naturally; horizontal media remains intact.
+ * The catalog uses the same horizontal stage as the Home product shelf.
+ * Source images remain fully visible with contain.
  */
 .esv-product-card .esv-product-media-wrap {
   position: relative;
@@ -49,7 +49,7 @@
 .esv-product-card .esv-product-media {
   position: relative;
   margin: 0;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 3 / 2;
   overflow: hidden;
   background: var(--product-card-ground);
 }
