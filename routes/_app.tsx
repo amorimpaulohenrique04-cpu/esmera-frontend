@@ -8,7 +8,8 @@ export default defineApp(async (_req, ctx) => {
   // Preserve the stable storefront token for unchanged CSS contracts and bump
   // only the layers that own new visual behavior.
   const storefrontStyleRevision = "2026-09-23-mobile-header-five-zone-v37";
-  const productCardStyleRevision = "2026-09-23-favorites-modal-v4";
+  const productCardStyleRevision = "2026-10-07-single-media-v6";
+  const framePersonalizationStyleRevision = "2026-10-07-frame-v2";
   const aboutStyleRevision = "2026-09-23-privacy-editorial-v2";
   const homeStyleRevision = "2026-09-23-motion-handoff-v38";
   const footerStyleRevision = "2026-08-15-footer-whatsapp-form-v3";
@@ -128,6 +129,12 @@ export default defineApp(async (_req, ctx) => {
             )}
           />
         )}
+        <link
+          rel="stylesheet"
+          href={asset(
+            `/esmera-frame-personalization.css?v=${framePersonalizationStyleRevision}`,
+          )}
+        />
         <link
           rel="stylesheet"
           href={asset(`/esmera-motion-v2.css?v=${homeStyleRevision}`)}
