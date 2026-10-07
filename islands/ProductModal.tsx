@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
-import FramePersonalizationSelector from "../components/esmera/FramePersonalizationSelector.tsx";\nimport ProductMediaViewer from "../components/esmera/ProductMediaViewer.tsx";
+import FramePersonalizationSelector from "../components/esmera/FramePersonalizationSelector.tsx";
+import ProductMediaViewer from "../components/esmera/ProductMediaViewer.tsx";
 import { getAvailabilityMeta } from "../components/esmera/availability.ts";
 import {
   buildGalleryPlates,
