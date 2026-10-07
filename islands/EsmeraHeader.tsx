@@ -6,8 +6,8 @@ import type { NavigationNode } from "../lib/payload/navigation.ts";
 import type { EsmeraObject, EsmeraVariant } from "../lib/payload/types.ts";
 import {
   coerceFramePersonalization,
-  type FramePersonalization,
   frameFinishLabel,
+  type FramePersonalization,
   framePersonalizationKey,
   frameSizeLabel,
   isFramePersonalizationProduct,
