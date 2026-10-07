@@ -62,7 +62,8 @@ export default defineApp(async (_req, ctx) => {
   const revision = await Context.active().release?.revision();
   const storefrontStyleRevision = "2026-09-23-p3-css-split-v1";
   const productCardStyleRevision = "2026-10-07-card-media-v6";
-  const framePersonalizationStyleRevision = "2026-10-07-frame-personalization-v1";
+  const framePersonalizationStyleRevision =
+    "2026-10-07-frame-personalization-v1";
   const aboutStyleRevision = "2026-09-23-privacy-editorial-v2";
   const homeStyleRevision = "2026-09-23-p3-motion-v1";
   const footerStyleRevision = "2026-08-15-footer-whatsapp-form-v3";
