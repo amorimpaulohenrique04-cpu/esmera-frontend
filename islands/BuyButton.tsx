@@ -20,14 +20,41 @@ export default function BuyButton(
     ? "Personalizar"
     : "Adicionar ao carrinho";
 
-  const handleClick = (trigger: HTMLButtonElement) => {
-    const detail = { productId, productSlug, product, trigger };
+  const handleClick = async (trigger: HTMLButtonElement) => {
     if (needsPersonalization) {
+      let resolvedProduct = product;
+      try {
+        const params = new URLSearchParams({
+          slug: productSlug,
+          full: "1",
+        });
+        const response = await fetch(
+          `/api/esmera-product-detail?${params.toString()}`,
+          { headers: { accept: "application/json" } },
+        );
+        if (response.ok) {
+          const data = await response.json() as {
+            fullProduct?: EsmeraObject | null;
+          };
+          if (data.fullProduct) resolvedProduct = data.fullProduct;
+        }
+      } catch {
+        // O modal ainda abre com o fallback do card e exibe validação de tamanho.
+      }
       globalThis.dispatchEvent(
-        new CustomEvent("esmera:open-product", { detail }),
+        new CustomEvent("esmera:open-product", {
+          detail: {
+            productId,
+            productSlug,
+            product: resolvedProduct,
+            trigger,
+          },
+        }),
       );
       return;
     }
+
+    const detail = { productId, productSlug, product, trigger };
     globalThis.dispatchEvent(
       new CustomEvent("esmera:add-to-enquiry", { detail }),
     );
@@ -40,7 +67,7 @@ export default function BuyButton(
       aria-label={needsPersonalization
         ? `Personalizar ${productTitle}`
         : `Adicionar ${productTitle} ao carrinho`}
-      onClick={(event) => handleClick(event.currentTarget)}
+      onClick={(event) => void handleClick(event.currentTarget)}
     >
       <span>{actionLabel}</span>
       <svg viewBox="0 0 18 18" width="18" height="18" aria-hidden="true">
