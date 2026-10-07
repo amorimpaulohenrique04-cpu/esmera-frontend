@@ -95,6 +95,8 @@ export interface EsmeraImageProps {
   loading?: "lazy" | "eager";
   decoding?: "async" | "auto" | "sync";
   fetchPriority?: "high" | "low" | "auto";
+  /** Bypass Next image proxy for CMS originals that must never be cropped. */
+  preserveOriginal?: boolean;
 }
 
 export function EsmeraImage(
@@ -108,12 +110,20 @@ export function EsmeraImage(
     loading = "lazy",
     decoding = "async",
     fetchPriority = "auto",
+    preserveOriginal = false,
   }: EsmeraImageProps,
 ) {
   if (isDirectMediaURL(src)) {
     const payloadMedia = isPayloadMediaURL(src);
-    const directSrc = payloadMedia ? optimizePayloadMediaURL(src, width) : src;
-    const srcSet = payloadMedia ? payloadMediaSrcSet(src, width) : undefined;
+    // The product card uses the exact CMS source, just like the PDP/modal.
+    // Do not route original catalog photography through Next's image proxy:
+    // its cached derivative can differ from the original gallery image.
+    const directSrc = payloadMedia && !preserveOriginal
+      ? optimizePayloadMediaURL(src, width)
+      : src;
+    const srcSet = payloadMedia && !preserveOriginal
+      ? payloadMediaSrcSet(src, width)
+      : undefined;
     return (
       <img
         class={className}
