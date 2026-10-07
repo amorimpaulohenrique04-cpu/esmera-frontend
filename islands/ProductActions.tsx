@@ -1,4 +1,5 @@
 import Arrow from "../components/esmera/Arrow.tsx";
+import { isFramePersonalizationProduct } from "../lib/esmera/framePersonalization.ts";
 import { ensureProductModalStyles } from "../lib/esmera/productModalStyles.ts";
 import type { ModalProductMedia } from "../lib/esmera/productDetail.ts";
 import type { EsmeraObject } from "../lib/payload/types.ts";
@@ -12,41 +13,76 @@ export interface Props {
   presentation?: "actions" | "media" | "title";
 }
 
-type ProductDetailResponse = { product?: ModalProductMedia };
+type ProductDetailResponse = {
+  product?: ModalProductMedia;
+  fullProduct?: EsmeraObject | null;
+};
 
-const modalMediaCache = new Map<string, Promise<ModalProductMedia | null>>();
+const modalProductCache = new Map<string, Promise<EsmeraObject | null>>();
 
-async function requestModalMedia(
+async function requestModalProduct(
   slug: string,
-): Promise<ModalProductMedia | null> {
+  fallback: EsmeraObject,
+): Promise<EsmeraObject | null> {
   try {
-    const response = await fetch(
-      `/api/esmera-product-detail?slug=${encodeURIComponent(slug)}`,
-      { headers: { accept: "application/json" } },
-    );
+    const leanEndpoint =
+      `/api/esmera-product-detail?slug=${encodeURIComponent(slug)}`;
+    const params = new URLSearchParams({ slug });
+    if (isFramePersonalizationProduct(fallback)) params.set("full", "1");
+    const endpoint = isFramePersonalizationProduct(fallback)
+      ? `/api/esmera-product-detail?${params.toString()}`
+      : leanEndpoint;
+
+    const response = await fetch(endpoint, {
+      headers: { accept: "application/json" },
+    });
     if (!response.ok) throw new Error("product detail failed");
     const data = await response.json() as ProductDetailResponse;
     const media = data.product ?? null;
-    if (!media) modalMediaCache.delete(slug);
-    return media;
+    const fullProduct = data.fullProduct ?? null;
+
+    if (fullProduct) {
+      return media?.gallery.length
+        ? {
+          ...fullProduct,
+          image: media.image,
+          gallery: media.gallery,
+          detailImage: media.gallery.find((item) => item.role === "detail")
+            ?.url ?? fullProduct.detailImage,
+        }
+        : fullProduct;
+    }
+
+    if (media?.gallery.length) {
+      return {
+        ...fallback,
+        image: media.image,
+        gallery: media.gallery,
+        detailImage: media.gallery.find((item) => item.role === "detail")
+          ?.url ?? fallback.detailImage,
+      };
+    }
+
+    modalProductCache.delete(slug);
+    return null;
   } catch {
-    modalMediaCache.delete(slug);
+    modalProductCache.delete(slug);
     return null;
   }
 }
 
-function loadModalMedia(
+function loadModalProduct(
   product?: EsmeraObject,
-): Promise<ModalProductMedia | null> {
+): Promise<EsmeraObject | null> {
   if (!product?.slug || product.gallery.length > 0) {
-    return Promise.resolve(null);
+    return Promise.resolve(product ?? null);
   }
 
-  const cached = modalMediaCache.get(product.slug);
+  const cached = modalProductCache.get(product.slug);
   if (cached) return cached;
 
-  const pending = requestModalMedia(product.slug);
-  modalMediaCache.set(product.slug, pending);
+  const pending = requestModalProduct(product.slug, product);
+  modalProductCache.set(product.slug, pending);
   return pending;
 }
 
@@ -77,7 +113,7 @@ export default function ProductActions(
 
     // Cards Storefront V2 carregam só o crop 3:4. Antecipamos o detalhe para que
     // o clique abra o modal já com `sizes.gallery`, que preserva a proporção.
-    void loadModalMedia(product);
+    void loadModalProduct(product);
   };
 
   const dispatch = async (name: string, trigger: HTMLElement) => {
@@ -89,17 +125,8 @@ export default function ProductActions(
       : product;
 
     if (name === "esmera:open-product" && eventProduct) {
-      const media = await loadModalMedia(eventProduct);
-      if (media?.gallery.length) {
-        const detailImage = media.gallery.find((item) => item.role === "detail")
-          ?.url;
-        eventProduct = {
-          ...eventProduct,
-          image: media.image,
-          gallery: media.gallery,
-          detailImage: detailImage ?? eventProduct.detailImage,
-        };
-      }
+      const resolved = await loadModalProduct(eventProduct);
+      if (resolved) eventProduct = resolved;
     }
 
     globalThis.dispatchEvent(

@@ -61,7 +61,7 @@ export default function ObjectCard(
 
   return (
     <div
-      class={`esv-product-card${vm.hoverImage ? " has-detail" : ""}`}
+      class={`esv-product-card`}
       role="listitem"
       data-product-id={vm.id}
       data-motion="reveal"
@@ -77,9 +77,7 @@ export default function ObjectCard(
       <div class="esv-product-media-wrap">
         <figure class="esv-product-media">
           <EsmeraImage
-            class={vm.hoverImage
-              ? "esv-product-image-primary"
-              : "esv-product-image-static"}
+            class="esv-product-image-static"
             src={vm.image ?? ""}
             alt={vm.imageAlt}
             loading={priority ? "eager" : "lazy"}
@@ -89,18 +87,6 @@ export default function ObjectCard(
             height={800}
             sizes="(max-width: 639px) calc(100vw - 44px), (max-width: 1023px) 46vw, 31vw"
           />
-          {vm.hoverImage && (
-            <EsmeraImage
-              class="esv-product-image-detail"
-              src={vm.hoverImage}
-              alt={vm.hoverImageAlt}
-              loading="lazy"
-              decoding="async"
-              width={1200}
-              height={800}
-              sizes="(max-width: 639px) calc(100vw - 44px), (max-width: 1023px) 46vw, 31vw"
-            />
-          )}
         </figure>
 
         {vm.status.includes("SOB ENCOMENDA") && (

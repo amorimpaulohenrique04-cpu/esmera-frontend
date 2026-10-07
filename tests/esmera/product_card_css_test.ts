@@ -63,6 +63,9 @@ Deno.test("product card stylesheet is the only owner of card presentation", asyn
   );
   assertStringIncludes(component, 'class="esv-card-value-row"');
   assertStringIncludes(component, 'class="esv-card-action-slot"');
+  assertStringIncludes(component, 'class="esv-product-image-static"');
+  assertFalse(component.includes("esv-product-image-detail"));
+  assertFalse(component.includes("vm.hoverImage &&"));
   assertStringIncludes(component, 'from "../../islands/BuyButton.tsx"');
   assertFalse(component.includes('class="esv-card-footer"'));
 
