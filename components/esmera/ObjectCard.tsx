@@ -85,6 +85,7 @@ export default function ObjectCard(
             loading={priority ? "eager" : "lazy"}
             decoding="async"
             fetchPriority={priority ? "high" : "auto"}
+            preserveOriginal
             width={1200}
             height={800}
             sizes="(max-width: 639px) calc(100vw - 44px), (max-width: 1023px) 46vw, 31vw"
@@ -97,6 +98,7 @@ export default function ObjectCard(
               loading="lazy"
               decoding="async"
               fetchPriority="low"
+              preserveOriginal
               width={1200}
               height={800}
               sizes="(max-width: 639px) calc(100vw - 44px), (max-width: 1023px) 46vw, 31vw"
