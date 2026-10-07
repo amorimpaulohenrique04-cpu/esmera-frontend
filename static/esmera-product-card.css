@@ -66,8 +66,26 @@
   transition: opacity 200ms cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
-.esv-product-card .esv-product-image-static {
+.esv-product-card .esv-product-image-static,
+.esv-product-card .esv-product-image-primary {
   opacity: 1;
+}
+
+.esv-product-card .esv-product-image-detail {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .esv-product-card.has-detail:hover .esv-product-image-primary,
+  .esv-product-card.has-detail:has(:focus-visible) .esv-product-image-primary {
+    opacity: 0;
+  }
+
+  .esv-product-card.has-detail:hover .esv-product-image-detail,
+  .esv-product-card.has-detail:has(:focus-visible) .esv-product-image-detail {
+    opacity: 1;
+  }
 }
 
 .esv-product-card .esv-product-modal-trigger-media {
