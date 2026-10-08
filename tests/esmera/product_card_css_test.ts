@@ -1,18 +1,32 @@
-import { assert, assertEquals, assertFalse, assertStringIncludes } from "@std/assert";
+import {
+  assert,
+  assertEquals,
+  assertFalse,
+  assertStringIncludes,
+} from "@std/assert";
 
 Deno.test("product card stylesheet is the only owner of card presentation", async () => {
-  const [catalog, finish, master, homeArt, card, app, component, buyButton, header] =
-    await Promise.all([
-      Deno.readTextFile("static/esmera-catalog-v2.css"),
-      Deno.readTextFile("static/esmera-finish.css"),
-      Deno.readTextFile("static/esmera-master.css"),
-      Deno.readTextFile("static/esmera-home-art-direction-v2.css"),
-      Deno.readTextFile("static/esmera-product-card.css"),
-      Deno.readTextFile("routes/_app.tsx"),
-      Deno.readTextFile("components/esmera/ObjectCard.tsx"),
-      Deno.readTextFile("islands/BuyButton.tsx"),
-      Deno.readTextFile("islands/EsmeraHeader.tsx"),
-    ]);
+  const [
+    catalog,
+    finish,
+    master,
+    homeArt,
+    card,
+    app,
+    component,
+    buyButton,
+    header,
+  ] = await Promise.all([
+    Deno.readTextFile("static/esmera-catalog-v2.css"),
+    Deno.readTextFile("static/esmera-finish.css"),
+    Deno.readTextFile("static/esmera-master.css"),
+    Deno.readTextFile("static/esmera-home-art-direction-v2.css"),
+    Deno.readTextFile("static/esmera-product-card.css"),
+    Deno.readTextFile("routes/_app.tsx"),
+    Deno.readTextFile("components/esmera/ObjectCard.tsx"),
+    Deno.readTextFile("islands/BuyButton.tsx"),
+    Deno.readTextFile("islands/EsmeraHeader.tsx"),
+  ]);
 
   for (const legacy of [catalog, finish, master]) {
     assertFalse(legacy.includes(".esv-product-card"));
@@ -66,7 +80,9 @@ Deno.test("product card stylesheet is the only owner of card presentation", asyn
   assertFalse(master.includes(".esv-product-media img"));
   assertFalse(homeArt.includes("aspect-ratio: 3 / 2 !important"));
   assertFalse(homeArt.includes("object-fit: contain !important"));
-  assertFalse(homeArt.includes(".esv-selected .esv-product-card .esv-product-media img"));
+  assertFalse(
+    homeArt.includes(".esv-selected .esv-product-card .esv-product-media img"),
+  );
   assertStringIncludes(card, "@media (prefers-reduced-motion: reduce)");
   assertStringIncludes(card, ".esv-product-card .esv-product-media > img");
 
@@ -93,8 +109,9 @@ Deno.test("product card stylesheet is the only owner of card presentation", asyn
   assertStringIncludes(component, 'class="esv-product-image-detail"');
   assertStringIncludes(component, "vm.hoverImage &&");
   assertStringIncludes(component, 'alt=""');
-  assertStringIncludes(component, 'preserveOriginal');
-  assertEquals(component.split("preserveOriginal").length - 1, 2);
+  assertFalse(component.includes("EsmeraImage"));
+  assertFalse(component.includes("srcSet="));
+  assertEquals(component.split("<img").length - 1, 2);
   assertStringIncludes(component, 'from "../../islands/BuyButton.tsx"');
   assertFalse(component.includes('class="esv-card-footer"'));
 
@@ -119,5 +136,4 @@ Deno.test("product card stylesheet is the only owner of card presentation", asyn
   assertStringIncludes(supervisor, '"/api/esmera-product-detail?slug="');
   assertStringIncludes(card, ".esv-product-card-media-placeholder");
   assertFalse(card.includes("object-fit: cover"));
-
 });

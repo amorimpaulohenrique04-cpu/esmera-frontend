@@ -8,7 +8,6 @@ import {
   formatPriceCents,
   toProductCardViewModel,
 } from "../../lib/esmera/productCard.ts";
-import { EsmeraImage } from "./ResponsiveMedia.tsx";
 
 export interface Props {
   item: StorefrontProductV2 | EsmeraObject;
@@ -75,9 +74,10 @@ export default function ObjectCard(
         presentation="media"
       />
 
+      {/* Native images keep catalog media out of both image optimizers. */}
       <div class="esv-product-media-wrap">
         <figure class="esv-product-media">
-          <EsmeraImage
+          <img
             class={vm.hoverImage
               ? "esv-product-image-primary"
               : "esv-product-image-static"}
@@ -85,21 +85,19 @@ export default function ObjectCard(
             alt={vm.imageAlt}
             loading={priority ? "eager" : "lazy"}
             decoding="async"
-            fetchPriority={priority ? "high" : "auto"}
-            preserveOriginal
+            {...{ fetchPriority: priority ? "high" : "auto" }}
             width={1200}
             height={800}
             sizes="(max-width: 639px) calc(100vw - 44px), (max-width: 1023px) 46vw, 31vw"
           />
           {vm.hoverImage && (
-            <EsmeraImage
+            <img
               class="esv-product-image-detail"
               src={vm.hoverImage}
               alt=""
               loading="lazy"
               decoding="async"
-              fetchPriority="low"
-              preserveOriginal
+              {...{ fetchPriority: "low" }}
               width={1200}
               height={800}
               sizes="(max-width: 639px) calc(100vw - 44px), (max-width: 1023px) 46vw, 31vw"
