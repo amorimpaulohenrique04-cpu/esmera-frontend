@@ -9,6 +9,7 @@ export default defineApp(async (_req, ctx) => {
   // only the layers that own new visual behavior.
   const storefrontStyleRevision = "2026-09-23-mobile-header-five-zone-v37";
   const productCardStyleRevision = "native-hover-v5-20261008";
+  const collectionPaginationStyleRevision = "explicit-page-navigation-v1-20261007";
   const framePersonalizationStyleRevision = "2026-10-07-frame-v2";
   const aboutStyleRevision = "2026-09-23-privacy-editorial-v2";
   const homeStyleRevision = "2026-09-23-motion-handoff-v38";
@@ -107,7 +108,7 @@ export default defineApp(async (_req, ctx) => {
             <link
               rel="stylesheet"
               href={asset(
-                `/esmera-collection-filter-v3.css?v=${storefrontStyleRevision}`,
+                `/esmera-collection-filter-v3.css?v=${collectionPaginationStyleRevision}`,
               )}
             />
           </>
