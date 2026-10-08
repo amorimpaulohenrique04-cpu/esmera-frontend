@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import ObjectCard from "../components/esmera/ObjectCard.tsx";
-import { collectionPageHref, collectionPageItems } from "../lib/esmera/collectionPagination.ts";
+import {
+  collectionPageHref,
+  collectionPageItems,
+} from "../lib/esmera/collectionPagination.ts";
 import { CATALOG_MEDIA_REVISION } from "../lib/esmera/catalogMediaRevision.ts";
 import type { CatalogFilter, CollectionSort } from "../lib/payload/catalog.ts";
 import type { StorefrontProductV2 } from "../lib/esmera/storefront.ts";
