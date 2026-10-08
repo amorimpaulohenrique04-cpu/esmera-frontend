@@ -109,7 +109,13 @@ export default defineApp(async (_req, ctx) => {
             <link
               rel="stylesheet"
               href={asset(
-                `/esmera-collection-filter-v3.css?v=${collectionPaginationStyleRevision}`,
+                `/esmera-collection-filter-v3.css?v=${storefrontStyleRevision}`,
+              )}
+            />
+            <link
+              rel="stylesheet"
+              href={asset(
+                `/esmera-collection-pagination.css?v=${collectionPaginationStyleRevision}`,
               )}
             />
           </>
