@@ -57,11 +57,11 @@ Deno.test("product card stylesheet is the only owner of card presentation", asyn
   assertStringIncludes(card, "opacity: 0;");
   assertStringIncludes(
     card,
-    ".esv-product-card.has-detail:hover .esv-product-image-primary",
+    ".esv-product-card.has-detail.is-hover-ready:hover .esv-product-image-primary",
   );
   assertStringIncludes(
     card,
-    ".esv-product-card.has-detail:hover .esv-product-image-detail",
+    ".esv-product-card.has-detail.is-hover-ready:hover .esv-product-image-detail",
   );
   assertFalse(master.includes(".esv-product-media img"));
   assertFalse(homeArt.includes("aspect-ratio: 3 / 2 !important"));
@@ -82,6 +82,7 @@ Deno.test("product card stylesheet is the only owner of card presentation", asyn
     component,
     "text-[10px] font-light uppercase tracking-[0.15em] text-neutral-400",
   );
+  assertStringIncludes(component, "data-product-slug={vm.slug}");
   assertStringIncludes(component, 'class="esv-card-value-row"');
   assertStringIncludes(component, 'class="esv-card-action-slot"');
   assertStringIncludes(
@@ -106,4 +107,17 @@ Deno.test("product card stylesheet is the only owner of card presentation", asyn
   const headerIndex = app.indexOf("/esmera-header.css");
   assert(cardIndex > headerIndex);
   assertStringIncludes(app, 'const productCardStyleRevision = "');
+  assertStringIncludes(app, "/esmera-card-image-health.js");
+  const supervisor = await Deno.readTextFile(
+    "static/esmera-card-image-health.js",
+  );
+  assertStringIncludes(supervisor, 'document.addEventListener("load"');
+  assertStringIncludes(supervisor, 'document.addEventListener("error"');
+  assertStringIncludes(supervisor, '"is-hover-ready"');
+  assertStringIncludes(supervisor, "MAX_ALTERNATES = 8");
+  assertStringIncludes(supervisor, "MutationObserver");
+  assertStringIncludes(supervisor, '"/api/esmera-product-detail?slug="');
+  assertStringIncludes(card, ".esv-product-card-media-placeholder");
+  assertFalse(card.includes("object-fit: cover"));
+
 });
