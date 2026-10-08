@@ -82,7 +82,9 @@ Deno.test("paginated collections and load-more use the same new media revision",
       new URL("../../islands/CollectionExplorer.tsx", import.meta.url),
     );
     assertEquals(
-      explorer.includes('endpoint.searchParams.set("_cardMedia", CATALOG_MEDIA_REVISION)'),
+      explorer.includes(
+        'endpoint.searchParams.set("_cardMedia", CATALOG_MEDIA_REVISION)',
+      ),
       true,
     );
   } finally {
