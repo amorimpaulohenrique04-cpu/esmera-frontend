@@ -1,3 +1,4 @@
+import process from "node:process";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { chromium } from "playwright";
 

@@ -1,3 +1,4 @@
+import process from "node:process";
 // Deterministic browser regression: real CollectionExplorer + ObjectCard.
 // Commercial action islands are excluded; no CMS/database credentials needed.
 // npm install --no-save esbuild preact playwright && npx playwright install chromium

@@ -1,3 +1,4 @@
+import process from "node:process";
 // Real Fresh/Deco pages and CMS data; no substituted layout or commercial islands.
 import { chromium } from "playwright";
 import assert from "node:assert/strict";
@@ -49,7 +50,7 @@ try {
         y < await page.evaluate(() => document.documentElement.scrollHeight);
         y += viewport.height * .7
       ) {
-        await page.evaluate((y) => window.scrollTo(0, y), y);
+        await page.evaluate((y) => globalThis.scrollTo(0, y), y);
         await page.waitForTimeout(200);
       }
       await page.waitForFunction(

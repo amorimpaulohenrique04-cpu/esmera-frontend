@@ -1,3 +1,4 @@
+import process from "node:process";
 import { mkdir, writeFile } from "node:fs/promises";
 import { chromium } from "playwright";
 
@@ -216,7 +217,10 @@ async function dispatchTrackedNavigation(page, targetHref, surfaceSelector) {
   );
   page.off("request", onRequest);
 
-  invariant(requestAt !== null, "Navigation request timestamp was not captured");
+  invariant(
+    requestAt !== null,
+    "Navigation request timestamp was not captured",
+  );
   const delayMs = requestAt - clickAt;
   invariant(
     delayMs >= 100,
@@ -332,8 +336,9 @@ async function validateSequentialRootHandoff(browser) {
           css.includes("view-transition-name"),
         hasExit80: css.includes("--motion-page-exit: 80ms"),
         hasEnter160: css.includes("--motion-page-enter: 160ms"),
-        hasDelayedNew: /::view-transition-new\(root\)[\s\S]*?var\(--motion-page-exit\) both;/
-          .test(css),
+        hasDelayedNew:
+          /::view-transition-new\(root\)[\s\S]*?var\(--motion-page-exit\) both;/
+            .test(css),
       };
     }, motionHref);
 

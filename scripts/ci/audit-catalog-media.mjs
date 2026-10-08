@@ -1,3 +1,4 @@
+import process from "node:process";
 import { writeFile } from "node:fs/promises";
 
 const CMS = process.env.PAYLOAD_API_URL || "https://esmeracms-green.vercel.app";
