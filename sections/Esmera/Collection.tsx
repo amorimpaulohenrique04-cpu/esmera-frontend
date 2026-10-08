@@ -33,20 +33,12 @@ export interface Props {
   pagination?: { page: number; totalPages: number; baseHref: string };
 }
 
-function pageHref(baseHref: string, page: number): string {
-  const [path, query = ""] = baseHref.split("?");
-  const params = new URLSearchParams(query);
-  params.set("page", String(page));
-  return `${path}?${params}`;
-}
-
 export default function Collection({
   eyebrow = "",
   title = "",
   text = "",
   products = [],
   totalDocs = products.length,
-  hasNextPage = false,
   endpoint = "/api/esmera-collection",
   ctaLabel = "",
   ctaHref = "",
@@ -98,7 +90,7 @@ export default function Collection({
           initialTotalDocs={totalDocs}
           initialPage={pagination?.page ?? 1}
           initialTotalPages={pagination?.totalPages ?? 1}
-          initialHasNextPage={hasNextPage}
+          baseHref={pagination?.baseHref ?? "/colecao"}
           endpoint={endpoint}
           visibleFilters={collectionFilters.visible}
           categories={collectionFilters.categories}
@@ -123,30 +115,7 @@ export default function Collection({
         </div>
       )}
 
-      {pagination && pagination.totalPages > 1 && (
-        <nav
-          class="esv-shell esv-collection-v2-pagination"
-          aria-label="Paginação da coleção"
-        >
-          {pagination.page > 1 && (
-            <a
-              rel="prev"
-              href={pageHref(pagination.baseHref, pagination.page - 1)}
-            >
-              Página anterior
-            </a>
-          )}
-          <span>Página {pagination.page} de {pagination.totalPages}</span>
-          {pagination.page < pagination.totalPages && (
-            <a
-              rel="next"
-              href={pageHref(pagination.baseHref, pagination.page + 1)}
-            >
-              Próxima página
-            </a>
-          )}
-        </nav>
-      )}
+
     </section>
   );
 }

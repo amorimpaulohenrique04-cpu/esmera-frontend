@@ -1,5 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import ObjectCard from "../components/esmera/ObjectCard.tsx";
+import {
+  collectionPageHref,
+  collectionPageItems,
+} from "../lib/esmera/collectionPagination.ts";
 import { CATALOG_MEDIA_REVISION } from "../lib/esmera/catalogMediaRevision.ts";
 import type { CatalogFilter, CollectionSort } from "../lib/payload/catalog.ts";
 import type { StorefrontProductV2 } from "../lib/esmera/storefront.ts";
@@ -10,7 +14,7 @@ export interface CollectionExplorerProps {
   initialTotalDocs: number;
   initialPage: number;
   initialTotalPages: number;
-  initialHasNextPage: boolean;
+  baseHref: string;
   endpoint: string;
   visibleFilters: CatalogFilter[];
   categories: Array<{ title: string; slug: string }>;
@@ -230,7 +234,6 @@ export default function CollectionExplorer(props: CollectionExplorerProps) {
   const [totalDocs, setTotalDocs] = useState(props.initialTotalDocs);
   const [page, setPage] = useState(props.initialPage);
   const [totalPages, setTotalPages] = useState(props.initialTotalPages);
-  const [hasNextPage, setHasNextPage] = useState(props.initialHasNextPage);
   const [qInput, setQInput] = useState(props.initial.q);
   const [q, setQ] = useState(props.initial.q);
   const [category, setCategory] = useState(props.initial.category);
@@ -242,7 +245,6 @@ export default function CollectionExplorer(props: CollectionExplorerProps) {
   const [replacing, setReplacing] = useState(false);
   const [error, setError] = useState("");
   const controllerRef = useRef<AbortController | null>(null);
-  const sentinelRef = useRef<HTMLDivElement>(null);
   const firstFilterRun = useRef(true);
   const filterExitTimer = useRef<
     ReturnType<typeof globalThis.setTimeout> | null
@@ -290,13 +292,12 @@ export default function CollectionExplorer(props: CollectionExplorerProps) {
     };
   }, [filtersOpen]);
 
-  const load = async (nextPage: number, append: boolean) => {
-    if (append && loading) return;
+  const load = async (nextPage: number) => {
     controllerRef.current?.abort();
     const controller = new AbortController();
     controllerRef.current = controller;
     setLoading(true);
-    setReplacing(!append);
+    setReplacing(true);
     setError("");
 
     const state: FilterState = {
@@ -337,15 +338,10 @@ export default function CollectionExplorer(props: CollectionExplorerProps) {
       });
       if (!response.ok) throw new Error("collection_unavailable");
       const data = await response.json() as CollectionResponse;
-      setItems((current) => {
-        const incoming = append ? [...current, ...data.items] : data.items;
-        const unique = new Map(incoming.map((item) => [item.id, item]));
-        return [...unique.values()];
-      });
+      setItems(data.items);
       setPage(data.pagination.page);
       setTotalPages(data.pagination.totalPages);
       setTotalDocs(data.pagination.totalDocs);
-      setHasNextPage(data.pagination.hasNextPage);
 
       const publicParams = paramsFromState({
         ...state,
@@ -380,22 +376,22 @@ export default function CollectionExplorer(props: CollectionExplorerProps) {
       firstFilterRun.current = false;
       return;
     }
-    void load(1, false);
+    void load(1);
     return () => controllerRef.current?.abort();
   }, [q, category, materials, availability, sort]);
 
-  useEffect(() => {
-    const sentinel = sentinelRef.current;
-    if (!sentinel || !hasNextPage) return;
-    const observer = new IntersectionObserver((entries) => {
-      if (entries[0]?.isIntersecting && !loading) void load(page + 1, true);
-    }, { rootMargin: "600px 0px" });
-    observer.observe(sentinel);
-    return () => observer.disconnect();
-  }, [page, hasNextPage, loading, q, category, materials, availability, sort]);
-
   const refinementCount = (category ? 1 : 0) + materials.length +
     (availability ? 1 : 0);
+  const paginationParams = paramsFromState({
+    q,
+    category,
+    materials,
+    availability,
+    sort,
+    page: 1,
+  }, rawMaterialValues(materials, props.materials));
+  const hrefForPage = (targetPage: number) =>
+    collectionPageHref(props.baseHref, paginationParams, targetPage);
 
   const activeFilters = useMemo(() => {
     const chips: Array<{ key: string; label: string; clear: () => void }> = [];
@@ -742,6 +738,7 @@ export default function CollectionExplorer(props: CollectionExplorerProps) {
       {items.length > 0
         ? (
           <div
+            id="esv-collection-results"
             class={`esv-collection-v2-grid${replacing ? " is-updating" : ""}`}
             role="list"
           >
@@ -777,22 +774,88 @@ export default function CollectionExplorer(props: CollectionExplorerProps) {
         </div>
       )}
 
-      <div
-        ref={sentinelRef}
-        class="esv-collection-v2-sentinel"
-        aria-hidden="true"
-      />
-      {hasNextPage && (
-        <div class="esv-collection-v2-more">
-          <button
-            type="button"
-            disabled={loading}
-            onClick={() => void load(page + 1, true)}
-          >
-            {loading ? "Carregando…" : "Carregar mais"}
-          </button>
-          <span>Página {page} de {totalPages}</span>
-        </div>
+      {!loading && totalPages > 1 && (
+        <nav
+          class="esv-collection-v2-page-nav"
+          aria-label="Paginação da coleção"
+        >
+          <p class="esv-collection-v2-page-nav-summary">
+            Página {page} de {totalPages}
+          </p>
+          <div class="esv-collection-v2-page-nav-controls">
+            {page > 1
+              ? (
+                <a
+                  class="esv-page-nav-direction esv-page-nav-prev"
+                  href={hrefForPage(page - 1)}
+                  rel="prev"
+                >
+                  <span aria-hidden="true">←</span> Página anterior
+                </a>
+              )
+              : (
+                <span
+                  class="esv-page-nav-direction esv-page-nav-prev is-disabled"
+                  aria-disabled="true"
+                >
+                  <span aria-hidden="true">←</span> Página anterior
+                </span>
+              )}
+            <div class="esv-page-nav-pages" aria-label="Páginas disponíveis">
+              {collectionPageItems(page, totalPages).map((item, index) =>
+                item === "ellipsis"
+                  ? (
+                    <span
+                      key={`ellipsis-${index}`}
+                      class="esv-page-nav-ellipsis"
+                      aria-hidden="true"
+                    >
+                      …
+                    </span>
+                  )
+                  : item === page
+                  ? (
+                    <span
+                      key={item}
+                      class="esv-page-nav-number is-current"
+                      aria-current="page"
+                      aria-label={`Página ${item}, atual`}
+                    >
+                      {item}
+                    </span>
+                  )
+                  : (
+                    <a
+                      key={item}
+                      class="esv-page-nav-number"
+                      href={hrefForPage(item)}
+                      aria-label={`Ir para a página ${item}`}
+                    >
+                      {item}
+                    </a>
+                  )
+              )}
+            </div>
+            {page < totalPages
+              ? (
+                <a
+                  class="esv-page-nav-direction esv-page-nav-next"
+                  href={hrefForPage(page + 1)}
+                  rel="next"
+                >
+                  Próxima página <span aria-hidden="true">→</span>
+                </a>
+              )
+              : (
+                <span
+                  class="esv-page-nav-direction esv-page-nav-next is-disabled"
+                  aria-disabled="true"
+                >
+                  Próxima página <span aria-hidden="true">→</span>
+                </span>
+              )}
+          </div>
+        </nav>
       )}
     </div>
   );
