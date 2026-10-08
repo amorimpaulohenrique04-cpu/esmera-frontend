@@ -6,6 +6,7 @@
  * Isso desacopla o frontend do CMS e estabiliza o card. Ver plano técnico, §6.
  */
 import { getPayloadBaseURL } from "../payload/client.ts";
+import { CATALOG_MEDIA_REVISION } from "./catalogMediaRevision.ts";
 import { PayloadAPIError } from "../payload/errors.ts";
 
 export type StorefrontMediaV2 = {
@@ -163,6 +164,11 @@ async function storefrontGet<T>(
   }
   const url = new URL(`/api/storefront/${path}`, getPayloadBaseURL());
   url.search = search.toString();
+  // Media selection changed in the CMS. Version listing URLs so CDN responses
+  // from earlier deploys cannot survive into later catalog pages.
+  if (path === "products" || path.startsWith("collections/")) {
+    url.searchParams.set("_cardMedia", CATALOG_MEDIA_REVISION);
+  }
 
   const controller = new AbortController();
   const timeout = setTimeout(
