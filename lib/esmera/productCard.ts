@@ -29,8 +29,10 @@ export interface ProductCardViewModel {
   installment: ProductCardInstallment | null;
   image: string | null;
   imageAlt: string;
+  originalImage?: string | null;
   hoverImage: string | null;
   hoverImageAlt: string;
+  originalHoverImage?: string | null;
   mediaFit: ProductCardMediaFit;
   isPurchasable: boolean;
 }
@@ -269,8 +271,10 @@ export function toProductCardViewModel(
     price: isInquiry ? null : formatPriceCents(priceCents),
     installment: isInquiry ? null : buildInstallmentFromPriceCents(priceCents),
     image: product.image?.url ?? null,
+    originalImage: product.image?.fullUrl ?? null,
     imageAlt: product.image?.alt ?? name,
     hoverImage: product.hoverImage?.url ?? null,
+    originalHoverImage: product.hoverImage?.fullUrl ?? null,
     hoverImageAlt: product.hoverImage?.alt ??
       (product.hoverImage ? `${name} — imagem complementar` : ""),
     mediaFit: resolveCardMediaFit(name, pieceType),

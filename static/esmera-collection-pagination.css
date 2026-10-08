@@ -130,3 +130,13 @@ a.esv-page-nav-number:focus-visible {
 @media (prefers-reduced-motion: reduce) {
   .esv-page-nav-direction, .esv-page-nav-number { transition: none; }
 }
+
+.esv-collection-v2-error button {
+  min-height: 44px;
+  margin-top: 12px;
+  padding: 0 18px;
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: var(--bg);
+  cursor: pointer;
+}

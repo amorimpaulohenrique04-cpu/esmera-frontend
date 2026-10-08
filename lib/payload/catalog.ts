@@ -94,7 +94,10 @@ export function buildCatalogQuery(
   categories: CatalogCategory[],
   fixedCategoryID?: string,
 ): CatalogQueryState {
-  const page = Math.max(1, Number(url.searchParams.get("page")) || 1);
+  const requestedPage = Number(url.searchParams.get("page"));
+  const page = Number.isSafeInteger(requestedPage) && requestedPage > 0
+    ? requestedPage
+    : 1;
   const q = url.searchParams.get("q")?.trim().slice(0, 80) ?? "";
   const materials = visibleFilters.includes("material")
     ? queryValues(url.searchParams, "material")

@@ -22,6 +22,9 @@ Deno.test("product modal prefers uncropped storefront gallery over 3:4 card crop
         {
           id: "gallery",
           url: "https://cms.example.com/gallery-1800x1200.jpg",
+          fullUrl: "https://cms.example.com/original-2400x1600.jpg",
+          fullWidth: 2400,
+          fullHeight: 1600,
           alt: "Bandeja Orgânica",
           width: 1800,
           height: 1200,
@@ -37,6 +40,12 @@ Deno.test("product modal prefers uncropped storefront gallery over 3:4 card crop
     media?.gallery[0].url,
     "https://cms.example.com/gallery-1800x1200.jpg",
   );
+  assertEquals(
+    media?.gallery[0].fullUrl,
+    "https://cms.example.com/original-2400x1600.jpg",
+  );
+  assertEquals(media?.gallery[0].fullWidth, 2400);
+  assertEquals(media?.gallery[0].fullHeight, 1600);
   assertEquals(media?.gallery[0].width, 1800);
   assertEquals(media?.gallery[0].height, 1200);
   assertEquals(media?.gallery[0].role, "cover");

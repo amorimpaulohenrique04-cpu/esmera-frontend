@@ -81,7 +81,8 @@ export default function ObjectCard(
             class={vm.hoverImage
               ? "esv-product-image-primary"
               : "esv-product-image-static"}
-            src={vm.image ?? ""}
+            src={vm.image || undefined}
+            data-original-src={vm.originalImage || undefined}
             alt={vm.imageAlt}
             loading={priority ? "eager" : "lazy"}
             decoding="async"
@@ -94,6 +95,7 @@ export default function ObjectCard(
             <img
               class="esv-product-image-detail"
               src={vm.hoverImage}
+              data-original-src={vm.originalHoverImage || undefined}
               alt=""
               loading="lazy"
               decoding="async"

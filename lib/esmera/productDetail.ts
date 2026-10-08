@@ -26,12 +26,12 @@ function galleryItem(
 
   return {
     url,
-    fullUrl: url,
+    fullUrl: media.fullUrl?.trim() || url,
     alt: media.alt?.trim() || "",
     width: media.width ?? undefined,
     height: media.height ?? undefined,
-    fullWidth: media.width ?? undefined,
-    fullHeight: media.height ?? undefined,
+    fullWidth: media.fullWidth ?? media.width ?? undefined,
+    fullHeight: media.fullHeight ?? media.height ?? undefined,
     key: `storefront-${media.id || index}-${index}`,
     role: roleForIndex(index),
   };
