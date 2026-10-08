@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import ObjectCard from "../components/esmera/ObjectCard.tsx";
+import { CATALOG_MEDIA_REVISION } from "../lib/esmera/catalogMediaRevision.ts";
 import type { CatalogFilter, CollectionSort } from "../lib/payload/catalog.ts";
 import type { StorefrontProductV2 } from "../lib/esmera/storefront.ts";
 import type { MaterialFacet } from "../loaders/Esmera/MaterialFacets.ts";
@@ -326,6 +327,8 @@ export default function CollectionExplorer(props: CollectionExplorerProps) {
     requestParams.forEach((value, key) =>
       endpoint.searchParams.append(key, value)
     );
+    // Force the same card media revision for page 2+ and filter changes.
+    endpoint.searchParams.set("_cardMedia", CATALOG_MEDIA_REVISION);
 
     try {
       const response = await fetch(endpoint.toString(), {
