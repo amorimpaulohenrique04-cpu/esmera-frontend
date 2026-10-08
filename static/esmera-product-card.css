@@ -77,15 +77,30 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .esv-product-card.has-detail:hover .esv-product-image-primary,
-  .esv-product-card.has-detail:has(:focus-visible) .esv-product-image-primary {
+  .esv-product-card.has-detail.is-hover-ready:hover .esv-product-image-primary,
+  .esv-product-card.has-detail.is-hover-ready:has(:focus-visible) .esv-product-image-primary {
     opacity: 0;
   }
 
-  .esv-product-card.has-detail:hover .esv-product-image-detail,
-  .esv-product-card.has-detail:has(:focus-visible) .esv-product-image-detail {
+  .esv-product-card.has-detail.is-hover-ready:hover .esv-product-image-detail,
+  .esv-product-card.has-detail.is-hover-ready:has(:focus-visible) .esv-product-image-detail {
     opacity: 1;
   }
+}
+
+.esv-product-card .esv-product-card-media-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  color: var(--product-card-muted);
+  font-size: 11px;
+  letter-spacing: .04em;
+  line-height: 1.5;
+  text-align: center;
+  pointer-events: none;
 }
 
 .esv-product-card .esv-product-modal-trigger-media {
