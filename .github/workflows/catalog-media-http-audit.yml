@@ -1,0 +1,36 @@
+name: Catalog media HTTP audit
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "scripts/ci/audit-catalog-media.mjs"
+      - ".github/workflows/catalog-media-http-audit.yml"
+      - "static/esmera-card-image-health.js"
+      - "components/esmera/ObjectCard.tsx"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      PAYLOAD_API_URL: https://esmeracms-green.vercel.app
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - name: Audit all catalog original and optimized image URLs
+        run: node scripts/ci/audit-catalog-media.mjs
+      - name: Upload itemized 112-product audit
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: esmera-catalog-media-http-audit
+          path: catalog-media-audit.json
+          retention-days: 7
+          if-no-files-found: warn
