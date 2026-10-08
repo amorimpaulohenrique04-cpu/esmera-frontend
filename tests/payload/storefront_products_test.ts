@@ -1,4 +1,5 @@
 import { assertEquals } from "@std/assert";
+import { CATALOG_MEDIA_REVISION } from "../../lib/esmera/catalogMediaRevision.ts";
 import { toProductGallery } from "../../lib/payload/adapters.ts";
 import type { PayloadProduct } from "../../lib/payload/types.ts";
 import {
@@ -45,7 +46,46 @@ Deno.test("requests the enriched root catalog with filters", async () => {
     assertEquals(result.revision, "catalog-revision");
     assertEquals(
       requested,
-      "https://cms.example.com/api/storefront/products?page=2&limit=24&piece_type=pulseiras",
+      `https://cms.example.com/api/storefront/products?page=2&limit=24&piece_type=pulseiras&_cardMedia=${CATALOG_MEDIA_REVISION}`,
+    );
+  } finally {
+    if (previous === undefined) Deno.env.delete("PAYLOAD_API_URL");
+    else Deno.env.set("PAYLOAD_API_URL", previous);
+  }
+});
+
+Deno.test("paginated collections and load-more use the same new media revision", async () => {
+  const previous = Deno.env.get("PAYLOAD_API_URL");
+  let requested = "";
+  try {
+    Deno.env.set("PAYLOAD_API_URL", "https://cms.example.com");
+    const { fetchStorefrontCollection } = await import(
+      "../../lib/esmera/storefront.ts"
+    );
+    await fetchStorefrontCollection(
+      "pecas",
+      new URLSearchParams({ page: "3", limit: "24" }),
+      {
+        fetcher: (input) => {
+          requested = String(input);
+          return Promise.resolve(Response.json({ version: 2, items: [] }));
+        },
+      },
+    );
+
+    const url = new URL(requested);
+    assertEquals(url.pathname, "/api/storefront/collections/pecas");
+    assertEquals(url.searchParams.get("page"), "3");
+    assertEquals(url.searchParams.get("_cardMedia"), CATALOG_MEDIA_REVISION);
+
+    const explorer = await Deno.readTextFile(
+      new URL("../../islands/CollectionExplorer.tsx", import.meta.url),
+    );
+    assertEquals(
+      explorer.includes(
+        'endpoint.searchParams.set("_cardMedia", CATALOG_MEDIA_REVISION)',
+      ),
+      true,
     );
   } finally {
     if (previous === undefined) Deno.env.delete("PAYLOAD_API_URL");
