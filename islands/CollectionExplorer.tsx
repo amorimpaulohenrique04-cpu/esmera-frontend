@@ -775,7 +775,10 @@ export default function CollectionExplorer(props: CollectionExplorerProps) {
       )}
 
       {!loading && totalPages > 1 && (
-        <nav class="esv-collection-v2-page-nav" aria-label="Paginação da coleção">
+        <nav
+          class="esv-collection-v2-page-nav"
+          aria-label="Paginação da coleção"
+        >
           <p class="esv-collection-v2-page-nav-summary">
             Página {page} de {totalPages}
           </p>
