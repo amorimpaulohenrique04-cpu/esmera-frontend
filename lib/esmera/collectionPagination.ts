@@ -10,9 +10,13 @@ export function collectionPageItems(
   const current = Math.max(1, Math.min(Math.trunc(currentPage), last));
   if (last <= 7) return Array.from({ length: last }, (_, index) => index + 1);
 
+  const candidates = current <= 3
+    ? [1, 2, 3, last - 1, last]
+    : current >= last - 2
+    ? [1, 2, last - 2, last - 1, last]
+    : [1, 2, current - 1, current, current + 1, last - 1, last];
   const pages = [...new Set(
-    [1, 2, current - 1, current, current + 1, last - 1, last]
-      .filter((page) => page >= 1 && page <= last),
+    candidates.filter((page) => page >= 1 && page <= last),
   )].sort((a, b) => a - b);
   const result: CollectionPageItem[] = [];
   for (const page of pages) {
