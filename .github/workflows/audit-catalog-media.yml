@@ -4,6 +4,8 @@ on:
     paths:
       - scripts/ci/audit-catalog-media.mjs
       - .github/workflows/audit-catalog-media.yml
+      - components/esmera/ResponsiveMedia.tsx
+      - islands/HeroCarousel.tsx
       - islands/CardMedia.tsx
       - components/esmera/ObjectCard.tsx
   workflow_dispatch:
@@ -16,7 +18,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-      - name: Check all 112 catalog cards, source and optimizer responses
+      - name: Check every catalog cover and hover source
         env:
           PAYLOAD_API_URL: https://esmeracms-green.vercel.app
         run: node scripts/ci/audit-catalog-media.mjs

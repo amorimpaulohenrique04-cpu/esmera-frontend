@@ -29,7 +29,7 @@ Deno.test("recognizes Payload media routes independently of the CMS host", () =>
   assertFalse(isPayloadMediaURL("not-a-url"));
 });
 
-Deno.test("renders Payload card images with a native responsive srcset", () => {
+Deno.test("renders CMS images directly without a quota-dependent proxy", () => {
   const html = render(
     <EsmeraImage
       src={payloadDesktop}
@@ -42,14 +42,14 @@ Deno.test("renders Payload card images with a native responsive srcset", () => {
 
   assertStringIncludes(
     html,
-    `src="${optimizePayloadMediaURL(payloadDesktop, 960).replaceAll("&", "&amp;")}"`,
+    `src="${
+      optimizePayloadMediaURL(payloadDesktop, 960).replaceAll("&", "&amp;")
+    }"`,
   );
   assertStringIncludes(html, 'alt="Produto Esméra"');
   assertFalse(html.includes("decoims.com/image"));
-  assertStringIncludes(html, "srcset=");
-  assertStringIncludes(html, " 640w");
-  assertStringIncludes(html, " 750w");
-  assertStringIncludes(html, " 828w");
+  assertFalse(html.includes("srcset="));
+  assertFalse(html.includes("/_next/image"));
 });
 
 Deno.test("preserves full CMS source on product cards without optimizer or srcset", () => {
@@ -88,18 +88,20 @@ Deno.test("renders Payload picture sources directly for mobile and desktop", () 
 
   assertStringIncludes(
     html,
-    `${optimizePayloadMediaURL(payloadMobile, 768).replaceAll("&", "&amp;")} 828w`,
+    `srcset="${payloadMobile}"`,
   );
   assertStringIncludes(
     html,
-    `${optimizePayloadMediaURL(payloadDesktop, 1920).replaceAll("&", "&amp;")} 1920w`,
+    `srcset="${payloadDesktop}"`,
   );
   assertStringIncludes(
     html,
-    `src="${optimizePayloadMediaURL(payloadDesktop, 1920).replaceAll("&", "&amp;")}"`,
+    `src="${
+      optimizePayloadMediaURL(payloadDesktop, 1920).replaceAll("&", "&amp;")
+    }"`,
   );
   assertFalse(html.includes("decoims.com/image"));
-  assertStringIncludes(html, "/_next/image?url=");
+  assertFalse(html.includes("/_next/image"));
 });
 
 Deno.test("keeps Deco optimization for native Deco assets", () => {

@@ -495,6 +495,101 @@ export default function CollectionExplorer(props: CollectionExplorerProps) {
       </button>
     ));
 
+  const renderPagination = (position: "top" | "bottom") => (
+    totalPages > 1 && (
+      <nav
+        class={`esv-collection-v2-page-nav${
+          position === "top" ? " is-top" : ""
+        }`}
+        aria-label={position === "top"
+          ? "Paginação acima dos produtos"
+          : "Paginação da coleção"}
+        aria-busy={loading}
+      >
+        <p class="esv-collection-v2-page-nav-summary">
+          Página {page} de {totalPages}
+          {loading ? " — Atualizando…" : ""}
+        </p>
+        <div class="esv-collection-v2-page-nav-controls">
+          {page > 1
+            ? (
+              <a
+                class="esv-page-nav-direction esv-page-nav-prev"
+                href={hrefForPage(page - 1)}
+                onClick={(event) => navigatePage(event, page - 1)}
+                rel="prev"
+              >
+                <span aria-hidden="true">←</span> Página anterior
+              </a>
+            )
+            : (
+              <span
+                class="esv-page-nav-direction esv-page-nav-prev is-disabled"
+                aria-disabled="true"
+              >
+                <span aria-hidden="true">←</span> Página anterior
+              </span>
+            )}
+          <div class="esv-page-nav-pages" aria-label="Páginas disponíveis">
+            {collectionPageItems(page, totalPages).map((item, index) =>
+              item === "ellipsis"
+                ? (
+                  <span
+                    key={`ellipsis-${index}`}
+                    class="esv-page-nav-ellipsis"
+                    aria-hidden="true"
+                  >
+                    …
+                  </span>
+                )
+                : item === page
+                ? (
+                  <span
+                    key={item}
+                    class="esv-page-nav-number is-current"
+                    aria-current="page"
+                    aria-label={`Página ${item}, atual`}
+                  >
+                    {item}
+                  </span>
+                )
+                : (
+                  <a
+                    key={item}
+                    class="esv-page-nav-number"
+                    href={hrefForPage(item)}
+                    onClick={(event) => navigatePage(event, item)}
+                    aria-label={`Ir para a página ${item}`}
+                  >
+                    {item}
+                  </a>
+                )
+            )}
+          </div>
+          {page < totalPages
+            ? (
+              <a
+                class="esv-page-nav-direction esv-page-nav-next"
+                href={hrefForPage(page + 1)}
+                onClick={(event) => navigatePage(event, page + 1)}
+                rel="next"
+              >
+                Próxima página <span aria-hidden="true">→</span>
+              </a>
+            )
+            : (
+              <span
+                class="esv-page-nav-direction esv-page-nav-next is-disabled"
+                aria-disabled="true"
+              >
+                Próxima página <span aria-hidden="true">→</span>
+              </span>
+            )}
+        </div>
+      </nav>
+    )
+  );
+
   return (
     <div class="esv-collection-v2" aria-busy={loading ? "true" : "false"}>
       <div class="esv-collection-v2-count" aria-live="polite">
@@ -764,6 +859,8 @@ export default function CollectionExplorer(props: CollectionExplorerProps) {
         </div>
       )}
 
+      {renderPagination("top")}
+
       {error && (
         <div class="esv-collection-v2-error" role="alert">
           <p>{error}</p>
@@ -774,6 +871,7 @@ export default function CollectionExplorer(props: CollectionExplorerProps) {
           >
             Tentar novamente
           </button>
+          <a href={hrefForPage(retryPage.current)}>Abrir página completa</a>
         </div>
       )}
 
@@ -817,92 +915,7 @@ export default function CollectionExplorer(props: CollectionExplorerProps) {
         </div>
       )}
 
-      {!loading && !error && totalPages > 1 && (
-        <nav
-          class="esv-collection-v2-page-nav"
-          aria-label="Paginação da coleção"
-        >
-          <p class="esv-collection-v2-page-nav-summary">
-            Página {page} de {totalPages}
-          </p>
-          <div class="esv-collection-v2-page-nav-controls">
-            {page > 1
-              ? (
-                <a
-                  class="esv-page-nav-direction esv-page-nav-prev"
-                  href={hrefForPage(page - 1)}
-                  onClick={(event) => navigatePage(event, page - 1)}
-                  rel="prev"
-                >
-                  <span aria-hidden="true">←</span> Página anterior
-                </a>
-              )
-              : (
-                <span
-                  class="esv-page-nav-direction esv-page-nav-prev is-disabled"
-                  aria-disabled="true"
-                >
-                  <span aria-hidden="true">←</span> Página anterior
-                </span>
-              )}
-            <div class="esv-page-nav-pages" aria-label="Páginas disponíveis">
-              {collectionPageItems(page, totalPages).map((item, index) =>
-                item === "ellipsis"
-                  ? (
-                    <span
-                      key={`ellipsis-${index}`}
-                      class="esv-page-nav-ellipsis"
-                      aria-hidden="true"
-                    >
-                      …
-                    </span>
-                  )
-                  : item === page
-                  ? (
-                    <span
-                      key={item}
-                      class="esv-page-nav-number is-current"
-                      aria-current="page"
-                      aria-label={`Página ${item}, atual`}
-                    >
-                      {item}
-                    </span>
-                  )
-                  : (
-                    <a
-                      key={item}
-                      class="esv-page-nav-number"
-                      href={hrefForPage(item)}
-                      onClick={(event) => navigatePage(event, item)}
-                      aria-label={`Ir para a página ${item}`}
-                    >
-                      {item}
-                    </a>
-                  )
-              )}
-            </div>
-            {page < totalPages
-              ? (
-                <a
-                  class="esv-page-nav-direction esv-page-nav-next"
-                  href={hrefForPage(page + 1)}
-                  onClick={(event) => navigatePage(event, page + 1)}
-                  rel="next"
-                >
-                  Próxima página <span aria-hidden="true">→</span>
-                </a>
-              )
-              : (
-                <span
-                  class="esv-page-nav-direction esv-page-nav-next is-disabled"
-                  aria-disabled="true"
-                >
-                  Próxima página <span aria-hidden="true">→</span>
-                </span>
-              )}
-          </div>
-        </nav>
-      )}
+      {renderPagination("bottom")}
     </div>
   );
 }

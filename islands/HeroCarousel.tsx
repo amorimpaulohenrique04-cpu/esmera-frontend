@@ -32,25 +32,25 @@ function preferredSlideSource(slide: HeroSlide): string {
   return optimizePayloadMediaURL(source, compact ? 900 : 1800);
 }
 
-async function decodeSlide(slide: HeroSlide): Promise<void> {
-  if (typeof Image === "undefined") return;
+async function decodeSlide(slide: HeroSlide): Promise<boolean> {
+  if (typeof Image === "undefined") return false;
   const image = new Image();
   image.src = preferredSlideSource(slide);
 
   if (typeof image.decode === "function") {
     try {
       await image.decode();
-      return;
+      return image.naturalWidth > 0;
     } catch {
       // Some browsers reject decode for cached/cross-origin images even when
       // the resource is usable. Fall back to the normal load/error lifecycle.
     }
   }
 
-  if (image.complete) return;
-  await new Promise<void>((resolve) => {
-    image.onload = () => resolve();
-    image.onerror = () => resolve();
+  if (image.complete) return image.naturalWidth > 0;
+  return await new Promise<boolean>((resolve) => {
+    image.onload = () => resolve(image.naturalWidth > 0);
+    image.onerror = () => resolve(false);
   });
 }
 
@@ -70,7 +70,8 @@ function SlidePicture(
       {slide.mobileImage && (
         <source
           media="(max-width: 767px)"
-          srcset={payloadMediaSrcSet(slide.mobileImage, 900)}
+          srcset={payloadMediaSrcSet(slide.mobileImage, 900) ||
+            slide.mobileImage}
           sizes="100vw"
           width="900"
           height="1125"
@@ -153,16 +154,20 @@ export default function HeroCarousel(
   const requestSlide = (target: number) => {
     if (slides.length < 2 || target === active || phase !== "idle") return;
 
-    if (prefersReducedMotion()) {
-      setActive(target);
-      return;
-    }
-
     const token = ++transitionToken.current;
     setPhase("loading");
 
-    void decodeSlide(slides[target]).then(() => {
+    void decodeSlide(slides[target]).then((loaded) => {
       if (token !== transitionToken.current) return;
+      if (!loaded) {
+        setIncoming(null);
+        setPhase("idle");
+        return;
+      }
+      if (prefersReducedMotion()) {
+        finishTransition(target);
+        return;
+      }
       setIncoming(target);
       transitionFrame.current = requestAnimationFrame(() => {
         transitionFrame.current = null;

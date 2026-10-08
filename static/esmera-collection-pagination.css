@@ -140,3 +140,5 @@ a.esv-page-nav-number:focus-visible {
   color: var(--bg);
   cursor: pointer;
 }
+
+.esv-collection-v2-page-nav.is-top { margin-top: 24px; margin-bottom: 24px; padding-top: 20px; }

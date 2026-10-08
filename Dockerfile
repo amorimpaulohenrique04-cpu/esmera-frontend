@@ -24,7 +24,9 @@ RUN echo -e 'import "$fresh/src/build/deps.ts";\n import "$fresh/src/runtime/ent
 
 RUN deno cache --allow-scripts --frozen main.ts dev.ts _docker_deps.ts
 
-ARG GIT_REVISION=1
+ARG RAILWAY_GIT_COMMIT_SHA
+ARG GIT_REVISION=$RAILWAY_GIT_COMMIT_SHA
+RUN test -n "$GIT_REVISION"
 
 ENV DECO_SITE_NAME=testeesmera
 ENV DENO_DEPLOYMENT_ID=$GIT_REVISION

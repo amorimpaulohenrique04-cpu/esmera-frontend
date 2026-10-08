@@ -84,6 +84,9 @@ jobs:
       - name: Smoke test editorial modal and Matter
         run: node scripts/ci/editorial-modal-smoke.mjs
 
+      - name: Validate full storefront media, pagination and cookies
+        run: node scripts/ci/storefront-production-smoke.mjs
+
       - name: Upload Playwright evidence
         if: always()
         uses: actions/upload-artifact@v4
