@@ -64,6 +64,7 @@ export default function ObjectCard(
       class={`esv-product-card${vm.hoverImage ? " has-detail" : ""}`}
       role="listitem"
       data-product-id={vm.id}
+      data-product-slug={vm.slug}
       data-motion="reveal"
       data-motion-order={String(motionOrder)}
     >

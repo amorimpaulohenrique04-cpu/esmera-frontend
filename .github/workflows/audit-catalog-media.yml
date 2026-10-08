@@ -1,0 +1,29 @@
+name: Audit Esmera catalog media
+on:
+  pull_request:
+    paths:
+      - scripts/ci/audit-catalog-media.mjs
+      - .github/workflows/audit-catalog-media.yml
+      - islands/CardMedia.tsx
+      - components/esmera/ObjectCard.tsx
+  workflow_dispatch:
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Check all 112 catalog cards, source and optimizer responses
+        env:
+          PAYLOAD_API_URL: https://esmeracms-green.vercel.app
+        run: node scripts/ci/audit-catalog-media.mjs
+      - name: Publish full machine-readable report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: esmera-catalog-media-audit
+          path: catalog-media-audit.json
+          if-no-files-found: warn
