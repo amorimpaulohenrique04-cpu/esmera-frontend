@@ -13,6 +13,8 @@
   const mainSelector = ".esv-product-image-primary, .esv-product-image-static";
   const hoverSelector = ".esv-product-image-detail";
   const repaired = new WeakSet();
+  const recovering = new WeakSet();
+  const details = new Map();
   const preloaded = new Map();
   const MAX_ALTERNATES = 8;
 
@@ -22,6 +24,7 @@
   }
 
   function safeImageURL(input, host) {
+    if (typeof input !== "string" || !input.trim()) return "";
     try {
       const url = new URL(input, document.baseURI);
       if (!["http:", "https:"].includes(url.protocol)) return "";
@@ -81,63 +84,101 @@
     return pending;
   }
 
-  async function recoverPrimary(card, primary) {
-    if (repaired.has(primary)) {
-      placeholder(card, primary);
-      return;
-    }
-    repaired.add(primary);
-    card.classList.remove("is-hover-ready");
+  // Unwrap only a same-origin Next proxy whose source is a CMS media URL.
+  // The source is supplied by the URL itself; no filenames are reconstructed.
+  function directSource(input, host) {
+    const safe = safeImageURL(input, host);
+    if (!safe) return "";
+    const url = new URL(safe);
+    if (url.pathname !== "/_next/image") return safe;
+    const source = safeImageURL(url.searchParams.get("url"), host);
+    return source && new URL(source).pathname.startsWith("/api/media/file/")
+      ? source : "";
+  }
 
-    const original = srcOf(primary);
+  function galleryFor(card) {
+    const slug = card.getAttribute("data-product-slug") || "";
+    if (!/^[a-z0-9-]+$/.test(slug)) return Promise.resolve([]);
+    if (!details.has(slug)) {
+      details.set(slug, (async () => {
+        try {
+          const response = await fetch(
+            "/api/esmera-product-detail?slug=" + encodeURIComponent(slug),
+            { headers: { accept: "application/json" }, cache: "no-store" },
+          );
+          if (response.ok) {
+            const body = await response.json();
+            return (body.product?.gallery || []).slice(0, 20);
+          }
+        } catch {
+          // A failed detail request must not hide an already loaded cover.
+        }
+        return [];
+      })());
+    }
+    return details.get(slug);
+  }
+
+  async function recoverImage(card, image) {
+    // DOM insertion and the captured error can report the same failed image.
+    // Never replace an in-flight recovery with a placeholder.
+    if (recovering.has(image) || repaired.has(image)) return;
+    recovering.add(image);
+    const isPrimary = image.matches(mainSelector);
+    card.classList.remove("is-hover-ready");
+    const original = srcOf(image);
     let host = "";
     try {
-      host = new URL(original).host;
+      host = new URL(original, document.baseURI).host;
     } catch {
-      placeholder(card, primary);
+      recovering.delete(image);
       return;
     }
-
     const attempts = [];
     const add = (candidate) => {
-      const url = safeImageURL(candidate, host);
+      const url = directSource(candidate, host);
       if (url && url !== original && !attempts.includes(url)) attempts.push(url);
     };
-
-    // The complementary photo belongs to the same product.
-    const detail = card.querySelector(hoverSelector);
-    add(srcOf(detail));
-
-    const slug = card.getAttribute("data-product-slug") || "";
-    if (/^[a-z0-9-]+$/.test(slug)) {
-      try {
-        const response = await fetch(
-          "/api/esmera-product-detail?slug=" + encodeURIComponent(slug),
-          { headers: { accept: "application/json" }, cache: "no-store" },
-        );
-        if (response.ok) {
-          const body = await response.json();
-          for (const item of (body.product?.gallery || []).slice(0, 20)) {
-            add(item.url);
-          }
-        }
-      } catch {
-        // Fall through to the known same-product image, if one exists.
+    const other = card.querySelector(isPrimary ? hoverSelector : mainSelector);
+    // Preserve the requested photo first, before trying other gallery photos.
+    add(original);
+    add(image.getAttribute("src"));
+    const apply = async (candidate) => {
+      if (!(await preflight(candidate)) || !card.isConnected) return false;
+      if (!isPrimary && candidate === srcOf(other)) return false;
+      image.removeAttribute("srcset");
+      image.src = candidate;
+      if (isPrimary) {
+        card.classList.add("is-image-recovered");
+        card.querySelector(".esv-product-card-media-placeholder")?.remove();
       }
-    }
-
-    for (const candidate of attempts.slice(0, MAX_ALTERNATES)) {
-      if (!(await preflight(candidate))) continue;
-      if (!card.isConnected) return;
-      primary.src = candidate;
-      primary.removeAttribute("srcset");
-      card.classList.add("is-image-recovered");
-      // If the primary fallback is also the hover, never fade it out.
       syncHover(card);
-      return;
+      return true;
+    };
+    try {
+      for (const candidate of attempts) {
+        if (await apply(candidate)) return;
+      }
+      const gallery = await galleryFor(card);
+      // Prefer a distinct complementary photo for hover; do not swap it to
+      // the loaded cover or disable a working cover while recovery runs.
+      for (const item of gallery) {
+        add(item.url);
+        add(item.fullUrl);
+      }
+      if (isPrimary) add(srcOf(other));
+      for (const candidate of attempts.slice(0, MAX_ALTERNATES)) {
+        if (await apply(candidate)) return;
+      }
+      if (image.complete && image.naturalWidth > 0) {
+        syncHover(card);
+      } else if (isPrimary && card.isConnected) {
+        placeholder(card, image);
+      }
+    } finally {
+      recovering.delete(image);
+      repaired.add(image);
     }
-
-    if (card.isConnected) placeholder(card, primary);
   }
 
   function observeCard(card) {
@@ -147,10 +188,10 @@
     if (!primary) return;
     syncHover(card);
     if (primary.complete && primary.naturalWidth === 0) {
-      void recoverPrimary(card, primary);
+      void recoverImage(card, primary);
     }
     if (detail?.complete && detail.naturalWidth === 0) {
-      card.classList.remove("is-hover-ready");
+      void recoverImage(card, detail);
     }
   }
 
@@ -167,10 +208,8 @@
     if (!(image instanceof HTMLImageElement)) return;
     const card = image.closest(selector);
     if (!card) return;
-    if (image.matches(hoverSelector)) {
-      card.classList.remove("is-hover-ready");
-    } else if (image.matches(mainSelector)) {
-      void recoverPrimary(card, image);
+    if (image.matches(hoverSelector) || image.matches(mainSelector)) {
+      void recoverImage(card, image);
     }
   }, true);
 
