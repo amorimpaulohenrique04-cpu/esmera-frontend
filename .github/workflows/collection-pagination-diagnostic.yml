@@ -1,0 +1,29 @@
+name: Collection pagination live diagnostic
+on:
+  workflow_dispatch:
+  push:
+    branches: [fix/collection-pagination-e2e]
+permissions:
+  contents: read
+jobs:
+  live-pagination:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - name: Install Chromium
+        run: |
+          npm install --no-save playwright@1.54.2
+          npx playwright install --with-deps chromium
+      - name: Browser pagination probe
+        run: node scripts/ci/collection-pagination-smoke.mjs
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: collection-pagination-live
+          path: /tmp/esmera-pagination-*.png
+          if-no-files-found: ignore
