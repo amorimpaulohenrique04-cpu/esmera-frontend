@@ -10,6 +10,10 @@ on:
       - "lib/esmera/productMediaPresentation.ts"
       - "lib/payload/media.ts"
       - "routes/_app.tsx"
+      - "components/esmera/ObjectCard.tsx"
+      - "static/esmera-card-image-health.js"
+      - "static/esmera-product-card.css"
+      - "scripts/ci/card-image-health-smoke.mjs"
       - "static/esmera-master.css"
       - "static/esmera-commerce-refine.css"
       - "static/esmera-hotfix-product-modal.css"
@@ -33,6 +37,10 @@ on:
       - "lib/esmera/productMediaPresentation.ts"
       - "lib/payload/media.ts"
       - "routes/_app.tsx"
+      - "components/esmera/ObjectCard.tsx"
+      - "static/esmera-card-image-health.js"
+      - "static/esmera-product-card.css"
+      - "scripts/ci/card-image-health-smoke.mjs"
       - "static/esmera-master.css"
       - "static/esmera-commerce-refine.css"
       - "static/esmera-hotfix-product-modal.css"
@@ -114,6 +122,9 @@ jobs:
 
       - name: Validate media fidelity and viewer interactions
         run: node scripts/ci/product-modal-media-fidelity.mjs
+
+      - name: Validate cards, hover failure and Carregar mais
+        run: node scripts/ci/card-image-health-smoke.mjs
 
       - name: Upload media fidelity evidence
         if: always()
