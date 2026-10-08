@@ -39,7 +39,6 @@ export default function Collection({
   text = "",
   products = [],
   totalDocs = products.length,
-  hasNextPage = false,
   endpoint = "/api/esmera-collection",
   ctaLabel = "",
   ctaHref = "",
