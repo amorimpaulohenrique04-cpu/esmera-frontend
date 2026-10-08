@@ -30,7 +30,11 @@ Deno.test("P2 serves responsive Payload media instead of fixed oversized images"
 
   assertStringIncludes(media, "payloadMediaSrcSet");
   assertStringIncludes(media, "srcSet={srcSet}");
-  assertStringIncludes(cards, 'fetchPriority={priority ? "high" : "auto"}');
+  assert(
+    cards.includes('fetchPriority={priority ? "high" : "auto"}') ||
+      cards.includes('fetchPriority: priority ? "high" : "auto"'),
+    "Product cards must prioritize visible media in both supported JSX forms",
+  );
   assertStringIncludes(carousel, "firstDesktopSrc");
   assertStringIncludes(carousel, 'priority={active === 0 ? "high" : "low"}');
 });
