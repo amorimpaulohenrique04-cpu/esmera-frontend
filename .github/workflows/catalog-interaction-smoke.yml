@@ -1,0 +1,26 @@
+name: Catalog interaction regression
+on:
+  pull_request:
+    paths:
+      - islands/CollectionExplorer.tsx
+      - components/esmera/ObjectCard.tsx
+      - lib/esmera/productCard.ts
+      - lib/esmera/collectionPagination.ts
+      - static/esmera-card-image-health.js
+      - scripts/ci/catalog-interaction-smoke.mjs
+      - .github/workflows/catalog-interaction-smoke.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - run: npm install --no-save esbuild@0.28.2 preact@10.23.1 playwright@1.54.2
+      - run: npx playwright install --with-deps chromium
+      - run: node scripts/ci/catalog-interaction-smoke.mjs

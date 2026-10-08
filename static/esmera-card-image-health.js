@@ -12,7 +12,7 @@
   const selector = ".esv-product-card";
   const mainSelector = ".esv-product-image-primary, .esv-product-image-static";
   const hoverSelector = ".esv-product-image-detail";
-  const repaired = new WeakSet();
+  const repaired = new WeakMap();
   const recovering = new WeakSet();
   const details = new Map();
   const preloaded = new Map();
@@ -122,7 +122,8 @@
   async function recoverImage(card, image) {
     // DOM insertion and the captured error can report the same failed image.
     // Never replace an in-flight recovery with a placeholder.
-    if (recovering.has(image) || repaired.has(image)) return;
+    const requested = image.getAttribute("src") || "";
+    if (recovering.has(image) || repaired.get(image) === requested) return;
     recovering.add(image);
     const isPrimary = image.matches(mainSelector);
     card.classList.remove("is-hover-ready");
@@ -134,6 +135,7 @@
       recovering.delete(image);
       return;
     }
+    let applied = false;
     const attempts = [];
     const add = (candidate) => {
       const url = directSource(candidate, host);
@@ -141,13 +143,17 @@
     };
     const other = card.querySelector(isPrimary ? hoverSelector : mainSelector);
     // Preserve the requested photo first, before trying other gallery photos.
+    add(image.getAttribute("data-original-src"));
     add(original);
     add(image.getAttribute("src"));
     const apply = async (candidate) => {
       if (!(await preflight(candidate)) || !card.isConnected) return false;
+      // A filter update may reuse this node while recovery is in flight.
+      if ((image.getAttribute("src") || "") !== requested) return false;
       if (!isPrimary && candidate === srcOf(other)) return false;
       image.removeAttribute("srcset");
       image.src = candidate;
+      applied = true;
       if (isPrimary) {
         card.classList.add("is-image-recovered");
         card.querySelector(".esv-product-card-media-placeholder")?.remove();
@@ -172,12 +178,18 @@
       }
       if (image.complete && image.naturalWidth > 0) {
         syncHover(card);
-      } else if (isPrimary && card.isConnected) {
+      } else if (isPrimary && card.isConnected &&
+        (image.getAttribute("src") || "") === requested) {
         placeholder(card, image);
       }
     } finally {
       recovering.delete(image);
-      repaired.add(image);
+      if (applied || (image.getAttribute("src") || "") === requested ||
+        card.querySelector(".esv-product-card-media-placeholder")) {
+        repaired.set(image, image.getAttribute("src") || "");
+      } else {
+        observeCard(card);
+      }
     }
   }
 

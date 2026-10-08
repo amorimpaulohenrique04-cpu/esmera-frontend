@@ -83,3 +83,16 @@ Deno.test("ignores unsupported query values", () => {
   assertEquals(query.payloadSort, "editorial");
   assertEquals(query.where, undefined);
 });
+
+Deno.test("invalid fractional and infinite collection pages fall back to page one", () => {
+  for (const value of ["1.5", "Infinity", "1e100", "abc", "0"]) {
+    assertEquals(
+      buildCatalogQuery(
+        new URL(`https://store.example/colecao?page=${value}`),
+        [],
+        [],
+      ).page,
+      1,
+    );
+  }
+});

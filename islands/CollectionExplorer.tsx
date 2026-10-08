@@ -246,6 +246,8 @@ export default function CollectionExplorer(props: CollectionExplorerProps) {
   const [error, setError] = useState("");
   const controllerRef = useRef<AbortController | null>(null);
   const firstFilterRun = useRef(true);
+  const retryPage = useRef(props.initialPage);
+  const retryNavigation = useRef(false);
   const filterExitTimer = useRef<
     ReturnType<typeof globalThis.setTimeout> | null
   >(null);
@@ -292,7 +294,9 @@ export default function CollectionExplorer(props: CollectionExplorerProps) {
     };
   }, [filtersOpen]);
 
-  const load = async (nextPage: number) => {
+  const load = async (nextPage: number, navigate = false) => {
+    retryPage.current = nextPage;
+    retryNavigation.current = navigate;
     controllerRef.current?.abort();
     const controller = new AbortController();
     controllerRef.current = controller;
@@ -338,6 +342,7 @@ export default function CollectionExplorer(props: CollectionExplorerProps) {
       });
       if (!response.ok) throw new Error("collection_unavailable");
       const data = await response.json() as CollectionResponse;
+      if (controller.signal.aborted) return;
       setItems(data.items);
       setPage(data.pagination.page);
       setTotalPages(data.pagination.totalPages);
@@ -351,14 +356,24 @@ export default function CollectionExplorer(props: CollectionExplorerProps) {
       const nextURL = `${globalThis.location.pathname}${
         serialized ? `?${serialized}` : ""
       }`;
-      globalThis.history.replaceState(
+      const updateHistory = navigate
+        ? globalThis.history.pushState.bind(globalThis.history)
+        : globalThis.history.replaceState.bind(globalThis.history);
+      updateHistory(
         {
           ...globalThis.history.state,
           esmeraCollectionPage: data.pagination.page,
         },
         "",
-        nextURL,
+        `${nextURL}${navigate ? "#esv-collection-results" : ""}`,
       );
+      if (navigate) {
+        requestAnimationFrame(() => {
+          const results = document.getElementById("esv-collection-results");
+          results?.scrollIntoView({ block: "start" });
+          results?.focus({ preventScroll: true });
+        });
+      }
     } catch {
       if (!controller.signal.aborted) {
         setError("Não foi possível atualizar a coleção agora.");
@@ -379,6 +394,22 @@ export default function CollectionExplorer(props: CollectionExplorerProps) {
     void load(1);
     return () => controllerRef.current?.abort();
   }, [q, category, materials, availability, sort]);
+
+  // Back/forward must restore both the URL and its server-rendered filters.
+  useEffect(() => {
+    const restore = () => globalThis.location.reload();
+    globalThis.addEventListener("popstate", restore);
+    return () => globalThis.removeEventListener("popstate", restore);
+  }, []);
+
+  const navigatePage = (event: MouseEvent, targetPage: number) => {
+    if (
+      event.button !== 0 || event.metaKey || event.ctrlKey ||
+      event.shiftKey || event.altKey
+    ) return;
+    event.preventDefault();
+    void load(targetPage, true);
+  };
 
   const refinementCount = (category ? 1 : 0) + materials.length +
     (availability ? 1 : 0);
@@ -733,12 +764,24 @@ export default function CollectionExplorer(props: CollectionExplorerProps) {
         </div>
       )}
 
-      {error && <p class="esv-collection-v2-error" role="alert">{error}</p>}
+      {error && (
+        <div class="esv-collection-v2-error" role="alert">
+          <p>{error}</p>
+          <button
+            type="button"
+            onClick={() =>
+              void load(retryPage.current, retryNavigation.current)}
+          >
+            Tentar novamente
+          </button>
+        </div>
+      )}
 
       {items.length > 0
         ? (
           <div
             id="esv-collection-results"
+            tabIndex={-1}
             class={`esv-collection-v2-grid${replacing ? " is-updating" : ""}`}
             role="list"
           >
@@ -774,7 +817,7 @@ export default function CollectionExplorer(props: CollectionExplorerProps) {
         </div>
       )}
 
-      {!loading && totalPages > 1 && (
+      {!loading && !error && totalPages > 1 && (
         <nav
           class="esv-collection-v2-page-nav"
           aria-label="Paginação da coleção"
@@ -788,6 +831,7 @@ export default function CollectionExplorer(props: CollectionExplorerProps) {
                 <a
                   class="esv-page-nav-direction esv-page-nav-prev"
                   href={hrefForPage(page - 1)}
+                  onClick={(event) => navigatePage(event, page - 1)}
                   rel="prev"
                 >
                   <span aria-hidden="true">←</span> Página anterior
@@ -829,6 +873,7 @@ export default function CollectionExplorer(props: CollectionExplorerProps) {
                       key={item}
                       class="esv-page-nav-number"
                       href={hrefForPage(item)}
+                      onClick={(event) => navigatePage(event, item)}
                       aria-label={`Ir para a página ${item}`}
                     >
                       {item}
@@ -841,6 +886,7 @@ export default function CollectionExplorer(props: CollectionExplorerProps) {
                 <a
                   class="esv-page-nav-direction esv-page-nav-next"
                   href={hrefForPage(page + 1)}
+                  onClick={(event) => navigatePage(event, page + 1)}
                   rel="next"
                 >
                   Próxima página <span aria-hidden="true">→</span>

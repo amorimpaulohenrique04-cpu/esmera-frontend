@@ -12,6 +12,9 @@ import { PayloadAPIError } from "../payload/errors.ts";
 export type StorefrontMediaV2 = {
   id: string;
   url: string;
+  fullUrl?: string;
+  fullWidth?: number | null;
+  fullHeight?: number | null;
   alt: string;
   width?: number | null;
   height?: number | null;
