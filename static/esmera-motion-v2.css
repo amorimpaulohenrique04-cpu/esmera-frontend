@@ -429,3 +429,10 @@
     opacity: 1;
   }
 }
+
+/* Product visibility must not depend on IntersectionObserver callbacks. */
+.esv-motion-ready .esv-product-card.esv-reveal {
+  opacity: 1;
+  transform: none;
+  will-change: auto;
+}

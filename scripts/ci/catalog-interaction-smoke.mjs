@@ -1,3 +1,4 @@
+import process from "node:process";
 // Deterministic browser regression: real CollectionExplorer + ObjectCard.
 // Commercial action islands are excluded; no CMS/database credentials needed.
 // npm install --no-save esbuild preact playwright && npx playwright install chromium
@@ -161,7 +162,7 @@ try {
       )
     );
   await ready();
-  await page.locator(".esv-page-nav-next").click();
+  await page.locator(".esv-page-nav-next").first().click();
   await page.waitForFunction(() =>
     document.querySelector(".esv-collection-v2-page-nav-summary")
       ?.textContent === "Página 2 de 3"
@@ -194,15 +195,20 @@ try {
       ?.textContent === "Página 1 de 3"
   );
   assert.match(page.url(), /q=vaso/);
-  await page.locator(".esv-page-nav-next").click();
+  await page.locator(".esv-page-nav-next").first().click();
   await page.waitForFunction(() =>
     document.querySelector(".esv-collection-v2-page-nav-summary")
       ?.textContent === "Página 2 de 3"
   );
   assert.equal(requests.at(-1).q, "vaso");
   failNext = true;
-  await page.locator(".esv-page-nav-next").click();
+  await page.locator(".esv-page-nav-next").first().click();
   await page.locator('[role="alert"]').waitFor();
+  assert.equal(
+    await page.locator('nav[aria-label*="Paginação"]').count(),
+    2,
+    "Both pagination controls stay mounted after an API failure",
+  );
   assert.match(
     page.url(),
     /page=2/,

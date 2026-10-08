@@ -5,49 +5,14 @@ import { Picture, Source } from "apps/website/components/Picture.tsx";
 const PAYLOAD_MEDIA_PATH_PREFIX = "/api/media/file/";
 const GOOGLE_DRIVE_THUMBNAIL_HOST = "drive.google.com";
 const GOOGLE_DRIVE_THUMBNAIL_PATH = "/thumbnail";
-const NEXT_IMAGE_WIDTHS = [
-  640,
-  750,
-  828,
-  1080,
-  1200,
-  1920,
-  2048,
-  3840,
-] as const;
-
-function nextImageWidth(requested: number): number {
-  return NEXT_IMAGE_WIDTHS.find((width) => width >= requested) ??
-    NEXT_IMAGE_WIDTHS[NEXT_IMAGE_WIDTHS.length - 1];
+/** CMS renditions are generated at upload time. Never invent proxy variants. */
+export function payloadMediaSrcSet(_src: string, _maxWidth: number): string {
+  return "";
 }
 
-function responsiveImageWidths(maxWidth: number): number[] {
-  const normalizedMax = nextImageWidth(maxWidth);
-  const candidates = NEXT_IMAGE_WIDTHS.filter((width) =>
-    width <= normalizedMax
-  );
-  return candidates.length > 0 ? [...candidates] : [normalizedMax];
-}
-
-export function payloadMediaSrcSet(src: string, maxWidth: number): string {
-  if (!isPayloadMediaURL(src)) return "";
-  return responsiveImageWidths(maxWidth)
-    .map((width) => `${optimizePayloadMediaURL(src, width)} ${width}w`)
-    .join(", ");
-}
-
-export function optimizePayloadMediaURL(src: string, width: number): string {
-  if (!isPayloadMediaURL(src)) return src;
-  try {
-    const source = new URL(src);
-    const optimized = new URL("/_next/image", source.origin);
-    optimized.searchParams.set("url", `${source.pathname}${source.search}`);
-    optimized.searchParams.set("w", String(nextImageWidth(width)));
-    optimized.searchParams.set("q", "75");
-    return optimized.toString();
-  } catch {
-    return src;
-  }
+/** Keep the exact CMS asset; Vercel optimization can be unavailable by quota. */
+export function optimizePayloadMediaURL(src: string, _width: number): string {
+  return src;
 }
 
 /**
@@ -121,9 +86,7 @@ export function EsmeraImage(
     const directSrc = payloadMedia && !preserveOriginal
       ? optimizePayloadMediaURL(src, width)
       : src;
-    const srcSet = payloadMedia && !preserveOriginal
-      ? payloadMediaSrcSet(src, width)
-      : undefined;
+    const srcSet = undefined;
     return (
       <img
         class={className}
@@ -198,10 +161,10 @@ export function EsmeraPicture({
       ? optimizePayloadMediaURL(mobileAsset, mobileWidth)
       : mobileAsset;
     const desktopSrcSet = desktopPayload
-      ? payloadMediaSrcSet(desktopSrc, desktopWidth)
+      ? payloadMediaSrcSet(desktopSrc, desktopWidth) || desktopSrc
       : optimizedDesktop;
     const mobileSrcSet = mobilePayload
-      ? payloadMediaSrcSet(mobileAsset, mobileWidth)
+      ? payloadMediaSrcSet(mobileAsset, mobileWidth) || mobileAsset
       : optimizedMobile;
     return (
       <>
