@@ -56,6 +56,7 @@ function fold(value: string | null | undefined): string {
 function searchableProductText(product: EsmeraObject): string {
   return [
     product.title,
+    product.slug,
     product.subtitle,
     product.category,
     product.material,
@@ -70,22 +71,35 @@ export function isFramePersonalizationProduct(product: EsmeraObject): boolean {
   return /\bquadro(s)?\b|\bquadrinho(s)?\b/.test(text);
 }
 
+/**
+ * Product names can be generic in Payload: e.g. "Caixa-quadro em Acrílico".
+ * Its only reliable dimension is then in the slug:
+ * "colecao-fe-quadro-10-x-10-cm". Resolve the variant first, then the
+ * product slug, before falling back to other explicit product fields.
+ */
+function readFrameSize(value: string | null | undefined): FrameSize | null {
+  const normalized = fold(value).replaceAll("×", "x").replace(/[-_]+/g, " ");
+  const match = normalized.match(
+    /\b(10|15|20)\s*(?:cm\s*)?x\s*\1(?:\s*cm)?\b/,
+  );
+  return match ? `${match[1]}x${match[1]}` as FrameSize : null;
+}
+
 export function inferFrameSize(
   product: EsmeraObject,
   variant?: EsmeraVariant,
 ): FrameSize | null {
-  const values = [
+  const sources = [
     variant?.label,
+    variant?.sku,
+    product.slug,
     product.title,
     product.subtitle,
-    product.category,
     ...(product.attributes ?? []).flatMap((item) => [item.label, item.value]),
-  ].map((value) => fold(value).replaceAll("×", "x"));
-
-  for (const value of values) {
-    if (/\b10\s*x\s*10\b/.test(value)) return "10x10";
-    if (/\b15\s*x\s*15\b/.test(value)) return "15x15";
-    if (/\b20\s*x\s*20\b/.test(value)) return "20x20";
+  ];
+  for (const value of sources) {
+    const size = readFrameSize(value);
+    if (size) return size;
   }
   return null;
 }
@@ -96,7 +110,10 @@ export function frameSizeVariants(
   const seen = new Set<FrameSize>();
   const result: Array<{ size: FrameSize; variant: EsmeraVariant }> = [];
   for (const variant of product.variants.filter((item) => !item.disabled)) {
-    const size = inferFrameSize(product, variant);
+    // Do not manufacture size chips from a fixed-size product slug when the
+    // variants merely represent finishes or other options.
+    const size = readFrameSize(variant.label) ??
+      readFrameSize(variant.sku);
     if (!size || seen.has(size)) continue;
     seen.add(size);
     result.push({ size, variant });
@@ -105,7 +122,9 @@ export function frameSizeVariants(
 }
 
 export function framePhraseOptions(size: FrameSize | null): readonly string[] {
-  return size === "10x10" ? FRAME_PHRASES_SMALL : FRAME_PHRASES_LARGE;
+  if (size === "10x10") return FRAME_PHRASES_SMALL;
+  if (size === "15x15" || size === "20x20") return FRAME_PHRASES_LARGE;
+  return [];
 }
 
 export function maxFrameTextLength(size: FrameSize | null): number {
@@ -209,5 +228,13 @@ export function coerceFramePersonalization(
     ? data.text.trim().slice(0, maxFrameTextLength(size))
     : "";
   if (!size || !finish || !text) return undefined;
-  return { kind: "frame_text", size, finish, mode, text };
+  const result: FramePersonalization = {
+    kind: "frame_text",
+    size,
+    finish,
+    mode,
+    text,
+  };
+  // Discard stale cart data containing a 15/20cm preset saved as 10cm.
+  return validateFramePersonalization(result) === null ? result : undefined;
 }
