@@ -5,6 +5,7 @@ import {
 } from "@std/assert";
 import type { EsmeraObject, EsmeraVariant } from "../lib/payload/types.ts";
 import {
+  coerceFramePersonalization,
   createFramePersonalization,
   FRAME_PHRASES_LARGE,
   FRAME_PHRASES_SMALL,
@@ -117,4 +118,117 @@ Deno.test("chave do carrinho separa personalizações diferentes", () => {
   base.text = "Alma leve";
   const other = { ...base, text: "Leveza" };
   assert(framePersonalizationKey(base) !== framePersonalizationKey(other));
+});
+
+Deno.test("identifica a dimensão real dos quadros cadastrados no CMS", () => {
+  const frame10 = product({
+    id: "711",
+    title: "Caixa-quadro em Acrílico",
+    slug: "colecao-fe-quadro-10-x-10-cm",
+    subtitle: "Coleção Fé",
+    category: "Caixas em Acrílico",
+  });
+  const frame15 = product({
+    id: "710",
+    title: "Caixa-quadro em Acrílico ",
+    slug: "colecao-fe-quadro-15-x-15-cm",
+    subtitle: "Coleção Fé",
+    category: "Caixas em Acrílico",
+  });
+  assert(isFramePersonalizationProduct(frame10));
+  assert(isFramePersonalizationProduct(frame15));
+  const small = createFramePersonalization(frame10);
+  const large = createFramePersonalization(frame15);
+  assertEquals(small.size, "10x10");
+  assertEquals(large.size, "15x15");
+  assertEquals(framePhraseOptions(small.size), FRAME_PHRASES_SMALL);
+  assertEquals(framePhraseOptions(large.size), FRAME_PHRASES_LARGE);
+  assertEquals(frameSizeVariants(frame10), []);
+  assertEquals(frameSizeVariants(frame15), []);
+});
+
+Deno.test("20x20 e variantes com tamanhos explícitos preservam a prioridade", () => {
+  assertEquals(
+    inferFrameSize(product({ slug: "colecao-fe-quadro-20-x-20-cm" })),
+    "20x20",
+  );
+  assertEquals(
+    inferFrameSize(
+      product({ slug: "colecao-fe-quadro-10-x-10-cm" }),
+      variant("20 × 20 cm"),
+    ),
+    "20x20",
+  );
+  assertEquals(
+    frameSizeVariants(product({
+      slug: "colecao-fe-quadro-10-x-10-cm",
+      variants: [variant("Dourado"), variant("Prata")],
+    })),
+    [],
+  );
+  assertEquals(framePhraseOptions(null), []);
+});
+
+Deno.test("as opções permitidas nunca misturam quadros de 10cm e 15/20cm", () => {
+  assertEquals(FRAME_PHRASES_SMALL.length, 13);
+  assertEquals(FRAME_PHRASES_LARGE.length, 14);
+  for (const phrase of FRAME_PHRASES_SMALL) {
+    assert(framePhraseOptions("10x10").includes(phrase));
+    assert(!framePhraseOptions("15x15").includes(phrase));
+    assert(!framePhraseOptions("20x20").includes(phrase));
+  }
+  for (const phrase of FRAME_PHRASES_LARGE) {
+    assert(!framePhraseOptions("10x10").includes(phrase));
+    assert(framePhraseOptions("15x15").includes(phrase));
+    assert(framePhraseOptions("20x20").includes(phrase));
+  }
+});
+
+Deno.test("recusa texto longo de preset 15/20cm em produto real 10x10", () => {
+  const frame10 = product({ slug: "colecao-fe-quadro-10-x-10-cm" });
+  const value = createFramePersonalization(frame10);
+  value.finish = "gold";
+  value.text = FRAME_PHRASES_LARGE[0];
+  assertEquals(value.size, "10x10");
+  assertStringIncludes(
+    validateFramePersonalization(value) ?? "",
+    "no máximo",
+  );
+  value.text = "Alma leve";
+  assertEquals(validateFramePersonalization(value), null);
+  assertEquals(
+    coerceFramePersonalization({
+      ...value,
+      text: "Há beleza em tudo aquilo",
+    }),
+    undefined,
+  );
+  assertEquals(coerceFramePersonalization(value), value);
+});
+
+Deno.test("trocar de 10cm para 15/20cm limpa preset incompatível", () => {
+  const frame = product({ slug: "colecao-fe-quadro-10-x-10-cm" });
+  const value = createFramePersonalization(frame);
+  value.finish = "silver";
+  value.text = "Alma leve";
+  const to15 = reconcileFramePersonalization(frame, variant("15x15"), value);
+  assertEquals(to15.size, "15x15");
+  assertEquals(to15.text, "");
+  const to20 = reconcileFramePersonalization(frame, variant("20x20"), value);
+  assertEquals(to20.size, "20x20");
+  assertEquals(to20.text, "");
+});
+
+Deno.test("prata e dourada aceitas com preset 10x10 ou frases 15x15/20x20", () => {
+  for (const finish of ["silver", "gold"] as const) {
+    for (const size of ["10x10", "15x15", "20x20"] as const) {
+      const value = createFramePersonalization(
+        product({ slug: `colecao-fe-quadro-${size.replace("x", "-x-")}-cm` }),
+      );
+      value.finish = finish;
+      value.text = framePhraseOptions(size)[0];
+      assertEquals(value.size, size);
+      assertEquals(validateFramePersonalization(value), null);
+    }
+  }
 });
