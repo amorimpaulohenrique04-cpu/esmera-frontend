@@ -95,3 +95,34 @@ Deno.test("product modal keeps distinct uncropped gallery images in source order
     "https://cms.example.com/b.jpg",
   ]);
 });
+
+Deno.test("product modal receives the single description field and first category", () => {
+  const paragraph = (text: string) => ({
+    type: "paragraph",
+    children: [{ type: "text", text }],
+  });
+  const detail = {
+    version: 2,
+    revision: "rev-description",
+    product: {
+      id: "product-2",
+      slug: "escultura-ciclo",
+      title: "Escultura Ciclo",
+      priceUnit: "cent",
+      image: { id: "card", url: "https://cms.example.com/card.jpg", alt: "" },
+      categories: [{ id: "2", slug: "pecas", title: "PECAS" }],
+      description: {
+        root: {
+          type: "root",
+          children: [paragraph("Primeira linha."), paragraph("Segunda linha.")],
+        },
+      },
+      gallery: [],
+    },
+  } as unknown as StorefrontProductDetailV2;
+
+  const media = storefrontDetailToModalMedia(detail);
+
+  assertEquals(media?.description, "Primeira linha.\nSegunda linha.");
+  assertEquals(media?.category, "PECAS");
+});

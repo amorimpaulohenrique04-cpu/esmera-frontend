@@ -1,3 +1,8 @@
+import type { ModalProductMedia } from "../lib/esmera/productDetail.ts";
+import {
+  optimizePayloadMediaURL,
+  payloadMediaSrcSet,
+} from "../lib/esmera/mediaVariant.ts";
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import FramePersonalizationSelector from "../components/esmera/FramePersonalizationSelector.tsx";
 import ProductMediaViewer from "../components/esmera/ProductMediaViewer.tsx";
@@ -169,6 +174,8 @@ function ArrowIcon({ direction }: { direction: "previous" | "next" }) {
 }
 
 function modalImageSrcSet(image: ProductModalImage): string | undefined {
+  const variants = payloadMediaSrcSet(image.src, 1600);
+  if (variants) return variants;
   const candidates = [
     image.width && `${image.src} ${image.width}w`,
     image.fullWidth && image.fullSrc && image.fullSrc !== image.src &&
@@ -213,7 +220,7 @@ function GalleryFrame({
       const srcSet = modalImageSrcSet(image);
       if (srcSet) preload.srcset = srcSet;
       preload.sizes = cellSizes(plate);
-      preload.src = image.src;
+      preload.src = optimizePayloadMediaURL(image.src, 1200);
     });
   };
   const onGalleryKeyDown = (event: KeyboardEvent) => {
@@ -266,7 +273,7 @@ function GalleryFrame({
                       onOpenViewer(imageIndex, event.currentTarget)}
                   >
                     <img
-                      src={image.src}
+                      src={optimizePayloadMediaURL(image.src, 1200)}
                       srcSet={modalImageSrcSet(image)}
                       sizes={cellSizes(plate)}
                       alt={image.alt}
@@ -459,7 +466,32 @@ export default function ProductModal() {
     );
   };
 
+  // Favoritos, busca e outros caminhos podem abrir o popup sem a descrição.
+  const completeProduct = (next: EsmeraObject) => {
+    if (next.description || !next.slug) return;
+    fetch(
+      `/api/esmera-product-detail?slug=${encodeURIComponent(next.slug)}`,
+      { headers: { accept: "application/json" } },
+    )
+      .then((response) => response.ok ? response.json() : null)
+      .then((data: { product?: ModalProductMedia } | null) => {
+        const detail = data?.product;
+        if (!detail) return;
+        setProduct((current) =>
+          current?.slug === next.slug
+            ? {
+              ...current,
+              description: current.description || detail.description,
+              category: current.category || detail.category,
+            }
+            : current
+        );
+      })
+      .catch(() => {});
+  };
+
   const selectProduct = (next: EsmeraObject) => {
+    completeProduct(next);
     setActiveDesktopIndex(0);
     setActiveCompactIndex(0);
     setProduct(next);
@@ -888,7 +920,7 @@ export default function ProductModal() {
                         >
                           <span class="esv-product-modal-related-media">
                             <img
-                              src={item.image}
+                              src={optimizePayloadMediaURL(item.image, 480)}
                               alt={item.alt}
                               width="360"
                               height="450"

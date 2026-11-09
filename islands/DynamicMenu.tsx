@@ -1,3 +1,4 @@
+import { optimizePayloadMediaURL } from "../lib/esmera/mediaVariant.ts";
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import {
   MENU_NAVIGATION_REQUEST_EVENT,
@@ -520,7 +521,10 @@ export default function DynamicMenu(
                     rel={highlight.external ? "noopener noreferrer" : undefined}
                   >
                     {highlight.image && (
-                      <img src={highlight.image} alt={highlight.alt ?? ""} />
+                      <img
+                        src={optimizePayloadMediaURL(highlight.image, 800)}
+                        alt={highlight.alt ?? ""}
+                      />
                     )}
                     <strong>{highlight.title}</strong>
                     {highlight.copy && <span>{highlight.copy}</span>}
@@ -530,7 +534,10 @@ export default function DynamicMenu(
                   (
                     <a href={activeDesktop.href || undefined}>
                       <img
-                        src={activeDesktop.image.url}
+                        src={optimizePayloadMediaURL(
+                          activeDesktop.image.url,
+                          800,
+                        )}
                         alt={activeDesktop.image.alt}
                       />
                       <strong>{activeDesktop.label}</strong>

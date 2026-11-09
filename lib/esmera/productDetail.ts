@@ -2,6 +2,7 @@ import type {
   StorefrontMediaV2,
   StorefrontProductDetailV2,
 } from "./storefront.ts";
+import { lexicalToText } from "../payload/richText.ts";
 import type { EsmeraObject } from "../payload/types.ts";
 
 export type ModalProductMedia = {
@@ -9,6 +10,8 @@ export type ModalProductMedia = {
   slug: string;
   image: string;
   gallery: EsmeraObject["gallery"];
+  description?: string;
+  category?: string;
 };
 
 function roleForIndex(index: number): EsmeraObject["gallery"][number]["role"] {
@@ -71,5 +74,7 @@ export function storefrontDetailToModalMedia(
     slug: product.slug,
     image,
     gallery,
+    description: lexicalToText(product.description) || undefined,
+    category: product.categories?.[0]?.title || undefined,
   };
 }

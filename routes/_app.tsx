@@ -3,11 +3,21 @@ import { defineApp } from "$fresh/server.ts";
 import Theme from "../sections/Theme/Theme.tsx";
 import { Context } from "@deco/deco";
 
+// Só coleções: os cards de produto abrem popup, que já antecipa os próprios dados.
+const SPECULATION_RULES = JSON.stringify({
+  prefetch: [{
+    where: {
+      or: [{ href_matches: "/colecao" }, { href_matches: "/colecao/*" }],
+    },
+    eagerness: "moderate",
+  }],
+});
+
 export default defineApp(async (_req, ctx) => {
   const revision = await Context.active().release?.revision();
   // Preserve the stable storefront token for unchanged CSS contracts and bump
   // only the layers that own new visual behavior.
-  const storefrontStyleRevision = "2026-09-23-mobile-header-five-zone-v37";
+  const storefrontStyleRevision = "2026-11-09-product-description-v38";
   const productCardStyleRevision = "original-fallback-v6-20261008";
   const collectionPaginationStyleRevision =
     "explicit-page-navigation-v2-20261008";
@@ -137,6 +147,10 @@ export default defineApp(async (_req, ctx) => {
             )}
           />
         )}
+        <script
+          type="speculationrules"
+          dangerouslySetInnerHTML={{ __html: SPECULATION_RULES }}
+        />
         {hasProductCards && (
           <script
             defer
