@@ -21,6 +21,14 @@ import {
   resolveMaterialFilterKeys,
 } from "../../loaders/Esmera/MaterialFacets.ts";
 import Collection from "../../sections/Esmera/Collection.tsx";
+import GiftLinePage from "../../components/esmera/GiftLinePage.tsx";
+import {
+  buildGiftLine,
+  collectGiftLineSources,
+  GIFT_LINE_SLUG,
+  type GiftLineViewModel,
+} from "../../lib/esmera/giftLine.ts";
+import { fetchStorefrontProduct } from "../../lib/esmera/storefront.ts";
 
 interface Data {
   category: {
@@ -40,6 +48,8 @@ interface Data {
   baseHref: string;
   slug: string;
   materials: MaterialFacet[];
+  giftLine?: GiftLineViewModel | null;
+  giftLineCover?: StorefrontMediaV2 | null;
 }
 
 const COLLECTION_FILTERS: CatalogFilter[] = [
@@ -100,7 +110,37 @@ export const handler: Handlers<Data> = {
         12,
       );
 
+      // Só a vitrine limpa de Presenteáveis usa a página editorial. Com filtros,
+      // ou se os dados vierem incompletos, segue a coleção padrão.
+      let giftLine: GiftLineViewModel | null = null;
+      if (
+        ctx.params.slug === GIFT_LINE_SLUG && response.items.length > 0 &&
+        !hasCollectionRefinements(query)
+      ) {
+        try {
+          giftLine = buildGiftLine(
+            await collectGiftLineSources(
+              response,
+              (page) =>
+                fetchStorefrontCollection(
+                  GIFT_LINE_SLUG,
+                  storefrontParams({
+                    limit: 24,
+                    page,
+                    sort: query.payloadSort,
+                  }),
+                ),
+              async (slug) => (await fetchStorefrontProduct(slug)).product,
+            ),
+          );
+        } catch (error) {
+          console.error("Linha Presenteável indisponível", error);
+        }
+      }
+
       return ctx.render({
+        giftLine,
+        giftLineCover: response.category.image ?? null,
         category,
         products: response.items,
         chrome,
@@ -147,7 +187,14 @@ export const handler: Handlers<Data> = {
 export default function CategoryRoute({ data }: PageProps<Data>) {
   return (
     <StorefrontLayout {...data.chrome} seo={data.seo}>
-      {data.category
+      {data.category && data.giftLine
+        ? (
+          <GiftLinePage
+            line={data.giftLine}
+            coverImage={data.giftLineCover}
+          />
+        )
+        : data.category
         ? (
           <Collection
             eyebrow="Coleção"

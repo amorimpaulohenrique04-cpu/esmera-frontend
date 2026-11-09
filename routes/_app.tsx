@@ -2,6 +2,7 @@ import { asset, Head } from "$fresh/runtime.ts";
 import { defineApp } from "$fresh/server.ts";
 import Theme from "../sections/Theme/Theme.tsx";
 import { Context } from "@deco/deco";
+import { isGiftLinePath } from "../lib/esmera/giftLine.ts";
 
 // Só coleções: os cards de produto abrem popup, que já antecipa os próprios dados.
 const SPECULATION_RULES = JSON.stringify({
@@ -30,11 +31,13 @@ export default defineApp(async (_req, ctx) => {
     "2026-09-23-home-length-refinement-v5-tablet-section6";
   const mobileRecoveryRevision = "2026-09-23-mobile-recovery-v5";
   const shellCroRevision = "2026-09-23-shell-cro-v2";
+  const giftLineStyleRevision = "2026-11-09-gift-line-v1";
   const pathname = ctx.url.pathname;
   const isHome = pathname === "/";
   const isCatalog = pathname === "/colecao" || pathname.startsWith("/colecao/");
   const isAbout = pathname === "/sobre" || pathname === "/pagina/a-esmera";
   const isFavorites = pathname === "/favoritos";
+  const isGiftLine = isGiftLinePath(pathname);
   const hasProductCards = isHome || isCatalog || isFavorites;
   return (
     <>
@@ -190,6 +193,14 @@ export default defineApp(async (_req, ctx) => {
             `/esmera-mobile-recovery-v4.css?v=${mobileRecoveryRevision}`,
           )}
         />
+        {isGiftLine && (
+          <link
+            rel="stylesheet"
+            href={asset(
+              `/esmera-gift-line.css?v=${giftLineStyleRevision}`,
+            )}
+          />
+        )}
 
         <meta
           name="viewport"
