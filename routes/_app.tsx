@@ -149,6 +149,7 @@ export default defineApp(async (_req, ctx) => {
         )}
         <script
           type="speculationrules"
+          // deno-lint-ignore react-no-danger -- constante fixa, sem dado externo
           dangerouslySetInnerHTML={{ __html: SPECULATION_RULES }}
         />
         {hasProductCards && (
