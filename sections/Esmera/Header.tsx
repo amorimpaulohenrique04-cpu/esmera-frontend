@@ -2,6 +2,7 @@ import type { HeaderVariant } from "../../lib/esmera/shellData.ts";
 import type { NavigationNode } from "../../lib/payload/navigation.ts";
 import EsmeraHeader from "../../islands/EsmeraHeader.tsx";
 import EsmeraMotion from "../../islands/EsmeraMotion.tsx";
+import GiftCollectionPopup from "../../islands/GiftCollectionPopup.tsx";
 import ProductModal from "../../islands/ProductModal.tsx";
 
 export interface Props {
@@ -35,6 +36,7 @@ export default function Header({
         variant={variant}
       />
       <ProductModal />
+      <GiftCollectionPopup />
       <EsmeraMotion />
     </>
   );
