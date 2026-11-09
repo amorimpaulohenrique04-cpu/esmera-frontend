@@ -1,11 +1,13 @@
 import { payloadGet } from "../../lib/payload/client.ts";
+import { PayloadAPIError } from "../../lib/payload/errors.ts";
+import { createShellCache } from "../../lib/payload/shellCache.ts";
 import type { StorefrontCategory } from "../../lib/payload/navigation.ts";
 import type {
   PayloadHome,
   PayloadSiteSettings,
 } from "../../lib/payload/types.ts";
 
-export const cache = { maxAge: 300 };
+export const cache = { maxAge: 15 };
 export const cacheKey = () => "storefront-page-data-v3";
 
 type PublicMedia = {
@@ -34,13 +36,24 @@ type PublicNavigationNode = {
   highlights?: PublicNavigationHighlight[];
 };
 
-type StorefrontBootstrap = {
+type PublicCatalogCategory = {
+  id: string | number;
+  title: string;
+  slug: string;
+  parentId?: string | number | null;
+  order?: number | null;
+};
+
+export type StorefrontBootstrap = {
   version: 1;
   home: PayloadHome | null;
   siteSettings: PayloadSiteSettings | null;
   navigation: {
     roots?: PublicNavigationNode[];
   };
+  /** Every published collection, in or out of the menu. Absent on older CMS builds. */
+  catalogCategories?: PublicCatalogCategory[];
+  revision?: string | null;
 };
 
 type PageData = {
@@ -48,20 +61,19 @@ type PageData = {
   navigation: null;
   siteSettings: PayloadSiteSettings | null;
   categories: StorefrontCategory[];
+  catalogCategories: StorefrontCategory[];
+  revision: string | null;
   unavailable: string[];
   stale: boolean;
 };
 
-type CacheEntry = {
-  value: PageData;
-  expiresAt: number;
-  staleUntil: number;
-};
-
-const FRESH_MS = 300_000;
-const STALE_MS = 3_600_000;
-let cached: CacheEntry | null = null;
-let inFlight: Promise<PageData> | null = null;
+// With Cloudflare's max-age=30 + stale-while-revalidate=15 (routes/_middleware.ts)
+// a publication reaches every visitor in at most about one minute.
+const FRESH_MS = 15_000;
+const REFRESH_WAIT_MS = 1_500;
+// Long enough for a CMS cold start; the visitor is only held for REFRESH_WAIT_MS.
+const REFRESH_TIMEOUT_MS = 6_000;
+const RETRY_AFTER_FAILURE_MS = 10_000;
 
 function visibility(
   value?: PublicNavigationNode["visibility"],
@@ -114,59 +126,89 @@ function flattenNavigation(
   });
 }
 
-async function fetchPageData(): Promise<PageData> {
-  const bootstrap = await payloadGet<StorefrontBootstrap>(
-    "storefront/bootstrap",
-    { timeoutMs: 1_800, maxRetries: 0 },
-  );
+function catalogCategory(item: PublicCatalogCategory): StorefrontCategory {
+  return {
+    id: String(item.id),
+    title: item.title,
+    label: item.title,
+    slug: item.slug,
+    description: "",
+    order: item.order ?? 0,
+    parentId: item.parentId === null || item.parentId === undefined
+      ? null
+      : String(item.parentId),
+    showInMenu: false,
+    menuVisibility: "both",
+    nodeType: "collection",
+    href: `/colecao/${item.slug}`,
+    external: false,
+    highlights: [],
+  };
+}
+
+export function pageDataFromBootstrap(
+  bootstrap: StorefrontBootstrap,
+): PageData {
+  // A malformed 200 must count as a failure, or it would replace the last
+  // valid menu with an empty one.
+  if (!Array.isArray(bootstrap?.navigation?.roots)) {
+    throw new PayloadAPIError(
+      "invalid-response",
+      "O bootstrap da vitrine veio sem a navegação.",
+      undefined,
+      "/api/storefront/bootstrap",
+    );
+  }
   return {
     home: bootstrap.home,
     navigation: null,
     siteSettings: bootstrap.siteSettings,
-    categories: flattenNavigation(bootstrap.navigation?.roots ?? []),
+    categories: flattenNavigation(bootstrap.navigation.roots),
+    catalogCategories: (bootstrap.catalogCategories ?? []).map(catalogCategory),
+    revision: bootstrap.revision ?? null,
     unavailable: [],
     stale: false,
   };
 }
 
-async function refreshPageData(): Promise<PageData> {
-  if (inFlight) return await inFlight;
-  inFlight = fetchPageData().then((value) => {
-    const now = Date.now();
-    cached = {
-      value,
-      expiresAt: now + FRESH_MS,
-      staleUntil: now + STALE_MS,
-    };
-    return value;
-  }).finally(() => {
-    inFlight = null;
-  });
-  return await inFlight;
+async function fetchPageData(): Promise<PageData> {
+  const bootstrap = await payloadGet<StorefrontBootstrap>(
+    "storefront/bootstrap",
+    { timeoutMs: REFRESH_TIMEOUT_MS, maxRetries: 0 },
+  );
+  return pageDataFromBootstrap(bootstrap);
 }
 
+const shellCache = createShellCache<PageData>({
+  load: fetchPageData,
+  revisionOf: (value) => value.revision,
+  freshMs: FRESH_MS,
+  waitMs: REFRESH_WAIT_MS,
+  retryAfterFailureMs: RETRY_AFTER_FAILURE_MS,
+  onRefreshFailure: (failure) => {
+    console.error(JSON.stringify({
+      event: "storefront_shell_refresh_failed",
+      ...failure,
+    }));
+  },
+});
+
+export const storefrontShellStatus = shellCache.status;
+export const storefrontShellDegradedSince = shellCache.degradedSince;
+
 export default async function StorefrontPageData(): Promise<PageData> {
-  const now = Date.now();
-  if (cached && cached.expiresAt > now) return cached.value;
-
-  // Stale-while-revalidate inside the Deco worker: visitors never wait for the
-  // CMS refresh while a last-known-good shell/Home snapshot is available.
-  if (cached && cached.staleUntil > now) {
-    void refreshPageData().catch(() => undefined);
-    return { ...cached.value, stale: true };
+  const result = await shellCache.read();
+  if (result) {
+    return result.stale ? { ...result.value, stale: true } : result.value;
   }
-
-  try {
-    return await refreshPageData();
-  } catch {
-    if (cached) return { ...cached.value, stale: true };
-    return {
-      home: null,
-      navigation: null,
-      siteSettings: null,
-      categories: [],
-      unavailable: ["home", "shell"],
-      stale: false,
-    };
-  }
+  return {
+    home: null,
+    navigation: null,
+    siteSettings: null,
+    categories: [],
+    catalogCategories: [],
+    revision: null,
+    unavailable: ["home", "shell"],
+    stale: false,
+  };
 }

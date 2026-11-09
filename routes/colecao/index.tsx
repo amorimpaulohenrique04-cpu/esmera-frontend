@@ -1,6 +1,9 @@
 import type { Handlers, PageProps } from "$fresh/server.ts";
 import StorefrontLayout from "../../components/esmera/StorefrontLayout.tsx";
-import { collectionFacetCategories } from "../../lib/esmera/categoryFacets.ts";
+import {
+  catalogFacetCategories,
+  type collectionFacetCategories,
+} from "../../lib/esmera/categoryFacets.ts";
 import {
   fetchStorefrontProducts,
   type StorefrontProductsV2,
@@ -21,8 +24,8 @@ import type {
   SEOModel,
 } from "../../lib/payload/types.ts";
 import {
-  normalizeMaterials,
   type MaterialFacet,
+  normalizeMaterials,
   resolveMaterialFilterKeys,
 } from "../../loaders/Esmera/MaterialFacets.ts";
 import Collection from "../../sections/Esmera/Collection.tsx";
@@ -76,7 +79,7 @@ function pageFromStorefront(
 export const handler: Handlers<Data> = {
   async GET(req, ctx) {
     const chrome = await getPageChrome();
-    const categories = collectionFacetCategories(chrome.categories);
+    const categories = catalogFacetCategories(chrome);
     const url = new URL(req.url);
     const query = buildCatalogQuery(url, CATALOG_FILTERS, categories);
 

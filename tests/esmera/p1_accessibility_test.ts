@@ -95,7 +95,7 @@ Deno.test("P1 category sanitization is wired into page and API queries", async (
     Deno.readTextFile("routes/api/esmera-collection.ts"),
   ]);
   for (const source of [page, api]) {
-    if (!source.includes("collectionFacetCategories(chrome.categories)")) {
+    if (!source.includes("catalogFacetCategories(chrome)")) {
       throw new Error(
         "collection category sanitization is not wired end-to-end",
       );

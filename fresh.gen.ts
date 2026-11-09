@@ -12,6 +12,7 @@ import * as $api_esmera_lead from "./routes/api/esmera-lead.ts";
 import * as $api_esmera_product_detail from "./routes/api/esmera-product-detail.ts";
 import * as $api_esmera_recommendations from "./routes/api/esmera-recommendations.ts";
 import * as $api_esmera_renderability from "./routes/api/esmera-renderability.ts";
+import * as $api_esmera_shell_status from "./routes/api/esmera-shell-status.ts";
 import * as $api_esmera_reserve from "./routes/api/esmera-reserve.ts";
 import * as $api_esmera_search from "./routes/api/esmera-search.ts";
 import * as $colecao_slug_ from "./routes/colecao/[slug].tsx";
@@ -52,6 +53,7 @@ const manifest = {
     "./routes/api/esmera-product-detail.ts": $api_esmera_product_detail,
     "./routes/api/esmera-recommendations.ts": $api_esmera_recommendations,
     "./routes/api/esmera-renderability.ts": $api_esmera_renderability,
+    "./routes/api/esmera-shell-status.ts": $api_esmera_shell_status,
     "./routes/api/esmera-reserve.ts": $api_esmera_reserve,
     "./routes/api/esmera-search.ts": $api_esmera_search,
     "./routes/colecao/[slug].tsx": $colecao_slug_,
