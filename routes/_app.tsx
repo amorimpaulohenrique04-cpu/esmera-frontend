@@ -32,6 +32,7 @@ export default defineApp(async (_req, ctx) => {
   const mobileRecoveryRevision = "2026-09-23-mobile-recovery-v5";
   const shellCroRevision = "2026-09-23-shell-cro-v2";
   const giftLineStyleRevision = "2026-11-09-gift-line-v2";
+  const giftPopupStyleRevision = "2026-11-09-gift-popup-v1";
   const pathname = ctx.url.pathname;
   const isHome = pathname === "/";
   const isCatalog = pathname === "/colecao" || pathname.startsWith("/colecao/");
@@ -201,6 +202,10 @@ export default defineApp(async (_req, ctx) => {
             )}
           />
         )}
+        <link
+          rel="stylesheet"
+          href={asset(`/esmera-gift-popup.css?v=${giftPopupStyleRevision}`)}
+        />
 
         <meta
           name="viewport"

@@ -12,9 +12,9 @@ import * as $api_esmera_lead from "./routes/api/esmera-lead.ts";
 import * as $api_esmera_product_detail from "./routes/api/esmera-product-detail.ts";
 import * as $api_esmera_recommendations from "./routes/api/esmera-recommendations.ts";
 import * as $api_esmera_renderability from "./routes/api/esmera-renderability.ts";
-import * as $api_esmera_shell_status from "./routes/api/esmera-shell-status.ts";
 import * as $api_esmera_reserve from "./routes/api/esmera-reserve.ts";
 import * as $api_esmera_search from "./routes/api/esmera-search.ts";
+import * as $api_esmera_shell_status from "./routes/api/esmera-shell-status.ts";
 import * as $colecao_slug_ from "./routes/colecao/[slug].tsx";
 import * as $colecao_index from "./routes/colecao/index.tsx";
 import * as $contato from "./routes/contato.tsx";
@@ -34,6 +34,7 @@ import * as $EsmeraHeader from "./islands/EsmeraHeader.tsx";
 import * as $EsmeraMotion from "./islands/EsmeraMotion.tsx";
 import * as $FavoritesPage from "./islands/FavoritesPage.tsx";
 import * as $FooterLeadForm from "./islands/FooterLeadForm.tsx";
+import * as $GiftCollectionPopup from "./islands/GiftCollectionPopup.tsx";
 import * as $GiftLineSelector from "./islands/GiftLineSelector.tsx";
 import * as $HeroCarousel from "./islands/HeroCarousel.tsx";
 import * as $ProductActions from "./islands/ProductActions.tsx";
@@ -54,9 +55,9 @@ const manifest = {
     "./routes/api/esmera-product-detail.ts": $api_esmera_product_detail,
     "./routes/api/esmera-recommendations.ts": $api_esmera_recommendations,
     "./routes/api/esmera-renderability.ts": $api_esmera_renderability,
-    "./routes/api/esmera-shell-status.ts": $api_esmera_shell_status,
     "./routes/api/esmera-reserve.ts": $api_esmera_reserve,
     "./routes/api/esmera-search.ts": $api_esmera_search,
+    "./routes/api/esmera-shell-status.ts": $api_esmera_shell_status,
     "./routes/colecao/[slug].tsx": $colecao_slug_,
     "./routes/colecao/index.tsx": $colecao_index,
     "./routes/contato.tsx": $contato,
@@ -78,6 +79,7 @@ const manifest = {
     "./islands/EsmeraMotion.tsx": $EsmeraMotion,
     "./islands/FavoritesPage.tsx": $FavoritesPage,
     "./islands/FooterLeadForm.tsx": $FooterLeadForm,
+    "./islands/GiftCollectionPopup.tsx": $GiftCollectionPopup,
     "./islands/GiftLineSelector.tsx": $GiftLineSelector,
     "./islands/HeroCarousel.tsx": $HeroCarousel,
     "./islands/ProductActions.tsx": $ProductActions,
