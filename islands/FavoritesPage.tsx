@@ -1,3 +1,4 @@
+import { optimizePayloadMediaURL } from "../lib/esmera/mediaVariant.ts";
 import { useEffect, useMemo, useState } from "preact/hooks";
 import type { EsmeraObject } from "../lib/payload/types.ts";
 
@@ -214,7 +215,7 @@ export default function FavoritesPage() {
               onClick={(event) => openProduct(product, event.currentTarget)}
             >
               <img
-                src={product.image}
+                src={optimizePayloadMediaURL(product.image, 800)}
                 alt={product.alt}
                 width="1200"
                 height="800"

@@ -10,6 +10,7 @@ import {
   EsmeraPicture,
   isPayloadMediaURL,
   optimizePayloadMediaURL,
+  payloadMediaSrcSet,
 } from "../../components/esmera/ResponsiveMedia.tsx";
 
 const payloadDesktop =
@@ -29,7 +30,7 @@ Deno.test("recognizes Payload media routes independently of the CMS host", () =>
   assertFalse(isPayloadMediaURL("not-a-url"));
 });
 
-Deno.test("renders CMS images directly without a quota-dependent proxy", () => {
+Deno.test("renders CMS images through WebP variants without a quota-dependent proxy", () => {
   const html = render(
     <EsmeraImage
       src={payloadDesktop}
@@ -47,30 +48,28 @@ Deno.test("renders CMS images directly without a quota-dependent proxy", () => {
     }"`,
   );
   assertStringIncludes(html, 'alt="Produto Esméra"');
+  assertStringIncludes(
+    html,
+    "/api/media/variant/1200/Sem%20T%C3%ADtulo-5-900x1125.jpg",
+  );
+  assertStringIncludes(html, " 480w");
   assertFalse(html.includes("decoims.com/image"));
-  assertFalse(html.includes("srcset="));
   assertFalse(html.includes("/_next/image"));
 });
 
-Deno.test("preserves full CMS source on product cards without optimizer or srcset", () => {
-  const original =
-    "https://esmeracms-green.vercel.app/api/media/file/19X2Cdgf3dpz1GBPqOKMGegS140Bug0kD-w1200";
-  const html = render(
-    <EsmeraImage
-      src={original}
-      alt="Kit Lavabo em Bege Bahia"
-      width={1200}
-      height={800}
-      sizes="31vw"
-      preserveOriginal
-    />,
-  );
+Deno.test("leaves URLs outside the CMS media route untouched", () => {
+  const other = "https://example.com/catalog/product.jpg";
+  assertEquals(optimizePayloadMediaURL(other, 800), other);
+  assertEquals(payloadMediaSrcSet(other, 800), "");
+});
 
-  assertStringIncludes(html, `src="${original}"`);
-  assertStringIncludes(html, 'alt="Kit Lavabo em Bege Bahia"');
-  assertFalse(html.includes("/_next/image"));
-  assertFalse(html.includes("srcset="));
-  assertFalse(html.includes("900x1200"));
+Deno.test("never asks the CMS for a width it does not accept", () => {
+  const srcset = payloadMediaSrcSet(payloadDesktop, 3840);
+  assertEquals(
+    [...srcset.matchAll(/variant\/(\d+)\//g)].map((match) => match[1]),
+    ["480", "800", "1200", "1600", "2000"],
+  );
+  assertStringIncludes(optimizePayloadMediaURL(payloadDesktop, 500), "/800/");
 });
 
 Deno.test("renders Payload picture sources directly for mobile and desktop", () => {
@@ -88,11 +87,11 @@ Deno.test("renders Payload picture sources directly for mobile and desktop", () 
 
   assertStringIncludes(
     html,
-    `srcset="${payloadMobile}"`,
+    "/api/media/variant/800/Sem%20T%C3%ADtulo-5-320x320.jpg 800w",
   );
   assertStringIncludes(
     html,
-    `srcset="${payloadDesktop}"`,
+    "/api/media/variant/2000/Sem%20T%C3%ADtulo-5-900x1125.jpg 2000w",
   );
   assertStringIncludes(
     html,

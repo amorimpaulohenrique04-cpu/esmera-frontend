@@ -1,3 +1,7 @@
+import {
+  optimizePayloadMediaURL,
+  payloadMediaSrcSet,
+} from "../../lib/esmera/mediaVariant.ts";
 import ProductActions from "../../islands/ProductActions.tsx";
 import WishlistButton from "../../islands/WishlistButton.tsx";
 import BuyButton from "../../islands/BuyButton.tsx";
@@ -74,15 +78,18 @@ export default function ObjectCard(
         presentation="media"
       />
 
-      {/* Native images keep catalog media out of both image optimizers. */}
+      {/* WebP gerado pelo CMS; o original fica como reserva em data-original-src. */}
       <div class="esv-product-media-wrap">
         <figure class="esv-product-media">
           <img
             class={vm.hoverImage
               ? "esv-product-image-primary"
               : "esv-product-image-static"}
-            src={vm.image || undefined}
-            data-original-src={vm.originalImage || undefined}
+            src={vm.image ? optimizePayloadMediaURL(vm.image, 800) : undefined}
+            srcSet={vm.image
+              ? payloadMediaSrcSet(vm.image, 1200) || undefined
+              : undefined}
+            data-original-src={vm.originalImage || vm.image || undefined}
             alt={vm.imageAlt}
             loading={priority ? "eager" : "lazy"}
             decoding="async"
@@ -94,8 +101,9 @@ export default function ObjectCard(
           {vm.hoverImage && (
             <img
               class="esv-product-image-detail"
-              src={vm.hoverImage}
-              data-original-src={vm.originalHoverImage || undefined}
+              src={optimizePayloadMediaURL(vm.hoverImage, 800)}
+              srcSet={payloadMediaSrcSet(vm.hoverImage, 1200) || undefined}
+              data-original-src={vm.originalHoverImage || vm.hoverImage}
               alt=""
               loading="lazy"
               decoding="async"

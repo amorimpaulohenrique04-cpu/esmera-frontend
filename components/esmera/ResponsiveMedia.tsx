@@ -1,35 +1,16 @@
 import { Head } from "$fresh/runtime.ts";
 import Image from "apps/website/components/Image.tsx";
 import { Picture, Source } from "apps/website/components/Picture.tsx";
+import {
+  isPayloadMediaURL,
+  optimizePayloadMediaURL,
+  payloadMediaSrcSet,
+} from "../../lib/esmera/mediaVariant.ts";
 
-const PAYLOAD_MEDIA_PATH_PREFIX = "/api/media/file/";
+export { isPayloadMediaURL, optimizePayloadMediaURL, payloadMediaSrcSet };
+
 const GOOGLE_DRIVE_THUMBNAIL_HOST = "drive.google.com";
 const GOOGLE_DRIVE_THUMBNAIL_PATH = "/thumbnail";
-/** CMS renditions are generated at upload time. Never invent proxy variants. */
-export function payloadMediaSrcSet(_src: string, _maxWidth: number): string {
-  return "";
-}
-
-/** Keep the exact CMS asset; Vercel optimization can be unavailable by quota. */
-export function optimizePayloadMediaURL(src: string, _width: number): string {
-  return src;
-}
-
-/**
- * Payload serves uploads through /api/media/file/*, including custom domains.
- * These URLs must stay direct because decoims.com cannot fetch this upstream
- * and otherwise replaces the working source with a broken optimized srcset.
- */
-export function isPayloadMediaURL(src: string): boolean {
-  try {
-    const url = new URL(src);
-    return (url.protocol === "https:" || url.protocol === "http:") &&
-      url.pathname.startsWith(PAYLOAD_MEDIA_PATH_PREFIX);
-  } catch {
-    return false;
-  }
-}
-
 /**
  * As imagens institucionais da página A Esméra usam o endpoint público de
  * thumbnail do Google Drive já dimensionado. Mantê-las diretas evita que o
@@ -60,8 +41,6 @@ export interface EsmeraImageProps {
   loading?: "lazy" | "eager";
   decoding?: "async" | "auto" | "sync";
   fetchPriority?: "high" | "low" | "auto";
-  /** Bypass Next image proxy for CMS originals that must never be cropped. */
-  preserveOriginal?: boolean;
 }
 
 export function EsmeraImage(
@@ -75,18 +54,12 @@ export function EsmeraImage(
     loading = "lazy",
     decoding = "async",
     fetchPriority = "auto",
-    preserveOriginal = false,
   }: EsmeraImageProps,
 ) {
   if (isDirectMediaURL(src)) {
     const payloadMedia = isPayloadMediaURL(src);
-    // The product card uses the exact CMS source, just like the PDP/modal.
-    // Do not route original catalog photography through Next's image proxy:
-    // its cached derivative can differ from the original gallery image.
-    const directSrc = payloadMedia && !preserveOriginal
-      ? optimizePayloadMediaURL(src, width)
-      : src;
-    const srcSet = undefined;
+    const directSrc = payloadMedia ? optimizePayloadMediaURL(src, width) : src;
+    const srcSet = payloadMedia ? payloadMediaSrcSet(src, width) : undefined;
     return (
       <img
         class={className}

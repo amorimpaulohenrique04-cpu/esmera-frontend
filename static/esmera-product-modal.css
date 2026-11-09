@@ -401,6 +401,7 @@ body.esv-product-modal-open {
   margin: 30px 0 0;
   font-size: 13px;
   line-height: 1.65;
+  white-space: pre-line;
 }
 
 .esv-product-modal-facts {

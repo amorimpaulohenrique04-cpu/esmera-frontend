@@ -110,7 +110,7 @@ Deno.test("product card stylesheet is the only owner of card presentation", asyn
   assertStringIncludes(component, "vm.hoverImage &&");
   assertStringIncludes(component, 'alt=""');
   assertFalse(component.includes("EsmeraImage"));
-  assertFalse(component.includes("srcSet="));
+  assertStringIncludes(component, "payloadMediaSrcSet(vm.image, 1200)");
   assertEquals(component.split("<img").length - 1, 2);
   assertStringIncludes(component, 'from "../../islands/BuyButton.tsx"');
   assertFalse(component.includes('class="esv-card-footer"'));

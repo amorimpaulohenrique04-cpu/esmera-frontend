@@ -1,3 +1,4 @@
+import { optimizePayloadMediaURL } from "../lib/esmera/mediaVariant.ts";
 import Arrow from "../components/esmera/Arrow.tsx";
 import { isFramePersonalizationProduct } from "../lib/esmera/framePersonalization.ts";
 import { ensureProductModalStyles } from "../lib/esmera/productModalStyles.ts";
@@ -60,6 +61,8 @@ async function requestModalProduct(
         gallery: media.gallery,
         detailImage: media.gallery.find((item) => item.role === "detail")
           ?.url ?? fallback.detailImage,
+        description: media.description ?? fallback.description,
+        category: media.category ?? fallback.category,
       };
     }
 
@@ -108,7 +111,7 @@ export default function ProductActions(
     if (product?.detailImage && typeof globalThis.Image === "function") {
       const image = new globalThis.Image();
       image.decoding = "async";
-      image.src = product.detailImage;
+      image.src = optimizePayloadMediaURL(product.detailImage, 800);
     }
 
     // Cards Storefront V2 carregam só o crop 3:4. Antecipamos o detalhe para que

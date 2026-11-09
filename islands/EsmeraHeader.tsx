@@ -1,3 +1,4 @@
+import { optimizePayloadMediaURL } from "../lib/esmera/mediaVariant.ts";
 import { useEffect, useRef, useState } from "preact/hooks";
 import DynamicMenu from "./DynamicMenu.tsx";
 import type { HeaderVariant } from "../lib/esmera/shellData.ts";
@@ -775,7 +776,12 @@ export default function EsmeraHeader({
                       type="button"
                       onClick={() => openSearchProduct(item)}
                     >
-                      <img src={item.image} alt="" width="72" height="88" />
+                      <img
+                        src={optimizePayloadMediaURL(item.image, 480)}
+                        alt=""
+                        width="72"
+                        height="88"
+                      />
                       <span>
                         <small>{item.material || item.code}</small>
                         <strong>{item.title}</strong>
@@ -815,7 +821,10 @@ export default function EsmeraHeader({
                                 href={`/produto/${item.product.slug}`}
                               >
                                 <img
-                                  src={item.product.image}
+                                  src={optimizePayloadMediaURL(
+                                    item.product.image,
+                                    480,
+                                  )}
                                   alt=""
                                   width="74"
                                   height="90"
