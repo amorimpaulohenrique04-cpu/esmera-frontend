@@ -84,8 +84,6 @@ const currentLine = (): GiftLineSource[] => [
 
 Deno.test("a linha atual vira os três capítulos do layout aprovado", () => {
   const line = buildGiftLine(currentLine());
-  assertEquals(line.pieceCount, 6);
-  assertEquals(line.startingPrice, "R$ 230,00");
   assertEquals(line.families.map((family) => [family.name, family.format]), [
     ["Luz", "selector"],
     ["Palavra de Luz", "twins"],
@@ -173,12 +171,11 @@ Deno.test("família nova vem depois das já diagramadas", () => {
   assertEquals(families.at(-1)?.name, "Orvalho");
 });
 
-Deno.test("preço sob consulta não define o valor inicial", () => {
+Deno.test("peça sob consulta fica sem preço e sem compra", () => {
   const line = buildGiftLine([
     source("Alfa", null),
     source("Beta", 50000),
   ]);
-  assertEquals(line.startingPrice, "R$ 500,00");
   const inquiry = line.families.find((family) => family.name === "Alfa");
   assertEquals(inquiry?.pieces[0].price, null);
   assertEquals(inquiry?.pieces[0].isPurchasable, false);

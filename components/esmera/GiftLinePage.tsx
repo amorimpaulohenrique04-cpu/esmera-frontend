@@ -9,18 +9,15 @@ import type {
 } from "../../lib/esmera/giftLine.ts";
 import type { StorefrontMediaV2 } from "../../lib/esmera/storefront.ts";
 
-const DEFAULT_LEAD =
-  "A Linha Presenteável Esméra reúne peças artesanais que combinam a beleza das pedras naturais, a delicadeza dos aromas e o cuidado em cada detalhe.";
 const NOTE =
   "Uma seleção especial para presentear com significado e exclusividade.";
 
 export interface Props {
   line: GiftLineViewModel;
-  lead?: string;
   coverImage?: StorefrontMediaV2 | null;
 }
 
-function GiftHero({ line, lead, coverImage }: Props) {
+function GiftHero({ coverImage }: Pick<Props, "coverImage">) {
   return (
     <section class="gl-hero">
       <figure class="gl-hero__photo">
@@ -45,25 +42,11 @@ function GiftHero({ line, lead, coverImage }: Props) {
         <path d="M0 0H502C470 180 462 330 470 470C480 700 540 880 563 1000H0Z" />
       </svg>
       <div class="gl-hero__copy">
-        <nav class="gl-crumb" aria-label="Você está em">
-          <a href="/">Início</a>
-          <span aria-hidden="true">/</span>
-          <a href="/colecao">Coleções</a>
-          <span aria-hidden="true">/</span>
-          <span aria-current="page">Presenteáveis</span>
-        </nav>
         <h1 class="gl-hero__title">
           Linha<br />Presenteável
         </h1>
         <span class="gl-short-rule" aria-hidden="true" />
-        <p class="gl-hero__lead">{lead || DEFAULT_LEAD}</p>
         <p class="gl-hero__note">{NOTE}</p>
-        <p class="gl-hero__meta">
-          <span>
-            {line.pieceCount} {line.pieceCount === 1 ? "peça" : "peças"}
-          </span>
-          {line.startingPrice && <span>A partir de {line.startingPrice}</span>}
-        </p>
       </div>
     </section>
   );
@@ -164,7 +147,7 @@ function GiftBranch() {
 export default function GiftLinePage(props: Props) {
   return (
     <div class="gl-page">
-      <GiftHero {...props} />
+      <GiftHero coverImage={props.coverImage} />
       <div class="gl-chapters">
         {props.line.families.map((family) => (
           <GiftFamilySection family={family} key={family.key} />

@@ -1,33 +1,6 @@
 /* Linha Presenteável — carregado apenas em /colecao/presenteaveis.
  * Tudo fica sob .gl-page para não alcançar nenhuma outra página. */
 
-@font-face {
-  font-family: "Cormorant Garamond";
-  font-style: normal;
-  font-display: swap;
-  font-weight: 300;
-  src: url("https://cdn.jsdelivr.net/fontsource/fonts/cormorant-garamond@5.2.5/latin-300-normal.woff2")
-    format("woff2");
-}
-
-@font-face {
-  font-family: "Cormorant Garamond";
-  font-style: normal;
-  font-display: swap;
-  font-weight: 400;
-  src: url("https://cdn.jsdelivr.net/fontsource/fonts/cormorant-garamond@5.2.5/latin-400-normal.woff2")
-    format("woff2");
-}
-
-@font-face {
-  font-family: "Cormorant Garamond";
-  font-style: italic;
-  font-display: swap;
-  font-weight: 400;
-  src: url("https://cdn.jsdelivr.net/fontsource/fonts/cormorant-garamond@5.2.5/latin-400-italic.woff2")
-    format("woff2");
-}
-
 .gl-page {
   --gl-bg: #f4f0e9;
   --gl-bar: #ebe4d9;
@@ -38,7 +11,6 @@
   --gl-ink: #1f211e;
   --gl-muted: #5f615a;
   --gl-rule: rgba(199, 167, 127, .62);
-  --gl-display: "Cormorant Garamond", "EB Garamond", Georgia, serif;
   --gl-x: var(--page-x, clamp(20px, 5vw, 80px));
   --gl-edge: max(var(--gl-x), calc((100vw - 1600px) / 2 + var(--gl-x)));
 
@@ -83,11 +55,10 @@
 
 .gl-title {
   margin-top: clamp(10px, 1vw, 16px);
-  font-family: var(--gl-display);
-  font-size: clamp(60px, 7.5vw, 116px);
-  font-weight: 400;
-  line-height: 1;
-  letter-spacing: -.01em;
+  font-size: clamp(40px, 5vw, 76px);
+  font-weight: 300;
+  line-height: 1.05;
+  letter-spacing: -.025em;
 }
 
 .gl-short-rule {
@@ -244,68 +215,24 @@
   padding-left: var(--gl-edge);
 }
 
-.gl-crumb {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  color: var(--gl-champagne);
-  font-size: 11px;
-  letter-spacing: .16em;
-  text-transform: uppercase;
-}
-
-.gl-crumb a {
-  color: inherit;
-  text-decoration: none;
-}
-
 .gl-hero__title {
-  margin-top: clamp(20px, 2.2vw, 34px);
-  font-family: var(--gl-display);
-  font-size: clamp(52px, 6.2vw, 100px);
+  font-size: clamp(40px, 4.9vw, 76px);
   font-weight: 300;
-  line-height: .98;
-  letter-spacing: -.005em;
+  line-height: 1.05;
+  letter-spacing: -.025em;
 }
 
 .gl-hero .gl-short-rule {
   margin-top: clamp(16px, 1.8vw, 28px);
 }
 
-.gl-hero__lead {
-  max-width: 36em;
-  margin-top: clamp(16px, 1.8vw, 28px);
-  font-size: clamp(14px, 1.2vw, 18px);
-  font-weight: 300;
-  line-height: 1.55;
-}
-
 .gl-hero__note {
   max-width: 28em;
   margin-top: clamp(10px, 1.2vw, 18px);
   color: var(--gl-champagne);
-  font-family: var(--gl-display);
-  font-size: clamp(18px, 1.65vw, 26px);
-  font-style: italic;
-  line-height: 1.25;
-}
-
-.gl-hero__meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  margin-top: clamp(20px, 2.2vw, 34px);
-  font-size: 11.5px;
-  font-weight: 500;
-  letter-spacing: .16em;
-  text-transform: uppercase;
-  font-variant-numeric: tabular-nums;
-}
-
-.gl-hero__meta span + span {
-  margin-left: clamp(24px, 3.4vw, 52px);
-  padding-left: clamp(24px, 3.4vw, 52px);
-  border-left: 1px solid var(--gl-rule);
+  font-size: clamp(16px, 1.4vw, 21px);
+  font-weight: 300;
+  line-height: 1.5;
 }
 
 /* Capítulos */
@@ -385,9 +312,9 @@
 }
 
 .gl-row__name {
-  font-family: var(--gl-display);
-  font-size: clamp(25px, 2.5vw, 38px);
-  line-height: 1.1;
+  font-size: clamp(19px, 1.75vw, 26px);
+  font-weight: 300;
+  line-height: 1.2;
   transition: color .3s var(--ease-esmera, ease);
 }
 
@@ -439,10 +366,9 @@
 
 .gl-cards__phrase {
   position: relative;
-  font-family: var(--gl-display);
-  font-size: clamp(20px, 1.85vw, 28px);
-  font-style: italic;
-  line-height: 1.25;
+  font-size: clamp(15px, 1.3vw, 19px);
+  font-weight: 300;
+  line-height: 1.5;
 }
 
 .gl-cards__phrase::before {
@@ -481,10 +407,9 @@
 }
 
 .gl-card__name {
-  font-family: var(--gl-display);
-  font-size: clamp(28px, 3.1vw, 46px);
-  font-weight: 400;
-  line-height: 1;
+  font-size: clamp(22px, 2.3vw, 34px);
+  font-weight: 300;
+  line-height: 1.1;
 }
 
 .gl-card__divider {
@@ -550,10 +475,9 @@
 
 .gl-solo__phrase {
   margin-top: clamp(18px, 1.9vw, 30px);
-  font-family: var(--gl-display);
-  font-size: clamp(20px, 1.85vw, 28px);
-  font-style: italic;
-  line-height: 1.25;
+  font-size: clamp(15px, 1.3vw, 19px);
+  font-weight: 300;
+  line-height: 1.5;
 }
 
 /* Encerramento */
@@ -573,10 +497,10 @@
 }
 
 .gl-close__quote {
-  font-family: var(--gl-display);
-  font-size: clamp(32px, 4.2vw, 64px);
-  font-style: italic;
-  line-height: 1.1;
+  font-size: clamp(24px, 3vw, 46px);
+  font-weight: 300;
+  letter-spacing: -.02em;
+  line-height: 1.2;
 }
 
 .gl-close .gl-short-rule {

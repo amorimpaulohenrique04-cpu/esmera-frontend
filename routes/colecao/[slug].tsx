@@ -191,7 +191,6 @@ export default function CategoryRoute({ data }: PageProps<Data>) {
         ? (
           <GiftLinePage
             line={data.giftLine}
-            lead={data.category.description}
             coverImage={data.giftLineCover}
           />
         )

@@ -57,8 +57,6 @@ export type GiftFamily = {
 };
 
 export type GiftLineViewModel = {
-  pieceCount: number;
-  startingPrice: string | null;
   families: GiftFamily[];
 };
 
@@ -286,14 +284,7 @@ export function buildGiftLine(sources: GiftLineSource[]): GiftLineViewModel {
       };
     });
 
-  const prices = sources.map(({ item }) => priceCents(item)).filter((
-    value,
-  ): value is number => value !== null);
-  return {
-    pieceCount: sources.length,
-    startingPrice: prices.length ? formatPriceCents(Math.min(...prices)) : null,
-    families,
-  };
+  return { families };
 }
 
 type CollectionPage = {
