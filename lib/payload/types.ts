@@ -92,6 +92,7 @@ export interface PayloadProduct {
   description?: unknown;
   edition?: string | null;
   attributes?: Array<{ label?: string | null; value?: string | null }> | null;
+  physicalSpecs?: EsmeraPhysicalSpecs | null;
   gallery?:
     | Array<{
       image?: Relationship<PayloadMedia>;
@@ -303,6 +304,7 @@ export interface EsmeraObject {
   edition?: string;
   searchTerms?: string[];
   attributes: Array<{ label: string; value: string }>;
+  physicalSpecs?: EsmeraPhysicalSpecs | null;
   priceMode: "fixed" | "inquiry";
   priceCents: number | null;
   formattedPrice: string;
@@ -310,6 +312,11 @@ export interface EsmeraObject {
   variants: EsmeraVariant[];
   seo: SEOModel;
   price?: string;
+}
+
+export interface EsmeraPhysicalSpecs {
+  heightMm?: number | null;
+  widthMm?: number | null;
 }
 
 export interface NavigationLink {

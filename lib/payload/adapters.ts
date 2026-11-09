@@ -159,6 +159,7 @@ export function toEsmeraObject(
     attributes: (product.attributes ?? []).flatMap((item) =>
       item.label && item.value ? [{ label: item.label, value: item.value }] : []
     ),
+    physicalSpecs: product.physicalSpecs ?? undefined,
     searchTerms: (product.searchTerms ?? []).map((item) => item.term ?? "")
       .filter(Boolean),
     ...price,

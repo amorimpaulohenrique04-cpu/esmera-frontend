@@ -232,3 +232,87 @@ Deno.test("prata e dourada aceitas com preset 10x10 ou frases 15x15/20x20", () =
     }
   }
 });
+
+const genericFrame = {
+  title: "Caixa-quadro em Acrílico",
+  slug: "caixa-quadro-em-acrilico-rocha-esmeralda",
+  category: "OBJETOS DE DESIGN",
+  material: "Rocha de Esmeralda",
+};
+
+Deno.test("caixa-quadro com slug genérico lê a medida de physicalSpecs", () => {
+  const item = product({
+    ...genericFrame,
+    physicalSpecs: { heightMm: 200, widthMm: 200 },
+  });
+  assert(isFramePersonalizationProduct(item));
+  const value = createFramePersonalization(item);
+  assertEquals(value.size, "20x20");
+  assertEquals(framePhraseOptions(value.size), FRAME_PHRASES_LARGE);
+});
+
+Deno.test("caixa-quadro com slug genérico lê a medida da descrição", () => {
+  for (
+    const [text, size] of [
+      ["mensagem personalizável. Medidas 20x20", "20x20"],
+      ["Medidas: 30 x 30 cm.", "30x30"],
+      ["Medidas: 10 x 10 cm.", "10x10"],
+    ] as const
+  ) {
+    assertEquals(
+      inferFrameSize(product({ ...genericFrame, description: text })),
+      size,
+    );
+  }
+});
+
+Deno.test("medida acima de 10x10 usa frases longas e aceita texto livre", () => {
+  for (const size of ["15x15", "20x20", "25x25", "30x30", "20x30"] as const) {
+    assertEquals(framePhraseOptions(size), FRAME_PHRASES_LARGE);
+    assertEquals(maxFrameTextLength(size), 120);
+    const custom = {
+      kind: "frame_text" as const,
+      size,
+      finish: "gold" as const,
+      mode: "custom" as const,
+      text: "Minha frase personalizada",
+    };
+    assertEquals(validateFramePersonalization(custom), null);
+    assertEquals(coerceFramePersonalization(custom), custom);
+  }
+});
+
+Deno.test("variante tem prioridade sobre a medida do cadastro", () => {
+  const item = product({
+    ...genericFrame,
+    physicalSpecs: { heightMm: 200, widthMm: 200 },
+    description: "Medidas 20x20",
+  });
+  assertEquals(inferFrameSize(item, variant("10 x 10 cm")), "10x10");
+});
+
+Deno.test("specs ausentes, nulos ou fora de escala não inventam tamanho", () => {
+  for (
+    const physicalSpecs of [
+      null,
+      { heightMm: null, widthMm: null },
+      { heightMm: 200 },
+      { heightMm: 125, widthMm: 125 },
+    ]
+  ) {
+    assertEquals(
+      inferFrameSize(product({ ...genericFrame, physicalSpecs })),
+      null,
+    );
+  }
+  assertEquals(
+    coerceFramePersonalization({
+      kind: "frame_text",
+      size: "grande",
+      finish: "gold",
+      mode: "custom",
+      text: "Oi",
+    }),
+    undefined,
+  );
+});
