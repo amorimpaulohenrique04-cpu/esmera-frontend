@@ -34,6 +34,7 @@ import * as $EsmeraHeader from "./islands/EsmeraHeader.tsx";
 import * as $EsmeraMotion from "./islands/EsmeraMotion.tsx";
 import * as $FavoritesPage from "./islands/FavoritesPage.tsx";
 import * as $FooterLeadForm from "./islands/FooterLeadForm.tsx";
+import * as $GiftLineSelector from "./islands/GiftLineSelector.tsx";
 import * as $HeroCarousel from "./islands/HeroCarousel.tsx";
 import * as $ProductActions from "./islands/ProductActions.tsx";
 import * as $ProductModal from "./islands/ProductModal.tsx";
@@ -77,6 +78,7 @@ const manifest = {
     "./islands/EsmeraMotion.tsx": $EsmeraMotion,
     "./islands/FavoritesPage.tsx": $FavoritesPage,
     "./islands/FooterLeadForm.tsx": $FooterLeadForm,
+    "./islands/GiftLineSelector.tsx": $GiftLineSelector,
     "./islands/HeroCarousel.tsx": $HeroCarousel,
     "./islands/ProductActions.tsx": $ProductActions,
     "./islands/ProductModal.tsx": $ProductModal,
