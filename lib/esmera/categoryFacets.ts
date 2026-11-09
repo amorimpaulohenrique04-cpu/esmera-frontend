@@ -19,3 +19,18 @@ export function collectionFacetCategories(
     return true;
   });
 }
+
+/**
+ * Catalog filters follow the published collections, not the menu: a collection
+ * hidden from the menu stays filterable. Menu order comes first, and older CMS
+ * builds without `catalogCategories` keep working from the menu alone.
+ */
+export function catalogFacetCategories(chrome: {
+  categories: StorefrontCategory[];
+  catalogCategories: StorefrontCategory[];
+}): StorefrontCategory[] {
+  return collectionFacetCategories([
+    ...chrome.categories,
+    ...chrome.catalogCategories,
+  ]);
+}

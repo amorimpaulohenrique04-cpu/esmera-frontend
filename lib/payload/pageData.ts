@@ -11,6 +11,7 @@ export async function getPageChrome() {
     navigation: data.navigation,
     settings: data.siteSettings,
     categories: data.categories,
+    catalogCategories: data.catalogCategories,
     unavailable: data.unavailable,
   };
 }

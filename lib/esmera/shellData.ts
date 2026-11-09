@@ -50,6 +50,16 @@ const FALLBACK_NAVIGATION: NavigationLink[] = [
   { label: "CONTATO", href: "/contato", external: false },
 ];
 
+const FALLBACK_MENU: NavigationNode[] = FALLBACK_NAVIGATION.map((link) => ({
+  id: `navigation-fallback-${link.href}`,
+  label: link.label,
+  href: link.href,
+  external: link.external,
+  visibility: "both",
+  highlights: [],
+  children: [],
+}));
+
 const OFFICIAL_INSTAGRAM_HREF = "https://instagram.com/esmera.decor";
 
 function present(value: string | null | undefined, fallback: string): string {
@@ -141,7 +151,8 @@ export function resolveShell(
       external: category.external,
     })),
   ]);
-  const menu = ensureHomeNode(buildNavigationTree(categories, navigation));
+  const tree = buildNavigationTree(categories, navigation);
+  const menu = ensureHomeNode(tree.length > 0 ? tree : FALLBACK_MENU);
   const instagram = settings?.officialChannels?.find((channel) =>
     channel.active !== false && channel.kind === "instagram"
   );

@@ -1,5 +1,5 @@
 import type { Handlers } from "$fresh/server.ts";
-import { collectionFacetCategories } from "../../lib/esmera/categoryFacets.ts";
+import { catalogFacetCategories } from "../../lib/esmera/categoryFacets.ts";
 import {
   buildCatalogQuery,
   type CatalogFilter,
@@ -33,9 +33,7 @@ export const handler: Handlers = {
       const categoryRefinement = !slug &&
         Boolean(url.searchParams.get("category")?.trim());
       const chrome = categoryRefinement ? await getPageChrome() : null;
-      const categories = chrome
-        ? collectionFacetCategories(chrome.categories)
-        : [];
+      const categories = chrome ? catalogFacetCategories(chrome) : [];
       const query = buildCatalogQuery(
         url,
         slug ? COLLECTION_FILTERS : CATALOG_FILTERS,
