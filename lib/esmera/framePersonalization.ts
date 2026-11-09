@@ -1,6 +1,6 @@
 import type { EsmeraObject, EsmeraVariant } from "../payload/types.ts";
 
-export type FrameSize = "10x10" | "15x15" | "20x20";
+export type FrameSize = `${number}x${number}`;
 export type FrameFinish = "silver" | "gold";
 export type FrameTextMode = "preset" | "custom";
 
@@ -71,31 +71,46 @@ export function isFramePersonalizationProduct(product: EsmeraObject): boolean {
   return /\bquadro(s)?\b|\bquadrinho(s)?\b/.test(text);
 }
 
-/**
- * Product names can be generic in Payload: e.g. "Caixa-quadro em Acrílico".
- * Its only reliable dimension is then in the slug:
- * "colecao-fe-quadro-10-x-10-cm". Resolve the variant first, then the
- * product slug, before falling back to other explicit product fields.
- */
-function readFrameSize(value: string | null | undefined): FrameSize | null {
-  const normalized = fold(value).replaceAll("×", "x").replace(/[-_]+/g, " ");
-  const match = normalized.match(
-    /\b(10|15|20)\s*(?:cm\s*)?x\s*\1(?:\s*cm)?\b/,
-  );
-  return match ? `${match[1]}x${match[1]}` as FrameSize : null;
+const FRAME_SIZE_PATTERN =
+  /\b([1-9]\d)\s*(?:cm\s*)?x\s*([1-9]\d)(?:\s*cm)?\b/;
+
+function isFrameSize(value: unknown): value is FrameSize {
+  return typeof value === "string" && /^[1-9]\dx[1-9]\d$/.test(value);
 }
 
+function readFrameSize(value: string | null | undefined): FrameSize | null {
+  const normalized = fold(value).replaceAll("×", "x").replace(/[-_]+/g, " ");
+  const match = normalized.match(FRAME_SIZE_PATTERN);
+  return match ? `${Number(match[1])}x${Number(match[2])}` : null;
+}
+
+function frameSizeFromSpecs(product: EsmeraObject): FrameSize | null {
+  const width = product.physicalSpecs?.widthMm;
+  const height = product.physicalSpecs?.heightMm;
+  if (typeof width !== "number" || typeof height !== "number") return null;
+  return readFrameSize(`${width / 10}x${height / 10}`);
+}
+
+/**
+ * Product names can be generic in Payload ("Caixa-quadro em Acrílico"), so the
+ * size may live in any registered field. The selected variant wins, then the
+ * physical specs, then the free-text fields, with the description last.
+ */
 export function inferFrameSize(
   product: EsmeraObject,
   variant?: EsmeraVariant,
 ): FrameSize | null {
+  const fromVariant = readFrameSize(variant?.label) ??
+    readFrameSize(variant?.sku);
+  if (fromVariant) return fromVariant;
+  const fromSpecs = frameSizeFromSpecs(product);
+  if (fromSpecs) return fromSpecs;
   const sources = [
-    variant?.label,
-    variant?.sku,
     product.slug,
     product.title,
     product.subtitle,
     ...(product.attributes ?? []).flatMap((item) => [item.label, item.value]),
+    product.description,
   ];
   for (const value of sources) {
     const size = readFrameSize(value);
@@ -122,9 +137,8 @@ export function frameSizeVariants(
 }
 
 export function framePhraseOptions(size: FrameSize | null): readonly string[] {
-  if (size === "10x10") return FRAME_PHRASES_SMALL;
-  if (size === "15x15" || size === "20x20") return FRAME_PHRASES_LARGE;
-  return [];
+  if (!size) return [];
+  return size === "10x10" ? FRAME_PHRASES_SMALL : FRAME_PHRASES_LARGE;
 }
 
 export function maxFrameTextLength(size: FrameSize | null): number {
@@ -216,10 +230,7 @@ export function coerceFramePersonalization(
   }
   const data = value as Partial<FramePersonalization>;
   if (data.kind !== "frame_text") return undefined;
-  const size = data.size === "10x10" || data.size === "15x15" ||
-      data.size === "20x20"
-    ? data.size
-    : null;
+  const size = isFrameSize(data.size) ? data.size : null;
   const finish = data.finish === "silver" || data.finish === "gold"
     ? data.finish
     : null;

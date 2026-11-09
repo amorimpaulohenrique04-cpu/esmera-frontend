@@ -468,7 +468,9 @@ export default function ProductModal() {
 
   // Favoritos, busca e outros caminhos podem abrir o popup sem a descrição.
   const completeProduct = (next: EsmeraObject) => {
-    if (next.description || !next.slug) return;
+    const missingFrameSpecs = isFramePersonalizationProduct(next) &&
+      !next.physicalSpecs;
+    if ((next.description && !missingFrameSpecs) || !next.slug) return;
     fetch(
       `/api/esmera-product-detail?slug=${encodeURIComponent(next.slug)}`,
       { headers: { accept: "application/json" } },
@@ -483,12 +485,23 @@ export default function ProductModal() {
               ...current,
               description: current.description || detail.description,
               category: current.category || detail.category,
+              physicalSpecs: current.physicalSpecs ?? detail.physicalSpecs,
             }
             : current
         );
       })
       .catch(() => {});
   };
+
+  // A medida pode chegar depois da abertura, junto com o detalhe do produto.
+  useEffect(() => {
+    if (!product) return;
+    setPersonalization((current) =>
+      current && !current.size
+        ? reconcileFramePersonalization(product, selectedVariant, current)
+        : current
+    );
+  }, [product?.description, product?.physicalSpecs]);
 
   const selectProduct = (next: EsmeraObject) => {
     completeProduct(next);

@@ -12,6 +12,7 @@ export type ModalProductMedia = {
   gallery: EsmeraObject["gallery"];
   description?: string;
   category?: string;
+  physicalSpecs?: EsmeraObject["physicalSpecs"];
 };
 
 function roleForIndex(index: number): EsmeraObject["gallery"][number]["role"] {
@@ -76,5 +77,6 @@ export function storefrontDetailToModalMedia(
     gallery,
     description: lexicalToText(product.description) || undefined,
     category: product.categories?.[0]?.title || undefined,
+    physicalSpecs: product.specs ?? undefined,
   };
 }
