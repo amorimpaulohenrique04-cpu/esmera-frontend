@@ -1,6 +1,16 @@
 /* Linha Presenteável — carregado apenas em /colecao/presenteaveis.
  * Tudo fica sob .gl-page para não alcançar nenhuma outra página. */
 
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 200;
+  src: url("https://cdn.jsdelivr.net/fontsource/fonts/inter@5.3.0/latin-200-normal.woff2")
+    format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 .gl-page {
   --gl-bg: #f4f0e9;
   --gl-bar: #ebe4d9;
@@ -55,7 +65,7 @@
 
 .gl-title {
   margin-top: clamp(10px, 1vw, 16px);
-  font-size: clamp(40px, 5vw, 76px);
+  font-size: clamp(36px, 4.2vw, 64px);
   font-weight: 300;
   line-height: 1.05;
   letter-spacing: -.025em;
@@ -189,17 +199,17 @@
 .gl-hero__photo {
   position: absolute;
   inset: 0 0 0 auto;
-  width: 56%;
+  width: 62%;
 }
 
 .gl-hero__photo img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 62% 32%;
+  object-position: 50% 42%;
 }
 
-.gl-hero__curve {
+.gl-hero__edge {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -210,34 +220,90 @@
 
 .gl-hero__copy {
   position: relative;
-  width: 45%;
+  width: 44%;
   padding-block: clamp(28px, 3vw, 44px);
   padding-left: var(--gl-edge);
 }
 
 .gl-hero__title {
-  font-size: clamp(40px, 4.9vw, 76px);
-  font-weight: 300;
-  line-height: 1.05;
-  letter-spacing: -.025em;
+  margin-top: clamp(18px, 2.2vw, 32px);
+  font-size: clamp(46px, 5.5vw, 92px);
+  font-weight: 200;
+  line-height: 1.02;
+  letter-spacing: -.04em;
 }
 
 .gl-hero .gl-short-rule {
-  margin-top: clamp(16px, 1.8vw, 28px);
+  width: clamp(24px, 2vw, 32px);
+  margin-top: clamp(22px, 2.6vw, 38px);
 }
 
 .gl-hero__note {
-  max-width: 28em;
-  margin-top: clamp(10px, 1.2vw, 18px);
-  color: var(--gl-champagne);
-  font-size: clamp(16px, 1.4vw, 21px);
+  max-width: 25em;
+  margin-top: clamp(14px, 1.5vw, 22px);
+  color: var(--gl-paper);
+  font-size: clamp(16px, 1.5vw, 23px);
   font-weight: 300;
   line-height: 1.5;
+}
+
+.gl-crumb {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: var(--gl-champagne);
+  font-size: clamp(12px, .95vw, 14px);
+  font-weight: 300;
+}
+
+.gl-crumb a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.gl-hero__title-lead {
+  display: block;
+  margin-bottom: .05em;
+  font-size: .74em;
+  letter-spacing: -.03em;
+}
+
+.gl-hero__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  min-width: clamp(230px, 18.5vw, 300px);
+  min-height: clamp(46px, 3.6vw, 56px);
+  margin-top: clamp(20px, 2.2vw, 32px);
+  padding: 0 clamp(18px, 1.6vw, 24px);
+  border: 1px solid rgba(244, 240, 233, .78);
+  color: var(--gl-paper);
+  font-size: clamp(14px, 1.1vw, 17px);
+  font-weight: 300;
+  text-decoration: none;
+  transition: background-color .3s var(--ease-esmera, ease),
+    color .3s var(--ease-esmera, ease);
+}
+
+.gl-hero__cta:hover {
+  background: var(--gl-paper);
+  color: var(--gl-emerald);
+}
+
+.gl-hero__cta svg {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 10px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1;
 }
 
 /* Capítulos */
 .gl-chapters {
   display: grid;
+  scroll-margin-top: calc(var(--header-h, 72px) + 20px);
   gap: clamp(64px, 6.6vw, 104px);
   width: min(100%, 1600px);
   margin-inline: auto;
@@ -249,11 +315,12 @@
   display: grid;
   grid-template-columns: minmax(0, 56fr) minmax(0, 29fr);
   column-gap: 5.5%;
+  align-items: center;
 }
 
 .gl-selector__stage {
   position: relative;
-  aspect-ratio: 1.285;
+  aspect-ratio: 1.62;
   background: var(--gl-bar);
 }
 
@@ -277,8 +344,7 @@
 .gl-selector__panel {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: clamp(20px, 2vw, 32px);
+  gap: clamp(16px, 1.6vw, 26px);
   min-width: 0;
 }
 
@@ -292,7 +358,7 @@
   align-items: baseline;
   gap: 4px;
   width: 100%;
-  padding: clamp(11px, 1.15vw, 18px) 0;
+  padding: clamp(10px, .9vw, 14px) 0;
   border: 0;
   border-top: 1px solid var(--gl-rule);
   background: transparent;
@@ -530,7 +596,7 @@
     aspect-ratio: 3 / 2;
   }
 
-  .gl-hero__curve {
+  .gl-hero__edge {
     display: none;
   }
 
@@ -601,7 +667,8 @@
   .gl-shot .gl-shot__alt,
   .gl-selector__photo,
   .gl-row__name,
-  .gl-page .gl-buy .esv-card-cta {
+  .gl-page .gl-buy .esv-card-cta,
+  .gl-hero__cta {
     transition: none;
   }
 }

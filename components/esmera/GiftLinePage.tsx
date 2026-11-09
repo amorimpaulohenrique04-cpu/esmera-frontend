@@ -27,26 +27,39 @@ function GiftHero({ coverImage }: Pick<Props, "coverImage">) {
             : asset("/presenteaveis-capa.webp")}
           alt={coverImage?.alt ||
             "Mãos seguram a caixa verde da Esméra, com abelha na tampa, fita dourada e cartão de presente"}
-          width={1366}
-          height={912}
+          width={1448}
+          height={1086}
           decoding="async"
           {...{ fetchPriority: "high" }}
         />
       </figure>
       <svg
-        class="gl-hero__curve"
+        class="gl-hero__edge"
         viewBox="0 0 1000 1000"
         preserveAspectRatio="none"
         aria-hidden="true"
       >
-        <path d="M0 0H502C470 180 462 330 470 470C480 700 540 880 563 1000H0Z" />
+        <path d="M0 0H462L408 1000H0Z" />
       </svg>
       <div class="gl-hero__copy">
-        <h1 class="gl-hero__title">
-          Linha<br />Presenteável
-        </h1>
+        <nav class="gl-crumb" aria-label="Você está em">
+          <a href="/">Início</a>
+          <span aria-hidden="true">/</span>
+          <a href="/colecao">Coleções</a>
+          <span aria-hidden="true">/</span>
+          <span aria-current="page">Presenteáveis</span>
+        </nav>
         <span class="gl-short-rule" aria-hidden="true" />
+        <h1 class="gl-hero__title">
+          <span class="gl-hero__title-lead">Linha</span> Presenteável
+        </h1>
         <p class="gl-hero__note">{NOTE}</p>
+        <a class="gl-hero__cta" href="#colecao-presenteavel">
+          Explorar a coleção
+          <svg viewBox="0 0 20 10" aria-hidden="true">
+            <path d="M0 5H19M15 1L19 5L15 9" />
+          </svg>
+        </a>
       </div>
     </section>
   );
@@ -148,7 +161,7 @@ export default function GiftLinePage(props: Props) {
   return (
     <div class="gl-page">
       <GiftHero coverImage={props.coverImage} />
-      <div class="gl-chapters">
+      <div class="gl-chapters" id="colecao-presenteavel">
         {props.line.families.map((family) => (
           <GiftFamilySection family={family} key={family.key} />
         ))}
